@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+<head>
+    <meta charset="UTF-8">
+    <title>YnuTube</title>
+    <link href="style.css" rel="stylesheet">
+    <!-- <script src="scripts.js"></script> -->
+    <script>
+        function submit(id) {
+            window.opener.setBackground(id);
+            open('about:blank', '_self').close();        }
+    </script>
+</head>
+<body>
+    <h3>背景画像選択</h3>
+    <div>
+        <img class="thumbnail" src="img/field.png" onClick="submit('field');">
+        <img class="thumbnail" src="img/sea.png" onClick="submit('sea');">
+        <img class="thumbnail" src="img/fantasy.png" onClick="submit('fantasy');">
+        <img class="thumbnail" src="img/night.png" onClick="submit('night');">
+        <img class="thumbnail" src="img/out.png" onClick="submit('out');">
+    </div>
+</body>
+</html>

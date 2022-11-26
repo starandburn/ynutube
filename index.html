@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+<head>
+    <meta charset="UTF-8">
+    <title>YnuTube</title>
+    <link href="flexstyle.css" rel="stylesheet">
+    <script src="scripts.js"></script>
+    <script src="main.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+    <div class="layout">
+        <header class="header">
+            <div class="header-left">
+                <div class="barger-menu" onClick="onHanbarger_Click();"><div class="barger-menu-line"></div></div>
+                <div class="yt-logo">
+                    <div class="yt-logo-image"></div><span class="logo-locale">NKK</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="mode-area">
+                    <input type="text" class="mode-text" value="編集モード">
+                    <!-- </div> -->
+                    <button class="mode-button" id="modeChangeButton" onClick="modeChangeButton_Click();">モード変更</button>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="nkk-name">
+                    <p class="header-text-sub">Japan International Institute of Cybernetics</p>
+                    <p class="header-text">日本国際工科専門学校</p>
+                </div>
+                <img class="nkk-logo" src="img/nkk-logo.png">
+            </div>
+        </header>
+        <div id="content" class="content disabled-select">
+            <div class="main-panel">
+                <div class="screen-area">
+                    <div id="infoArea" class="info-area"><p>ただいま編集中……</p></div>
+                    <canvas id="screen" class="screen-canvas"></canvas>
+                </div>
+                <div id="develop">
+                    <button id="debugButton" onClick="debugButton_Click();">デバッグモード</button>
+                    <button id="pauseButton" onClick="pauseButton_Click();">一時停止/解除</button>
+                    <button id="backgroundButton" onClick="application.openWindow('selectbg.html', 'dataTransfer');">背景画像変更</button>
+                </div>
+            </div>
+            <div class="side-panel">
+                <div id="controlArea" class="control-area"></div>
+                <div class="button-area">
+                    <button id="runButton" onClick="dogButton_Click();">🐕ドッグ！</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+
+        </div>
+    </div>
+    <div id="windowOverlay" class="window-overlay">
+        <div class="spinner-box">
+            <span class="spinner"></span>
+        </div>
+    </div>
+    <div id="logArea" class="log-area">
+        <p>ログ</p>
+    </div>
+</body>
+</html>
