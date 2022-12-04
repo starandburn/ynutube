@@ -7,23 +7,28 @@
     --border-color : #cccccc;
     --border-shadow-color : #eeeeee;
     --button-color : #f8f8f8;
+    --noborder-button-color: #f0f0f0;
+    --noborder-button-active-color : #d0d0d0;
+    --noborder-button-hover-color : #e0e0e0;
+    --button-text-color : #0f0f0f;
     --button-hover-color : #eee;
     --button-active-color : #ddd;
     --sub-background-color : #d3d3d3;
-    --header-color:#rgba(255, 255, 255, 0.98);
-    --content-color:#f9f9f9;
+    --header-color:var(--background-color);
+    --content-color : #ffffff;
     --text-color:#030303;
     --main-color:#ff0000;
     --sub-color:#3ea6ff;
 
-    --dark-background-color : rgba(18, 18, 18);
+    --dark-background-color : #000;
     --dark-border-color:#303030;
     --dark-border-shadow-color:#303030;
     --dark-button-color : #313131;
+    --dark-button-text-color : #ffffff;
     --dark-button-hover-color : #313131;
     --dark-button-active-color : #313131;
-    --dark-content-color:rgb(24, 24, 24);
-    --dark-header-color:rgb(32, 32, 32, 0.98);
+    --dark-content-color:#000;
+    --dark-header-color:var(--dark-background-color);
     --dark-sub-background-color : #282828;
     --dark-text-color:#ffffff;
     --dark-main-color:#ff0000;
@@ -185,9 +190,8 @@ body.dark-theme {
     border-width: 1px;
     border-color: var(--border-color);
     font-size: large;
-    /* background-color: var(--background-color);
-    color:var(--text-color); */
     width : 70%;
+    border-radius: 24px 24px 24px 24px;
 }
 
 .dark-theme .mode-area {
@@ -203,14 +207,15 @@ body.dark-theme {
     outline-width: 0;
     background-color: var(--background-color);
     box-shadow:0px 1px 2px 0px var(--border-shadow-color) inset;    
-    border-radius: 2px 0 0 2px;
+    /* border-radius: 2px 0 0 2px; */
+    border-radius: 24px 0 0 24px;
     /* background-color: white;
     color:black; */
+    color: var(--text-color);
 }
 
 .dark-theme .mode-text {
     background: var(--dark-background-color);
-    /* box-shadow:0px 1px 2px 0px var(--dark-border-shadow-color) inset;     */
     box-shadow : none;
     color:var(--dark-text-color);
 }
@@ -231,6 +236,7 @@ body.dark-theme {
     font-size: large;
     color:var(--text-color);
     width:fit-content;
+    border-radius: 0px 24px 24px 0px;
 }
 
 .mode-button:hover {
@@ -239,7 +245,6 @@ body.dark-theme {
 .mode-button:active {
     background-color: var(--button-active-color);
 }
-
 
 .dark-theme .mode-button {
     background-color: var(--dark-button-color);
@@ -253,7 +258,6 @@ body.dark-theme {
 .dark-theme .mode-button:active {
     background-color: var(--dark-button-active-color);
 }
-
 
 .content {
     background-color: var(--content-color);
@@ -329,6 +333,67 @@ body.dark-theme {
     display: flex;
     flex-direction: column;
 }
+
+.button-area {
+    padding: 0;
+    display: flex;
+}
+
+.button-area button {
+    font-size: xx-large;
+    color:var(--button-text-color);
+    background-color: var(--noborder-button-color);
+    border-color:var(--border-color);
+    border-width: 1px;
+    /* border-style: solid; */
+    border-style: none;
+    margin: 8px;
+    padding: 4px 20px 6px 20px;
+    cursor: pointer;   
+}
+
+.dog-button {
+    border-radius: 24px 24px 24px 24px;
+}
+
+.dog-button-with-bat-button {
+    border-radius : 24px 0px 0px 24px!important;
+    margin-right: 0!important;
+    border-style: solid!important;
+    border-width: 0 2px 0 0!important;
+}
+
+.bat-button {
+    border-radius: 0px 24px 24px 0px;
+    margin-left: 0!important;
+}
+
+.button-area button:hover {
+    background-color: var(--noborder-button-hover-color);
+}
+.button-area button:active {
+    background-color: var(--noborder-button-active-color);
+}
+
+.dog-count {
+    display:inline-block;
+    width : 3em;
+}
+
+.dark-theme .button-area button {
+    background-color: var(--dark-button-color);
+    border-color: var(--dark-border-color);
+    color:var(--dark-text-color)
+}
+
+.dark-theme .button-area button:hover {
+    background-color: var(--dark-button-hover-color);
+}
+.dark-theme .button-area button:active {
+    background-color: var(--dark-button-active-color);
+}
+
+
 
 .control {
     border-style: none;
@@ -417,12 +482,12 @@ body.dark-theme {
     margin: 0 0 4px;
     padding: 2px 16px;
     font-size: small;
-    line-height: 1.2em;
+    line-height: 1.5em;
     font-weight: bold;
     width:fit-content;
     color: var(--background-color);
     background-color:var(--text-color);
-    border-radius: 16px;
+    border-radius: 4px;
     border-style: none;
     border-color: var(--border-color);
 }

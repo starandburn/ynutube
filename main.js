@@ -184,6 +184,8 @@ let contentArea;
 let runLevel; 
 let maxRunLevel;
 
+let enableBatButton = false;
+
 class Dog extends TransitionSprite {
 
     constructor(areaCanvas, srcTiles, kind, x, y, direction, size, speed, startPattern) {
@@ -399,11 +401,21 @@ function appearDog(x, y, kind, direction, size, speed) {
     mainScreen.addSprite(dog);
     viewDogCount++;
 
+    UpdateDogButton();
+
     console.log(dog.tag, getItemText(kindItems, dog.kind), dog.x, dog.y, getItemText(directionItems, dog.direction), getItemText(sizeItems, dog.size), getItemText(speedItems, dog.speed));
 
     return dog;
 
 }
+
+function UpdateDogButton()
+{
+    const HTML_ID_DOGCOUNT = '#dogCount';
+    const countLabel = document.querySelector(HTML_ID_DOGCOUNT);
+    countLabel.textContent = dogCount;
+}
+
 function dogButton_Click() {
     if (isEditMode()) return;
     if (paused) return;
@@ -624,7 +636,14 @@ function onHanbarger_Click() {
 
     maxRunLevel++;
     runLevel = maxRunLevel;
+
+    enableBatButton = !enableBatButton;
+
+    console.log("実行レベル変更:", runLevel);
+    console.log("バットボタン有効:", enableBatButton);
+
     buildControls(controlArea, runLevel);
+    
 
 }
 
@@ -746,31 +765,55 @@ function modeChangeButton_Click() {
 
 }
 
+// [編集][再生]モード変更
 function changeMode(editMode = false, first = false) {
+
+    const MODE_TEXT_EDIT = "編集中";
+    const MODE_TEXT_PLAY = "実行中";
 
     const CLASS_EDIT_MODE = 'edit-mode';
     const CLASS_HEADER = '.header';
     const CLASS_LAYOUT = '.layout';
+    const CLASS_MODE_TEXT = '.mode-text';
+    const HTML_ID_BUTTON_AREA = '#buttonArea';
+
+    const HTML_ID_DOG_BUTTON = '#dogButton';
+    const HTML_ID_BAT_BUTTON = '#batButton';
+
+    const CLASS_DOG_BUTTON_WITH_BAT_BUTTON = "dog-button-with-bat-button"
+
+    const CLASS_LIGHT_THEME = 'light-theme';
+    const CLASS_DARK_THEME = 'dark-theme';
 
     mainScreen.stop();
-    // document.querySelector(HTML_ID_OVERLAY).style.display = 'block';
 
+    const body = document.body;
     const layout = document.querySelector(CLASS_LAYOUT);
-    const body = document.querySelector('body');
+    const modeText = document.querySelector(CLASS_MODE_TEXT);
+    const buttonArea = document.querySelector(HTML_ID_BUTTON_AREA);
+
+    mainScreen.clearSprites();
+    dogCount = 0;
+    viewDogCount = 0;
+    hideDogCount = 0;
+    UpdateDogButton();
 
     if (editMode) {
         runLevel = maxRunLevel;
         layout.classList.add(CLASS_EDIT_MODE);
 
-        body.classList.add('dark-theme');
-        body.classList.remove('light-theme');
+        body.classList.add(CLASS_DARK_THEME);
+        body.classList.remove(CLASS_LIGHT_THEME);
+
+        modeText.value = MODE_TEXT_EDIT;
+        buttonArea.style.display = 'none';
 
     } else {
         runLevel = RUN_LEVEL_PLAY;
         layout.classList.remove(CLASS_EDIT_MODE);
 
-        body.classList.add('light-theme');
-        body.classList.remove('dark-theme');
+        body.classList.add(CLASS_LIGHT_THEME);
+        body.classList.remove(CLASS_DARK_THEME);
 
         if (!first) {
             controls.splice(0);
@@ -780,6 +823,25 @@ function changeMode(editMode = false, first = false) {
                 controls.push( { field : field, type : type } );
             });
         }
+
+        modeText.value = MODE_TEXT_PLAY;
+
+        const dogButton = document.querySelector(HTML_ID_DOG_BUTTON);
+        const batButton = document.querySelector(HTML_ID_BAT_BUTTON);
+
+        if (enableBatButton)
+        {
+            batButton.style.display = 'inline';
+            dogButton.classList.add(CLASS_DOG_BUTTON_WITH_BAT_BUTTON);
+        }
+        else 
+        {
+            batButton.style.display = 'none';
+            dogButton.classList.remove(CLASS_DOG_BUTTON_WITH_BAT_BUTTON);
+        }
+
+        buttonArea.style.display = 'flex';
+
     }
 
     console.log('モード変更:', editMode ? `編集モード(${runLevel})` : '再生モード');

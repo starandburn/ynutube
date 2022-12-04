@@ -19,7 +19,7 @@
             </div>
             <div class="header-center">
                 <div class="mode-area">
-                    <input type="text" class="mode-text" value="編集モード">
+                    <input type="text" class="mode-text">
                     <!-- </div> -->
                     <button class="mode-button" id="modeChangeButton" onClick="modeChangeButton_Click();">モード変更</button>
                 </div>
@@ -46,8 +46,9 @@
             </div>
             <div class="side-panel">
                 <div id="controlArea" class="control-area"></div>
-                <div class="button-area">
-                    <button id="runButton" onClick="dogButton_Click();">🐕ドッグ！</button>
+                <div id="buttonArea" class="button-area">
+                    <button id="dogButton" class="dog-button" onClick="dogButton_Click();">🐕<span id="dogCount" class="dog-count""></span></button>
+                    <button id="batButton" class="bat-button" onClick="batButton_Click();">🦇</button>
                 </div>
             </div>
         </div>

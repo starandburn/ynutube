@@ -155,6 +155,10 @@ class ActiveCanvas extends Canvas {
         console.log('スプライト破棄', sprite.tag);
         this.sprites.splice(index, 1);
     }
+    clearSprites() {
+        console.log('スプライト初期化');
+        this.sprites = [];
+    }
 
     sortByDrawOrder(reverse = false, nonDestructive = false, ignoreLayer = false) {
 
