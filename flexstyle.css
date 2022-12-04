@@ -23,7 +23,7 @@
     --dark-background-color : #000;
     --dark-border-color:#303030;
     --dark-border-shadow-color:#303030;
-    --dark-button-color : #313131;
+    --dark-button-color : #222222;
     --dark-button-text-color : #ffffff;
     --dark-button-hover-color : #313131;
     --dark-button-active-color : #313131;
@@ -186,11 +186,12 @@ body.dark-theme {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    border-style: solid;
+    /* border-style: solid; */
+    border-style:none;
     border-width: 1px;
     border-color: var(--border-color);
     font-size: large;
-    width : 70%;
+    width : 50%;
     border-radius: 24px 24px 24px 24px;
 }
 
@@ -201,13 +202,16 @@ body.dark-theme {
 .mode-text {
     padding: 4px 16px;
     flex-grow: 5;
-    border-style: none;
+    /* border-style: none; */
     font-size: large;
     outline-style: none;
     outline-width: 0;
     background-color: var(--background-color);
     box-shadow:0px 1px 2px 0px var(--border-shadow-color) inset;    
     /* border-radius: 2px 0 0 2px; */
+    border-color: var(--border-color);
+    border-style:solid;
+    border-width: 1px 0px 1px 1px;
     border-radius: 24px 0 0 24px;
     /* background-color: white;
     color:black; */
@@ -218,6 +222,7 @@ body.dark-theme {
     background: var(--dark-background-color);
     box-shadow : none;
     color:var(--dark-text-color);
+    border-color: var(--dark-border-color);
 }
 
 .mode-button {
@@ -228,14 +233,17 @@ body.dark-theme {
     outline-style: none;
     outline-width: 0;
     cursor:pointer;
-    border-style : none;
-    border-width:1px;
+    /* border-style : none;
+    border-width:1px; */
+    border-style:solid;
+    border-width: 1px 1px 1px 1px;
     background-color: var(--button-color);
     border-color: var(--border-color);
     border-left-style : solid;
     font-size: large;
     color:var(--text-color);
     width:fit-content;
+    min-width: 6em;
     border-radius: 0px 24px 24px 0px;
 }
 
@@ -249,7 +257,8 @@ body.dark-theme {
 .dark-theme .mode-button {
     background-color: var(--dark-button-color);
     border-color: var(--dark-border-color);
-    color:var(--dark-text-color)
+    color:var(--dark-text-color);
+    border-color: var(--dark-border-color);
 }
 
 .dark-theme .mode-button:hover {
@@ -286,7 +295,8 @@ body.dark-theme {
     display: flex;
     flex-direction: column;
     flex: 1 0 auto;
-    justify-content: space-between;
+    /* justify-content: space-between;  */
+    justify-content: start;
     width: 20vw;
     padding: 0 16px;
 }
@@ -324,6 +334,19 @@ body.dark-theme {
     border-style: none;
 }
 
+.info-area .select-bg-button {
+    margin:20px;
+    padding:4px;
+    cursor:pointer;
+    font-size:large;
+    color:var(--dark-text-color);
+}
+
+.info-area .select-bg-button :hover {
+    color:var(--dark-sub-color);
+}
+
+
 .edit-mode .info-area {
     display: flex;
 }
@@ -337,6 +360,8 @@ body.dark-theme {
 .button-area {
     padding: 0;
     display: flex;
+    flex-direction: row;
+    justify-content: end;
 }
 
 .button-area button {
@@ -610,4 +635,8 @@ body.dark-theme {
     padding: 0;
     font-size: small;
     line-height: 1.25em;
+}
+
+#develop {
+    display:none;
 }

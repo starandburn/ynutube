@@ -181,9 +181,9 @@ const RUN_LEVEL_DEFAULT = 2;//RUN_LEVEL_EDIT;
 
 let controlArea;
 let contentArea;
+
 let runLevel; 
 let maxRunLevel;
-
 let enableBatButton = false;
 
 class Dog extends TransitionSprite {
@@ -288,6 +288,8 @@ class Dog extends TransitionSprite {
         }
         if (isOut) {
             this.dispose();
+            viewDogCount--;
+            console.log("表示中の犬の数", viewDogCount);
         }
     }
 
@@ -301,38 +303,27 @@ class Dog extends TransitionSprite {
 
 }
 
-function prepareImages() {
-
-    return;
-
-    for (let i = DOG_IMAGE_NO_MIN; i <= DOG_IMAGE_NO_MAX; i++) {
-        const id = `dog${i}`;
-        const url = `img/${id}.png`;
-        application.prepareImage(id, url);
-    }
-
-    for (let id of extraKinds) {
-        const url = `img/@dog${id}.png`;
-        application.prepareImage(id, url);
-    }
-    
-}
-
+// [一時停止]ボタン
 function pauseButton_Click() {
     if (paused) {
         paused = false;
         mainScreen.resume();
-
     } else {
-        paused = true;
-        mainScreen.pause();
 
+        if (viewDogCount > 0){
+            paused = true;
+            mainScreen.pause();
+        }
     }
 }
+
+
+// [デバッグモード]ボタン
 function debugButton_Click() {
     application.debugToggle();
-    mainScreen.isDebugMode = application.isDebugMode;
-    mainScreen.render(application.isDebugMode);
+    // mainScreen.isDebugMode = application.isDebugMode;
+    // mainScreen.render(application.isDebugMode);
+    // application.setDebugMode(!application.isDebugMode);
 }
 
 function setBackground(id) {
@@ -379,6 +370,8 @@ function loadDogTile(tileNo) {
     });
 }
 
+
+// 1体の犬を表示する
 function appearDog(x, y, kind, direction, size, speed) {
 
     kind = getFieldValue(FIELD_KIND, kind);
@@ -628,6 +621,14 @@ application.onChangeDebugMode = (d) => {
     //         ctrl.style.borderStyle = d ? 'dashed' : 'none';
     //         ctrl.style.borderWidth = '1px';
     // }
+
+
+    mainScreen.isDebugMode = d
+    mainScreen.render(d);
+
+    const logArea = document.querySelector('#logArea');
+    logArea.style.display = d ? 'block' : 'none';
+
 };
 
 function onHanbarger_Click() {
@@ -662,7 +663,29 @@ console.log = function(...args){
   logArea.prepend(p);
 };
 
-prepareImages();
+
+document.addEventListener('keypress', keypress_ivent);
+function keypress_ivent(e) {
+	//いずれかのキーが押された時の処理
+
+    switch (e.code)
+    {
+        case 'KeyG':
+            debugButton_Click();
+            break;
+        case 'KeyP':
+            pauseButton_Click();
+            break;
+        case 'KeyD':
+            dogButton_Click();
+            break;
+        default:
+            break;
+    }
+
+	return false; 
+}
+
 application.run().then((msg) => {
 
 
@@ -701,9 +724,9 @@ application.run().then((msg) => {
 
     let bg = application.getParam(PARAM_NAME_BG) || 'field';
     setBackground(bg);
-    
 
     changeMode(isEditMode(), true);
+    application.debugOff();
 
     mainScreen.onClick = (x, y, button, target) => {
 
@@ -728,6 +751,8 @@ application.run().then((msg) => {
                 const hited = target.getPointedSprite(x, y, true);
                 if (hited instanceof Dog) {
                     target.removeSprite(hited);
+                    viewDogCount--;
+                    console.log("表示中の犬の数", viewDogCount);
                 }
         }
 

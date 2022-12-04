@@ -35,21 +35,29 @@
         <div id="content" class="content disabled-select">
             <div class="main-panel">
                 <div class="screen-area">
-                    <div id="infoArea" class="info-area"><p>ただいま編集中……</p></div>
+                    <div id="infoArea" class="info-area">
+                        <p class="select-bg-button">
+                            <a onClick="application.openWindow('selectbg.html', 'dataTransfer');">
+                                背景画像の変更 >>>
+                            </a>
+                        </p>
+                    </div>
                     <canvas id="screen" class="screen-canvas"></canvas>
                 </div>
-                <div id="develop">
-                    <button id="debugButton" onClick="debugButton_Click();">デバッグモード</button>
-                    <button id="pauseButton" onClick="pauseButton_Click();">一時停止/解除</button>
-                    <button id="backgroundButton" onClick="application.openWindow('selectbg.html', 'dataTransfer');">背景画像変更</button>
+                <div class="title-area">
+                    <h3>【体験学習】ユーザーインターフェースを作ってみよう！【ドッグボタン押してね！】</h3>
                 </div>
-            </div>
-            <div class="side-panel">
-                <div id="controlArea" class="control-area"></div>
                 <div id="buttonArea" class="button-area">
                     <button id="dogButton" class="dog-button" onClick="dogButton_Click();">🐕<span id="dogCount" class="dog-count""></span></button>
                     <button id="batButton" class="bat-button" onClick="batButton_Click();">🦇</button>
                 </div>
+                <div id="develop">
+                    <button id="debugButton" onClick="debugButton_Click();">デバッグモード</button>
+                    <button id="pauseButton" onClick="pauseButton_Click();">一時停止/解除</button>
+                </div>
+            </div>
+            <div class="side-panel">
+                <div id="controlArea" class="control-area"></div>
             </div>
         </div>
         <div class="footer">
