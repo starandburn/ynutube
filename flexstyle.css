@@ -6,10 +6,18 @@
     --background-color :#ffffff;
     --border-color : #cccccc;
     --border-shadow-color : #eeeeee;
-    --button-color : #f8f8f8;
+
+    --command-button-color : #f8f8f8;
+    --command-button-border-color:#ccc;
+    --command-button-text-color : #0f0f0f;
+    --command-button-hover-color : #eee;
+    --command-button-active-color : #ddd;
+
     --noborder-button-color: #f0f0f0;
     --noborder-button-active-color : #d0d0d0;
     --noborder-button-hover-color : #e0e0e0;
+
+    --button-color : #f8f8f8;
     --button-text-color : #0f0f0f;
     --button-hover-color : #eee;
     --button-active-color : #ddd;
@@ -23,6 +31,12 @@
     --dark-background-color : #000;
     --dark-border-color:#303030;
     --dark-border-shadow-color:#303030;
+
+    --dark-command-button-color : #222222;
+    --dark-command-button-text-color : #ffffff;
+    --dark-command-button-hover-color : #313131;
+    --dark-command-button-active-color : #313131;
+
     --dark-button-color : #222222;
     --dark-button-text-color : #ffffff;
     --dark-button-hover-color : #313131;
@@ -139,11 +153,17 @@ body.dark-theme {
     display:inline-block;
 }
 
+.mode-change-button {
+    margin:0;
+    padding:0;
+    cursor:pointer;
+}
+
 .dark-theme .yt-logo-image {
     background-image: url('../img/yt-logo-dark.png');
 }
 
-.logo-locale {
+.mode-text {
     font-size : 10px;
     font-family: Arial, Helvetica, sans-serif;
     margin:0;
@@ -180,7 +200,7 @@ body.dark-theme {
 }
 
 
-.mode-area {
+.command-area {
     margin : 0;
     padding : 0;
     display: flex;
@@ -195,11 +215,11 @@ body.dark-theme {
     border-radius: 24px 24px 24px 24px;
 }
 
-.dark-theme .mode-area {
+.dark-theme .command-area {
     border-color: var(--dark-border-color);
 }
 
-.mode-text {
+.command-text {
     padding: 4px 16px;
     flex-grow: 5;
     /* border-style: none; */
@@ -218,14 +238,14 @@ body.dark-theme {
     color: var(--text-color);
 }
 
-.dark-theme .mode-text {
+.dark-theme .command-text {
     background: var(--dark-background-color);
     box-shadow : none;
     color:var(--dark-text-color);
     border-color: var(--dark-border-color);
 }
 
-.mode-button {
+.command-button {
     flex-grow: 1;
     flex-shrink: 1;
     padding: 4px;
@@ -237,34 +257,34 @@ body.dark-theme {
     border-width:1px; */
     border-style:solid;
     border-width: 1px 1px 1px 1px;
-    background-color: var(--button-color);
+    background-color: var(--command-button-color);
     border-color: var(--border-color);
     border-left-style : solid;
     font-size: large;
     color:var(--text-color);
     width:fit-content;
-    min-width: 6em;
+    min-width: 4em;
     border-radius: 0px 24px 24px 0px;
 }
 
-.mode-button:hover {
+.command-button:hover {
     background-color: var(--button-hover-color);
 }
-.mode-button:active {
+.command-button:active {
     background-color: var(--button-active-color);
 }
 
-.dark-theme .mode-button {
+.dark-theme .command-button {
     background-color: var(--dark-button-color);
     border-color: var(--dark-border-color);
     color:var(--dark-text-color);
     border-color: var(--dark-border-color);
 }
 
-.dark-theme .mode-button:hover {
+.dark-theme .command-button:hover {
     background-color: var(--dark-button-hover-color);
 }
-.dark-theme .mode-button:active {
+.dark-theme .command-button:active {
     background-color: var(--dark-button-active-color);
 }
 

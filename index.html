@@ -14,14 +14,16 @@
             <div class="header-left">
                 <div class="barger-menu" onClick="onHanbarger_Click();"><div class="barger-menu-line"></div></div>
                 <div class="yt-logo">
-                    <div class="yt-logo-image"></div><span class="logo-locale">NKK</span>
+                    <div id="modeChangeButton" class="mode-change-button" onClick="modeChangeButton_Click();">
+                        <div class="yt-logo-image"></div><span id="modeText" class="mode-text"></span>
+                    </div>
                 </div>
             </div>
             <div class="header-center">
-                <div class="mode-area">
-                    <input type="text" class="mode-text">
+                <div class="command-area">
+                    <input type="text" id="commandText" class="command-text" onKeyPress="commandText_KeyPress(event);">
                     <!-- </div> -->
-                    <button class="mode-button" id="modeChangeButton" onClick="modeChangeButton_Click();">モード変更</button>
+                    <button class="command-button" id="commandButton" onClick="commandButton_Click();">🔨</button>
                 </div>
             </div>
             <div class="header-right">
@@ -45,7 +47,7 @@
                     <canvas id="screen" class="screen-canvas"></canvas>
                 </div>
                 <div class="title-area">
-                    <h3>【体験学習】ユーザーインターフェースを作ってみよう！【ドッグボタン押してね！】</h3>
+                    <h3>【体験学習】ユーザーインターフェースを作ってみよう！</h3>
                 </div>
                 <div id="buttonArea" class="button-area">
                     <button id="dogButton" class="dog-button" onClick="dogButton_Click();">🐕<span id="dogCount" class="dog-count""></span></button>

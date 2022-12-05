@@ -8,6 +8,12 @@ const DOG_IMAGE_NO_MIN = 1;
 const DOG_IMAGE_NO_MAX = 10;
 const DOG_PATTERN_COUNT = 20;
 
+const HTML_ID_COMMAND_TEXT = "#commandText";
+const HTML_ID_DOG_BUTTON = '#dogButton';
+const HTML_ID_BAT_BUTTON = '#batButton';
+const HTML_ID_BUTTON_AREA = '#buttonArea';
+const HTML_ID_MODE_TEXT = '#modeText';
+
 // ユーザーが入力できるフィールド項目
 const FIELD_DIRECTION = 'direction';    // 向き
 const FIELD_SIZE = 'size';              // 大きさ
@@ -138,14 +144,14 @@ const CONTROL_LIST = 'list';
 const CONTORL_IMAGELIST = 'imagelist';
 
 const controlItems = [
-    { id : CONTROL_FIX,         text : '固定',             level : 0 },
-    { id : CONTROL_TEXT,        text : 'テキストボックス',  level : 1 },
-    { id : CONTROL_CHECK,       text : 'チェックボックス',  level : 2 },
-    { id : CONTORL_RADIO,       text : 'ラジオボタン',      level : 2 },
-    { id : CONTROL_DROPDOWN,    text : 'ドロップダウン',    level : 3 },
-    { id : CONTROL_LIST,        text : 'リストボックス',    level : 3 },
-    { id : CONTROL_SLIDER,      text : 'スライダー',        level : 4 },
-    { id : CONTORL_IMAGELIST,   text : 'イメージリスト',    level : 5, control : [FIELD_KIND] },
+    { id : CONTROL_FIX,         enabled : true,     text : '固定',             level : 0 },
+    { id : CONTROL_TEXT,        enabled : false,    text : 'テキストボックス',  level : 1 },
+    { id : CONTROL_CHECK,       enabled : false,    text : 'チェックボックス',  level : 2 },
+    { id : CONTORL_RADIO,       enabled : false,    text : 'ラジオボタン',      level : 2 },
+    { id : CONTROL_DROPDOWN,    enabled : false,    text : 'ドロップダウン',    level : 3 },
+    { id : CONTROL_LIST,        enabled : false,    text : 'リストボックス',    level : 3 },
+    { id : CONTROL_SLIDER,      enabled : false,    text : 'スライダー',        level : 4 },
+    { id : CONTORL_IMAGELIST,   enabled : false,    text : 'イメージリスト',    level : 5, control : [FIELD_KIND] },
 ]
 
 const controlHeadCaps = new Map();
@@ -185,6 +191,7 @@ let contentArea;
 let runLevel; 
 let maxRunLevel;
 let enableBatButton = false;
+let enableDogButton = false;
 
 class Dog extends TransitionSprite {
 
@@ -513,6 +520,7 @@ function createComponent(field, type, level = RUN_LEVEL_PLAY) {
 
     let component = null;
 
+
     if (level == RUN_LEVEL_PLAY) {
         switch (type) {
             case CONTROL_TEXT:
@@ -543,7 +551,8 @@ function createComponent(field, type, level = RUN_LEVEL_PLAY) {
                 break;
         }
     } else {
-        let items = controlItems.filter( item => { return ( (item.control?.includes(field) ?? true) && ((item.id == type) || level >= item.level)); });
+        // let items = controlItems.filter( item => { return ( (item.control?.includes(field) ?? true) && ((item.id == type) || level >= item.level)); });
+        let items = controlItems.filter( item => { return ( (item.control?.includes(field) ?? true) && ((item.id == type) || item.enabled)); });
         component = new DropDown(field, items, type, CLASS_SIMPLE);
     }
 
@@ -581,16 +590,16 @@ function clearControls(parent) {
 }
 
 function initializeControls () {
-    const param = application.getParam('c')?.toString().trim().toLocaleLowerCase() ?? 'ffff';
+    // const param = application.getParam('c')?.toString().trim().toLocaleLowerCase() ?? 'ffff';
 
-    controls.slice(0);
-    for (let [field, index] of Array.from(fieldAttributes.keys()).map((f, i) => {return [f, i]})) {
-        let type = application.getParam(field)?.toString().trim().toLocaleLowerCase();
-        if (index < param?.length && type == null) {
-            type = controlHeadCaps.get(param.charAt(index));
-        }
-        controls.push( { field : field, type : type ?? CONTROL_FIX } );
-    }
+    controls.splice(0);
+    // for (let [field, index] of Array.from(fieldAttributes.keys()).map((f, i) => {return [f, i]})) {
+    //     let type = application.getParam(field)?.toString().trim().toLocaleLowerCase();
+    //     if (index < param?.length && type == null) {
+    //         type = controlHeadCaps.get(param.charAt(index));
+    //     }
+    //     controls.push( { field : field, type : type ?? CONTROL_FIX } );
+    // }
     components.clear();
 }
 
@@ -664,27 +673,27 @@ console.log = function(...args){
 };
 
 
-document.addEventListener('keypress', keypress_ivent);
-function keypress_ivent(e) {
-	//いずれかのキーが押された時の処理
+// document.addEventListener('keypress', keypress_ivent);
+// function keypress_ivent(e) {
+// 	//いずれかのキーが押された時の処理
 
-    switch (e.code)
-    {
-        case 'KeyG':
-            debugButton_Click();
-            break;
-        case 'KeyP':
-            pauseButton_Click();
-            break;
-        case 'KeyD':
-            dogButton_Click();
-            break;
-        default:
-            break;
-    }
+//     switch (e.code)
+//     {
+//         case 'KeyG':
+//             debugButton_Click();
+//             break;
+//         case 'KeyP':
+//             pauseButton_Click();
+//             break;
+//         case 'KeyD':
+//             dogButton_Click();
+//             break;
+//         default:
+//             break;
+//     }
 
-	return false; 
-}
+// 	return false; 
+// }
 
 application.run().then((msg) => {
 
@@ -725,6 +734,7 @@ application.run().then((msg) => {
     let bg = application.getParam(PARAM_NAME_BG) || 'field';
     setBackground(bg);
 
+    UpdateButtonArea();
     changeMode(isEditMode(), true);
     application.debugOff();
 
@@ -784,28 +794,188 @@ application.run().then((msg) => {
 });
 
 
+function appendControl(field, rebuild = true)
+{
+    const index = controls.findIndex((c) => c.field == field)
+    if (index == -1 )
+    {
+        controls.push({ field : field, type : CONTROL_FIX });
+        if (rebuild) buildControls(controlArea, runLevel);
+    }
+    else 
+    {
+        if (confirm(`[${fieldAttributes.get(field).text}]のコントロールはもう存在します。\n画面から消しますか？`))
+        {
+            controls.splice(index, 1);
+            if (rebuild) buildControls(controlArea, runLevel);
+        }
+    }
+}
+
+
+function commandButton_Click() {
+
+    const commandText = document.querySelector(HTML_ID_COMMAND_TEXT);
+    
+    const command = commandText.value.trim().toLocaleLowerCase();
+    console.log("コマンド入力", command);
+
+    // 両モード共通コマンド
+    switch (command)
+    {
+        case 'debug':
+            debugButton_Click();
+            break;
+        case 'mode':
+            changeMode(isPlayMode());
+            break;
+    }
+
+    // 編集モード中のコマンド
+    if (isEditMode())
+    {
+        switch (command)
+        {
+            case 'play':
+            case 'go':
+            case 'run':
+                changeMode(false);
+                break;
+            case 'clear':
+                initializeControls();
+                buildControls(controlArea, runLevel);
+                break;
+            case FIELD_DIRECTION:
+            case 'dir':
+            case 'muki':
+            case '向き':
+            case 'むき':
+            case '方向':
+                appendControl(FIELD_DIRECTION);
+                break;
+            case FIELD_SIZE:
+            case '大きさ':
+            case 'おおきさ':
+            case 'サイズ':
+            case 'さいず':
+                appendControl(FIELD_SIZE);            
+                break;
+            case FIELD_SPEED:
+            case 'スピード':
+            case 'すぴーど':
+            case '速さ':
+            case '早さ':
+            case 'はやさ':
+            case '速度':
+                appendControl(FIELD_SPEED);
+                break;
+            case FIELD_KIND:
+            case 'type':
+            case 'shurui':
+            case 'syurui':
+            case '種類':
+            case 'しゅるい':
+            case '形':
+            case 'かたち':
+                appendControl(FIELD_KIND);
+                break;
+            case 'all':
+                initializeControls();
+                for (let field of Array.from(fieldAttributes.keys()).map((f, i) => {return f})) {
+                    appendControl(field, false);
+                }
+                buildControls(controlArea, runLevel);
+                break;
+            case 'dogbutton':
+            case 'button':
+            case 'ボタン':
+                enableDogButton = true;
+                UpdateButtonArea();
+                break;
+            case 'batbutton':
+            case 'bat':
+            case 'バット':
+                if (enableDogButton) enableBatButton = true;
+                UpdateButtonArea();
+                break;
+            default:
+                break;
+        }
+
+    // 実行モード中のコマンド
+    } else {
+        switch (command)
+        {
+            case 'edit':
+                changeMode(true);
+                break;
+            case 'dog':
+            case 'go':
+            case 'run':
+                dogButton_Click();
+                break;
+            default:
+                break;
+        }
+    }
+    commandText.value = "";
+}
+
+
 function modeChangeButton_Click() {
 
     changeMode(isPlayMode())
 
 }
 
+function commandText_KeyPress(event)
+{
+    if (event.keyCode == 13)
+    {
+        event.preventDefault(); 
+        commandButton_Click();
+    }
+}
+
+function UpdateButtonArea()
+{
+    const CLASS_DOG_BUTTON_WITH_BAT_BUTTON = "dog-button-with-bat-button"
+
+    const buttonArea = document.querySelector(HTML_ID_BUTTON_AREA);
+    const dogButton = document.querySelector(HTML_ID_DOG_BUTTON);
+    const batButton = document.querySelector(HTML_ID_BAT_BUTTON);
+ 
+    if (enableDogButton)
+    {
+        dogButton.style.display = 'inline';
+    }
+    else 
+    {
+        dogButton.style.display = 'none';
+    }
+
+    if (enableDogButton && enableBatButton)
+    {
+        batButton.style.display = 'inline';
+        dogButton.classList.add(CLASS_DOG_BUTTON_WITH_BAT_BUTTON);
+    }
+    else 
+    {
+        batButton.style.display = 'none';
+        dogButton.classList.remove(CLASS_DOG_BUTTON_WITH_BAT_BUTTON);
+    }
+    buttonArea.style.display = 'flex';
+}
+
 // [編集][再生]モード変更
 function changeMode(editMode = false, first = false) {
 
-    const MODE_TEXT_EDIT = "編集中";
-    const MODE_TEXT_PLAY = "実行中";
+    const MODE_TEXT_EDIT = "EDIT";
+    const MODE_TEXT_PLAY = "PLAY";
 
     const CLASS_EDIT_MODE = 'edit-mode';
-    const CLASS_HEADER = '.header';
     const CLASS_LAYOUT = '.layout';
-    const CLASS_MODE_TEXT = '.mode-text';
-    const HTML_ID_BUTTON_AREA = '#buttonArea';
 
-    const HTML_ID_DOG_BUTTON = '#dogButton';
-    const HTML_ID_BAT_BUTTON = '#batButton';
-
-    const CLASS_DOG_BUTTON_WITH_BAT_BUTTON = "dog-button-with-bat-button"
 
     const CLASS_LIGHT_THEME = 'light-theme';
     const CLASS_DARK_THEME = 'dark-theme';
@@ -814,8 +984,10 @@ function changeMode(editMode = false, first = false) {
 
     const body = document.body;
     const layout = document.querySelector(CLASS_LAYOUT);
-    const modeText = document.querySelector(CLASS_MODE_TEXT);
-    const buttonArea = document.querySelector(HTML_ID_BUTTON_AREA);
+    const modeText = document.querySelector(HTML_ID_MODE_TEXT);
+    const commandText = document.querySelector(HTML_ID_COMMAND_TEXT);
+
+    commandText.value = "";
 
     mainScreen.clearSprites();
     dogCount = 0;
@@ -830,8 +1002,7 @@ function changeMode(editMode = false, first = false) {
         body.classList.add(CLASS_DARK_THEME);
         body.classList.remove(CLASS_LIGHT_THEME);
 
-        modeText.value = MODE_TEXT_EDIT;
-        buttonArea.style.display = 'none';
+        modeText.textContent = MODE_TEXT_EDIT;
 
     } else {
         runLevel = RUN_LEVEL_PLAY;
@@ -849,23 +1020,7 @@ function changeMode(editMode = false, first = false) {
             });
         }
 
-        modeText.value = MODE_TEXT_PLAY;
-
-        const dogButton = document.querySelector(HTML_ID_DOG_BUTTON);
-        const batButton = document.querySelector(HTML_ID_BAT_BUTTON);
-
-        if (enableBatButton)
-        {
-            batButton.style.display = 'inline';
-            dogButton.classList.add(CLASS_DOG_BUTTON_WITH_BAT_BUTTON);
-        }
-        else 
-        {
-            batButton.style.display = 'none';
-            dogButton.classList.remove(CLASS_DOG_BUTTON_WITH_BAT_BUTTON);
-        }
-
-        buttonArea.style.display = 'flex';
+        modeText.textContent = MODE_TEXT_PLAY;
 
     }
 
@@ -873,6 +1028,7 @@ function changeMode(editMode = false, first = false) {
     console.log(document.body.classList);
 
     buildControls(controlArea, runLevel);
+    UpdateButtonArea();
 
     if (isPlayMode) mainScreen.start();
     
