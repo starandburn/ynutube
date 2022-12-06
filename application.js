@@ -4,8 +4,8 @@
 class Application {
 
     // 公開定数
-    get ASPECT_RATIO_HD() { return (-9/16) };
-    get ASPECT_RATIO_SD() { return (-3/4) };
+    get ASPECT_RATIO_HD() { return (-9 / 16) };
+    get ASPECT_RATIO_SD() { return (-3 / 4) };
 
     // 公開プロパティ
     get isDebugMode() { return this._debugMode; }
@@ -16,14 +16,14 @@ class Application {
     _debugMode = false;
 
     // コンストラクタ―
-	constructor(debugMode = false) {
+    constructor(debugMode = false) {
         this._debugMode = debugMode;
         this._debugMode = this.getParam('debug') ? true : debugMode;
-	}
+    }
 
     // 公開メソッド
-    getRandom(min, max) { return  Math.floor(Math.random() * (max + 1 - min)) + min; }
-    getRandomSelect(...theArgs){
+    getRandom(min, max) { return Math.floor(Math.random() * (max + 1 - min)) + min; }
+    getRandomSelect(...theArgs) {
         return arguments[this.getRandom(0, arguments.length - 1)];
     }
     log(...theArgs) {
@@ -39,7 +39,7 @@ class Application {
         let param;
         if (!results) {
             param = null;
-        } else if (!results[2]) { 
+        } else if (!results[2]) {
             param = '';
         } else {
             param = decodeURIComponent(results[2].replace(/\+/g, ' '));
@@ -57,33 +57,33 @@ class Application {
     debugOff() { this.setDebugMode(false); }
     debugToggle() { this.setDebugMode(!this.isDebugMode); }
 
-    onChangeDebugMode = (d) => {}; 
+    onChangeDebugMode = (d) => { };
     setDebugMode(value) {
         console.log('デバッグモード切替:', value ? 'on' : 'off');
         this._debugMode = value;
         this.onChangeDebugMode(value);
     }
 
-	prepareImage(id, url) {
-		const image = new Image();
-		const promise = new Promise((resolve) => {
-			image.addEventListener('load', (e) => {
-				this._images.set(id, image);
-                resolve(`画像ファイル${url}'をロードしました。`);                
-			});
-			image.addEventListener('error', (e) => {
-				this._images.set(id, null);
-				resolve(`画像ファイル'${url}'のロードに失敗しました。`);
-			});
-		});
-		image.src = url;
-		this._promises.push(promise);
-	}
+    prepareImage(id, url) {
+        const image = new Image();
+        const promise = new Promise((resolve) => {
+            image.addEventListener('load', (e) => {
+                this._images.set(id, image);
+                resolve(`画像ファイル${url}'をロードしました。`);
+            });
+            image.addEventListener('error', (e) => {
+                this._images.set(id, null);
+                resolve(`画像ファイル'${url}'のロードに失敗しました。`);
+            });
+        });
+        image.src = url;
+        this._promises.push(promise);
+    }
 
     async loadImage(id, url) {
         const image = new Image();
         image.src = url;
-		await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             image.addEventListener('load', (e) => {
                 resolve(`画像ファイル'${url}'をロードしました。`);
             });
@@ -96,8 +96,8 @@ class Application {
     }
 
     getImage(id) {
-		return this._images.get(id) || null;
-	}
+        return this._images.get(id) || null;
+    }
 
     run() {
         const loadWindowPromise = new Promise((resolve) => {
@@ -105,8 +105,8 @@ class Application {
                 resolve('画面をロードしました。');
             });
         });
-		return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => resolves).bind(this));
-	}
+        return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => resolves).bind(this));
+    }
 
 }
 
@@ -141,8 +141,8 @@ class ActiveCanvas extends Canvas {
     }
 
     // 公開デリゲート
-    onUpdate = (stepFrame) => {};   // 更新処理
-    onDraw = (ctx, target, debug) => {};           // 描画処理 
+    onUpdate = (stepFrame) => { };   // 更新処理
+    onDraw = (ctx, target, debug) => { };           // 描画処理 
     drawOrders = [];                // 描画順
 
     // 公開メソッド
@@ -162,7 +162,7 @@ class ActiveCanvas extends Canvas {
 
     sortByDrawOrder(reverse = false, nonDestructive = false, ignoreLayer = false) {
 
-        const sprites = nonDestructive ? this.sprites.slice() : this.sprites; 
+        const sprites = nonDestructive ? this.sprites.slice() : this.sprites;
         sprites.sort((s1, s2) => {
             for (let order of [(s) => ignoreLayer ? 0 : -s.layer, ...this.drawOrders, (s) => s.serialNo]) {
                 if (order) {
@@ -189,7 +189,7 @@ class ActiveCanvas extends Canvas {
 
             const rect = new Rectangle();
             rect.fromArray(sprite.getRectangle());
-            
+
             if (rect.contains(x, y)) {
                 if (!strict || !canvas.useDoubleBuffer) return sprite;
 
@@ -213,14 +213,14 @@ class ActiveCanvas extends Canvas {
         this.onDraw(ctx, this, this.isDebugMode);
         if (this.isDebugMode) this._fpsText.draw(ctx, 0, 0);
         this.endRender();
-    
+
     }
-    
+
     start() {
         this.stop();
 
         while (this.clientWidth != this.width) {
-            this.beginRender(false,false);
+            this.beginRender(false, false);
         }
 
         this._running = true;
@@ -285,11 +285,11 @@ class ActiveCanvas extends Canvas {
         }
 
         if (stepFrame > 0) {
-    
+
             const fps = Math.round(1 / elapsedSec);
 
             this.onUpdate(stepFrame);
-    
+
             for (let sprite of this.sprites) {
 
                 if (sprite.disposed) {
@@ -301,15 +301,15 @@ class ActiveCanvas extends Canvas {
                     sprite.update(stepFrame);
                 }
             }
-    
+
             this._fpsText.text = `${fps.toFixed(2)}/${this.maxFps.toFixed(0)}fps(${stepFrame - 1} frame skip)`;
             this.render(this.isDebugMode);
-        
+
         }
 
         if (this._running) requestAnimationFrame(this._frameLoop.bind(this));
     }
-    
+
 }
 
 
@@ -326,7 +326,7 @@ class Timer {
 
     _action = () => { };
 
-    constructor(interval, count, action){
+    constructor(interval, count, action) {
 
         this._interval = interval;
         this._count = Math.max(0, count ?? 0);
@@ -354,7 +354,7 @@ class Timer {
         } else {
             this.stop();
         }
-    }    
+    }
 
     resume() {
         this._paused = false;
@@ -380,6 +380,6 @@ class Timer {
                 this.stop();
             }
         }
-   }
+    }
 
 }

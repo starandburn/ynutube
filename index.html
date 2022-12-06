@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja-jp">
+
 <head>
     <meta charset="UTF-8">
     <title>YnuTube</title>
@@ -8,22 +9,26 @@
     <script src="main.js"></script>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
+
 <body>
     <div class="layout">
         <header class="header">
-            <div class="header-left">
-                <div class="barger-menu" onClick="onHanbarger_Click();"><div class="barger-menu-line"></div></div>
+            <div class="header-left  disabled-select">
+                <div class="barger-menu" onClick="onHanbarger_Click();">
+                    <div class="barger-menu-line"></div>
+                </div>
                 <div class="yt-logo">
                     <div id="modeChangeButton" class="mode-change-button" onClick="modeChangeButton_Click();">
                         <div class="yt-logo-image"></div><span id="modeText" class="mode-text"></span>
                     </div>
                 </div>
             </div>
-            <div class="header-center">
+            <div class="header-center  disabled-select">
                 <div class="command-area">
-                    <input type="text" id="commandText" class="command-text" onKeyPress="commandText_KeyPress(event);">
+                    <input type="text" id="commandText" class="command-text" autofocus placeholder="コマンド"
+                        onKeyPress="commandText_KeyPress(event);">
                     <!-- </div> -->
-                    <button class="command-button" id="commandButton" onClick="commandButton_Click();">🔨</button>
+                    <button class="command-button" id="commandButton" onClick="commandButton_Click();">📣</button>
                 </div>
             </div>
             <div class="header-right">
@@ -31,12 +36,12 @@
                     <p class="header-text-sub">Japan International Institute of Cybernetics</p>
                     <p class="header-text">日本国際工科専門学校</p>
                 </div>
-                <img class="nkk-logo" src="img/nkk-logo.png">
+                <a href="https://www.nkk.ac.jp" target="_blank"><img class="user-icon" src="img/nkk-logo.png"></a>
             </div>
         </header>
-        <div id="content" class="content disabled-select">
+        <div id="content" class="content">
             <div class="main-panel">
-                <div class="screen-area">
+                <div class="screen-area disabled-select">
                     <div id="infoArea" class="info-area">
                         <p class="select-bg-button">
                             <a onClick="application.openWindow('selectbg.html', 'dataTransfer');">
@@ -47,18 +52,14 @@
                     <canvas id="screen" class="screen-canvas"></canvas>
                 </div>
                 <div class="title-area">
-                    <h3>【体験学習】ユーザーインターフェースを作ってみよう！</h3>
+                    <div class="title-text">【システムエンジニア体験】ユーザーインターフェースを作ってみた。</div>
                 </div>
-                <div id="buttonArea" class="button-area">
-                    <button id="dogButton" class="dog-button" onClick="dogButton_Click();">🐕<span id="dogCount" class="dog-count""></span></button>
-                    <button id="batButton" class="bat-button" onClick="batButton_Click();">🦇</button>
-                </div>
-                <div id="develop">
-                    <button id="debugButton" onClick="debugButton_Click();">デバッグモード</button>
-                    <button id="pauseButton" onClick="pauseButton_Click();">一時停止/解除</button>
+                <div class="bottom-panel">
+                    <div id="channelArea" class="channel-area"><img class="user-icon" src="img/nkk-logo.png"><div><p>作って学ぶ体験学習</p><p class="status">チャレンジしてみよう！</p></div></div>
+                    <div id="buttonArea" class="button-area"></div>
                 </div>
             </div>
-            <div class="side-panel">
+            <div class="side-panel  disabled-select">
                 <div id="controlArea" class="control-area"></div>
             </div>
         </div>
@@ -72,7 +73,8 @@
         </div>
     </div>
     <div id="logArea" class="log-area">
-        <p>ログ</p>
+        <p>---- デバッグログ ----</p>
     </div>
 </body>
+
 </html>

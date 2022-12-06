@@ -69,7 +69,7 @@ class Component {
     }
 
     get value() { return null; }
-    set value(value) {}
+    set value(value) { }
 
     get text() { return (this.value?.toString().trim().toLowerCase() ?? ''); }
     get number() {
@@ -82,6 +82,34 @@ class Component {
         this.value = value;
     }
 
+}
+
+class Button extends Component {
+
+    button = null;
+    _textNode = null;
+    _text = null;
+    _onClick = () => { };
+
+    constructor(id, text, onClick, styleClass) {
+        super(id, styleClass);
+        this.button = this._createElement('button', styleClass);
+        if (onClick != null && onClick != undefined) {
+            this.button.setAttribute('onClick', onClick);
+        }
+        this._text = text;
+        this._textNode = this._createTextNode();
+        this._textNode.textContent = this._text?.toString().trim() ?? '';
+        this.button.appendChild(this._textNode);
+        this._appendChild(this.button);
+    }
+    get text() {
+        return this._text;
+    }
+    set text(value) {
+        this._text = value;
+        this._textNode.textContent = this._text?.toString().trim() ?? '';
+    }
 }
 
 class FixedLabel extends Component {
@@ -107,7 +135,7 @@ class FixedLabel extends Component {
         this.value = value;
     }
 
-    get text() { 
+    get text() {
         return this._text;
     }
     set text(value) {
@@ -135,25 +163,37 @@ class FixedLabel extends Component {
 
 class TextBox extends Component {
 
-    _textBox = null;
+    textBox = null;
     _items = null;
+    _placeholder = null;
 
     constructor(name, value, items, styleClass) {
         super(name, styleClass)
-        this._textBox = this._createInput('text');
-        this._textBox.value = value ?? '';
+        this.textBox = this._createInput('text');
+        this.textBox.value = value ?? '';
         this._items = items;
-        this._appendChild(this._textBox);
+        this._appendChild(this.textBox);
+    }
+
+    get placeholder() {
+        return this._placeholder ?? '';
+    }
+    set placeholder(value) {
+        this._placeholder = value;
+        if (this.textBox instanceof HTMLInputElement) {
+            let text = this._items?.find((x) => x?.id == value)?.command ?? null;
+            this.textBox.setAttribute('placeholder', this._placeholder ?? '');
+        }
     }
 
     get value() {
-        return this._textBox?.value;
+        return this.textBox?.value;
     }
 
     set value(value) {
-        if (this._textBox instanceof HTMLInputElement) {
+        if (this.textBox instanceof HTMLInputElement) {
             let text = this._items?.find((x) => x?.id == value)?.command ?? null;
-            this._textBox.value = text ?? value;
+            this.textBox.value = text ?? value;
         }
     }
 
@@ -163,7 +203,7 @@ class RadioButtons extends Component {
 
     _radioButtons = [];
 
-    constructor(name, options, defaultValue, styleClass){
+    constructor(name, options, defaultValue, styleClass) {
         super(name, styleClass)
 
         this._radioButtons = [];
@@ -204,7 +244,7 @@ class RadioButtons extends Component {
 }
 
 
-class CheckBox extends Component{
+class CheckBox extends Component {
 
     _checkBox = null;
     _defaultValue = null;
@@ -234,7 +274,7 @@ class CheckBox extends Component{
     }
 
     get value() {
-        return (this._checkBox.checked) ? this._checkedValue : this._defaultValue; 
+        return (this._checkBox.checked) ? this._checkedValue : this._defaultValue;
     }
 
     set value(value) {
@@ -248,7 +288,7 @@ class DropDown extends Component {
     _selectBox = null;
     _options = [];
 
-    constructor(name, listItems, defaultValue, styleClass){
+    constructor(name, listItems, defaultValue, styleClass) {
         super(name, styleClass)
 
         this._selectBox = this._createElement('select');
@@ -282,7 +322,7 @@ class ListBox extends DropDown {
 
     _onDoubleClick = () => { };
 
-    constructor(name, listItems, defaultValue, styleClass, size, onDoubleClick){
+    constructor(name, listItems, defaultValue, styleClass, size, onDoubleClick) {
         super(name, listItems, defaultValue, styleClass)
         this._selectBox.size = size || listItems.length;
         this._onDoubleClick = onDoubleClick;
@@ -297,7 +337,7 @@ class Slider extends Component {
     _range = null;
     _values = null;
 
-    constructor(name, values, defaultValue, styleClass){
+    constructor(name, values, defaultValue, styleClass) {
         super(name, styleClass)
 
         this._values = values.slice();
@@ -346,10 +386,10 @@ class ImageList extends Component {
     _list = null;
     _images = [];
     _value = null;
-    _onDoubleClick = () => {};
+    _onDoubleClick = () => { };
 
-    constructor(name, listItems, defaultValue, styleClass, onDoubleClick){
-    
+    constructor(name, listItems, defaultValue, styleClass, onDoubleClick) {
+
         super(name, styleClass)
 
         this._list = this._createElement('ul');
@@ -362,7 +402,7 @@ class ImageList extends Component {
 
             image.src = item?.src;
             image.id = item?.id;
-            image.alt = item?.text;           
+            image.alt = item?.text;
 
             image.addEventListener('click', this._onClick.bind(this));
             image.addEventListener('dblclick', this._onDoubleClick?.bind(this));
