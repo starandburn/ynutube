@@ -18,9 +18,7 @@
                     <div class="barger-menu-line"></div>
                 </div>
                 <div class="yt-logo">
-                    <div id="modeChangeButton" class="mode-change-button" onClick="modeChangeButton_Click();">
-                        <div class="yt-logo-image"></div><span id="modeText" class="mode-text"></span>
-                    </div>
+                    <div class="yt-logo-image"></div><span id="locationText" class="location-text">NKK</span>
                 </div>
             </div>
             <div class="header-center  disabled-select">
@@ -55,7 +53,15 @@
                     <div class="title-text">【システムエンジニア体験】ユーザーインターフェースを作ってみた。</div>
                 </div>
                 <div class="bottom-panel">
-                    <div id="channelArea" class="channel-area"><img class="user-icon" src="img/nkk-logo.png"><div><p>作って学ぶ体験学習</p><p class="status">チャレンジしてみよう！</p></div></div>
+                    <div id="modeArea" class="mode-area">
+                        <div id="modeChangeButton" class="mode-change-button" onClick="modeChangeButton_Click();">
+                            <img class="user-icon" src="img/mode-button.png">
+                        </div>
+                        <div id="modeInfo" class="mode-info">
+                            <p id="modeText" class="mode-text"></p>
+                            <p id="modeDescription" class="mode-description">作ったものを動かしてみよう！</p>
+                        </div>
+                    </div>
                     <div id="buttonArea" class="button-area"></div>
                 </div>
             </div>

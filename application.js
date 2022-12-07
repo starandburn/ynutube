@@ -191,9 +191,9 @@ class ActiveCanvas extends Canvas {
             rect.fromArray(sprite.getRectangle());
 
             if (rect.contains(x, y)) {
-                if (!strict || !canvas.useDoubleBuffer) return sprite;
+                if (!strict || !this.useDoubleBuffer) return sprite;
 
-                const ctx = canvas.getTemporary();
+                const ctx = this.getTemporary();
                 sprite.render(ctx, false)
                 const alpha = ctx.getImageData(x, y, 1, 1).data[3];
 

@@ -101,7 +101,7 @@ body.dark-theme {
     justify-content: space-between;
 }
 
-.channel-area {
+.mode-area {
     width: fit-content;
     display: flex;
     flex-direction: row;
@@ -109,22 +109,26 @@ body.dark-theme {
     cursor: auto;
 }
 
-.channel-area .user-icon {
+.mode-area .user-icon {
     margin-right: 16px;
-    height: 40px;
-    width: 40px;
+    height: 48px;
+    width: 48px;
 }
 
-.channel-area p {
+.mode-area p {
     white-space: nowrap;
 }
 
-.status {
+.mode-text {
+    font-size: large;
+}
+
+.mode-description {
     font-size: small;
     color: var(--run-button-text-color);
 }
 
-.dark-theme .status {
+.dark-theme .mode-description {
     color: var(--dark-run-button-text-color);
 }
 
@@ -226,7 +230,7 @@ body.dark-theme {
     background-image: url('../img/yt-logo-dark.png');
 }
 
-.mode-text {
+.location-text {
     font-size: 10px;
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
