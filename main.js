@@ -105,6 +105,7 @@ const speedItems = [ // 速度
     { id: SPEED_FAST, text: '速い', command: COMMAND_SPEED_FAST, useOption: true, useList: false, useRandom: true, useCheck: true },
 ]
 function initializeSpeedItems() {
+
     const names = getCommandItems(FIELD_SPEED);
     for (let i = SPEED_MIN; i <= SPEED_MAX; i++) {
         let listText = `速度${i}`;
@@ -112,6 +113,7 @@ function initializeSpeedItems() {
         if (description != null) listText += `(${description})`;
         speedItems.push({ id: i, text: listText, command: null, useOption: false, useList: true, useRandom: true });
     }
+    console.log('速度テーブル初期化:', speedItems);
 }
 
 const kindItems = [];   // 種類
@@ -121,6 +123,7 @@ function initializeKindItems() {
         const imageId = `dog${tileNo}`;
         kindItems.push({ id: tileNo, text: `犬${tileNo}`, src: `img/${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true, default: (tileNo == DOG_IMAGE_NO_MIN), useCheck: (tileNo == DOG_IMAGE_NO_MAX) });
     }
+    console.log('種類テーブル初期化:', kindItems);
 }
 
 const extraKinds = ['hotdog', 'mame', 'siro', 'wanwan'];
@@ -132,6 +135,7 @@ function addExtraKinds() {
         tileNo++;
         kindItems.push({ id: tileNo, text: `特殊犬${imageId}`, src: `img/@dog${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true });
     }
+    console.log('種類テーブル特殊犬追加', kindItems);
 }
 
 function getItemText(items, id) {
@@ -165,8 +169,7 @@ const fieldAttributes = new Map([
 
 ]);
 
-
-const CONTROL_FIX = 'fix';
+// const CONTROL_FIX = 'fix';
 const CONTROL_TEXT = 'text';
 const CONTROL_CHECK = 'check';
 const CONTORL_RADIO = 'radio';
@@ -186,54 +189,66 @@ const controlItems = [
     { id: CONTORL_IMAGELIST, text: '🖼イメージリスト', control: [FIELD_KIND] },
 ];
 
-function splitTextBySpace(command) {
-    return command.replace(/[　\t]/g, ' ').split(' ').map(x => x.trim()).filter(x => x.length > 0);
+function ToSplitedArray(text, log = true) {
+    const result = text.replace(/[　\t]/g, ' ').split(' ').map(x => x.trim()).filter(x => x.length > 0);
+    if (log && result != text) console.log('文字列分割:', text, '->', result);
+    return result;
 }
 
 const tlanslateTable = [
-    [FIELD_DIRECTION, 'dir', 'muki', '向き', 'むき', 'ムキ', 'ﾑｷ', 'houkou', '方向', 'ほうこう', 'ホウコウ', 'ﾎｳｺｳ'],
-    [FIELD_SIZE, 'サイズ', 'ｻｲｽﾞ', 'さいず', '大きさ', 'おおきさ', 'saizu', 'ookisa'],
-    [FIELD_SPEED, 'スピード', 'ｽﾋﾟｰﾄﾞ', '速さ', '早さ', 'はやさ', 'すぴーど', 'ハヤサ', 'ﾊﾔｻ', 'hayasa', 'supido'],
-    [FIELD_KIND, 'タイプ', 'ﾀｲﾌﾟ', '種類', 'しゅるい', 'シュルイ', 'ｼｭﾙｲ', '画像', 'がぞう', 'ガゾウ', 'ｶﾞｿﾞｳ', '犬種', 'けんしゅ', 'ケンシュ', 'ｹﾝｼｭ', 'shurui', 'syurui', 'keshu', 'kensyu'],
+    [FIELD_DIRECTION, 'dir', 'muki', '向き', 'むき', 'houkou', '方向', 'ほうこう'],
+    [FIELD_SIZE, 'サイズ', '大きさ', 'おおきさ', 'saizu', 'ookisa'],
+    [FIELD_SPEED, 'スピード', '速さ', '早さ', 'はやさ', 'hayasa', 'supido'],
+    [FIELD_KIND, 'type', 'タイプ', '種類', 'しゅるい', '画像', 'がぞう', '犬種', 'けんしゅ', 'shurui', 'syurui', 'keshu', 'kensyu'],
     [COMMAND_PLAY, 'playmode', COMMAND_RUN, COMMAND_GO, '再生', '再生モード', '実行', '始め', 'はじめ', '動け', 'うごけ'],
     [COMMAND_EDIT, 'editmode', '編集', '編集モード', 'make', '作る', '直す', 'つくる', 'なおす'],
-    [COMMAND_DEBUG, 'デバッグ', 'ﾃﾞﾊﾞｯｸﾞ'],
-    [COMMAND_DOG, '犬', 'いぬ', 'イヌ', 'ｲﾇ', '走れ', 'はしれ'],
-    [CONTROL_TEXT, 'textbox', 'input', 'テキストボックス', 'ﾃｷｽﾄﾎﾞｯｸｽ'],
-    [CONTROL_CHECK, 'checkbox', 'チェックボックス', 'ﾁｪｯｸﾎﾞｯｸｽ', 'チェック', 'ﾁｪｯｸ'],
-    [CONTORL_RADIO, 'radiobutton', 'option', 'optionbox', 'ラジオボタン', 'ラジオ', 'ﾗｼﾞｵﾎﾞﾀﾝ', 'ﾗｼﾞｵ', 'オプション', 'ｵﾌﾟｼｮﾝ'],
-    [CONTROL_DROPDOWN, 'dropdownbox', 'dropdownlist', 'combobox', 'combo', 'ドロップダウン', 'ﾄﾞﾛｯﾌﾟﾀﾞｳﾝ', 'ドロップダウンリスト', 'ﾄﾞﾛｯﾌﾟﾀﾞｳﾝﾘｽﾄ'],
-    [CONTROL_LIST, 'listbox', 'リストボックス', 'ﾘｽﾄﾎﾞｯｸｽ', '一覧', 'リスト', 'ﾘｽﾄ'],
-    [CONTROL_SLIDER, 'srider', 'trackbar', 'スライダー', 'トラックバー', 'ｽﾗｲﾀﾞｰ', 'ﾄﾗｯｸﾊﾞｰ'],
-    [CONTORL_IMAGELIST, 'image', 'イメージリスト', 'ｲﾒｰｼﾞﾘｽﾄ', '画像リスト', '画像一覧', '画像ﾘｽﾄ', 'イメージ', 'ｲﾒｰｼﾞ'],
-    [COMMAND_BUTTON, 'ボタン', 'botan', 'btn', 'buton', 'buttn', 'buttan', 'ﾎﾞﾀﾝ'],
+    [COMMAND_DEBUG, 'デバッグ'],
+    [COMMAND_DOG, '犬', 'いぬ', '走れ', 'はしれ'],
+    [CONTROL_TEXT, 'textbox', 'input', 'テキストボックス'],
+    [CONTROL_CHECK, 'checkbox', 'チェックボックス', 'チェック'],
+    [CONTORL_RADIO, 'radiobutton', 'option', 'optionbox', 'ラジオボタン', 'ラジオ', 'オプション'],
+    [CONTROL_DROPDOWN, 'drop', 'ドロップ', 'dropdownbox', 'dropdownlist', 'combobox', 'combo', 'ドロップダウン', 'ドロップダウンリスト'],
+    [CONTROL_LIST, 'listbox', 'リストボックス', '一覧', 'リスト'],
+    [CONTROL_SLIDER, 'srider', 'trackbar', 'スライダー', 'トラックバー'],
+    [CONTORL_IMAGELIST, 'image', 'イメージリスト', '画像リスト', '画像一覧', 'イメージ'],
+    [COMMAND_BUTTON, 'ボタン', 'botan', 'btn', 'buton', 'buttn', 'buttan'],
     [COMMAND_CLEAR_BUTTON, 'clear button', 'clear botan', 'clear btn', 'clearbotan', 'clearbtn'],
     [COMMAND_CLEAR, COMMAND_RESET],
-    [COMMAND_CLICK, 'クリック', 'くりっく', 'ｸﾘｯｸ', 'mouse', 'マウス', 'まうす', 'ﾏｳｽ', 'touch', 'タッチ', 'たっち', 'ﾀｯﾁ'],
-    [COMMAND_RANDOM, 'ランダム', 'らんだむ', 'rand', 'rnd', '？', '?'],
+    [COMMAND_CLICK, 'クリック', 'mouse', 'マウス', 'touch', 'タッチ'],
+    [COMMAND_RANDOM, 'ランダム', 'rand', 'rnd', '？', '?'],
 ];
 
-function normalizeText(text) {
-    return text?.trim().toLocaleLowerCase() ?? '';
+function normalizeText(text, log = true) {
+    const result = new StringTranslator(text).compressSpace().toKatakanaFromHiragana().toNarrowFromWideAscii().toNarrowFromWideKatakana().text;
+    if (log && result != text) console.log('文字列正規化:', text, '->', result);
+    return result;
 }
 
-function translateCommand(source) {
+function translateCommand(source, log = true) {
 
-    const command = normalizeText(source);
+    const command = normalizeText(source, false);
+    let result;
 
-    for (let group of tlanslateTable) {
-        const result = normalizeText(group[0]);
-        for (let i = 0; i < group.length; i++) {
-            if (group[i] == command) return result;
+    try {
+        for (let group of tlanslateTable) {
+            result = normalizeText(group[0]);
+            for (let i = 0; i < group.length; i++) {
+                if (normalizeText(group[i], false) == command) return result;
+            }
         }
+        result = command;
+        return result;
+    } finally {
+        if (log && source != result) console.log('コマンド変換:', source, '->', result);
     }
-    return command;
 }
 
 ResetControlItemsEnabled();
 function ResetControlItemsEnabled() {
+    console.log('使用可能コントロール初期化');
     for (let item of controlItems) {
         item.enabled = (item.id == CONTROL_TEXT);
+        console.log(`[${item.id}]${item.text}:`, item.enabled ? '使用可' : '使用不可');
     }
 }
 
@@ -249,18 +264,16 @@ function initializeControlHeadCaps() {
             }
         }
     }
+    console.log('コントロール頭文字テーブル初期化:', controlHeadCaps);
 }
 
 const controls = [];
 const buttons = [];
 
-function initializeButtons() {
-    buttons.splice(0);
-}
-initializeButtons();
 function ClearButtons() {
-    initializeButtons();
-    buildButtons();
+    console.log('ボタン全消去');
+    buttons.splice(0);
+    buildButtons(currentMode);
 }
 
 const shadow = new ShadowTile();
@@ -405,10 +418,12 @@ class Dog extends TransitionSprite {
 
 // [一時停止]ボタン
 function pauseButton_Click() {
+    console.log('イベント:', '[一時停止ボタン]マウスクリック')
     doPauseCommand();
 }
 // [一時停止]コマンド
 function doPauseCommand() {
+    console.log('コマンド実行:', '一時停止');
     if (isPausing) {
         isPausing = false;
         mainScreen.resume();
@@ -420,13 +435,15 @@ function doPauseCommand() {
     }
 }
 
-// [デバッグモード]ボタン
-function debugButton_Click() {
-    doDebugCommand();
-}
+// // [デバッグモード]ボタン
+// function debugButton_Click() {
+//     console.log('イベント:', '[デバッグモード切替ボタン]マウスクリック')
+//     doDebugCommand();
+// }
 
 // [デバッグ]コマンド
 function doDebugCommand() {
+    console.log('コマンド実行:', 'デバッグモード切替');
     application.debugToggle();
 }
 
@@ -437,10 +454,10 @@ function setBackground(id) {
         if (img != null) resolve();
         const url = `img/${id}.png`;
         application.loadImage(id, url).then((msg) => {
-            console.log('背景画像読込完了', url);
+            console.log('背景画像変更:', `[${id}]`, url);
             img = application.getImage(id);
         }).catch((msg) => {
-            console.log('setBackground', msg);
+            console.log('エラー:', '背景画像読込失敗', msg);
             img = null;
         }).finally(() => {
             resolve();
@@ -460,14 +477,13 @@ function loadDogTile(tileNo) {
 
     dogTiles.set(tileNo, new DrawingTile(256, 256));
     application.loadImage(id, src).then((msg) => {
-        console.log('loadDogTile', msg);
         const tile = new ImageTile(application.getImage(id), 0, 0, 0, 0, true, true);
         dogTiles.set(tileNo, tile);
 
         for (let dog of mainScreen.sprites.filter((x) => x instanceof Dog)) {
             if (dog.kind == tileNo) {
                 dog.refreshTile();
-                console.log('loadDogTile', dog.tag, '画像更新');
+                console.log('犬画像読込', `[${tileNo}]`, id);
             }
         }
     });
@@ -482,7 +498,8 @@ function appearDog(x, y, kind, direction, size, speed) {
 
     const dog = new Dog(mainScreen, dogTiles, kind, 0, 0, 0, 0, 0, application.getRandom(0, DOG_PATTERN_COUNT - 1));
 
-    dog.tag = `犬${++dogCount}`;
+    dogCount++;
+    dog.tag = `DOG_${dogCount.toString().padStart(4, '0')}`;
 
     dog.direction = getFieldValue(FIELD_DIRECTION, direction);
     dog.size = getFieldValue(FIELD_SIZE, size);
@@ -499,43 +516,26 @@ function appearDog(x, y, kind, direction, size, speed) {
 
     updateDogCount();
 
-    console.log('appearDog', dog.tag, getItemText(kindItems, dog.kind), dog.x, dog.y, getItemText(directionItems, dog.direction), getItemText(sizeItems, dog.size), getItemText(speedItems, dog.speed));
+    console.log('犬を表示:', `[${dog.tag}]`, `座標:(${dog.x}, ${dog.y})`, `種類:${getItemText(kindItems, dog.kind)}`, getItemText(directionItems, dog.direction), getItemText(sizeItems, dog.size), getItemText(speedItems, dog.speed));
 
     return dog;
 
 }
 
 function updateDogCount() {
-
+    console.log('総数表示:', dogCount);
     const CLASS_DOG_COUNT = '.dog-count';
-    // const countLabel = document.querySelector(HTML_ID_DOG_COUNT);
-    // if (countLabel == undefined || countLabel == null) return;
-    // countLabel.textContent = dogCount;
-
     for (let countLabel of document.querySelectorAll(CLASS_DOG_COUNT)) {
         if (countLabel == undefined || countLabel == null) continue;
         countLabel.textContent = dogCount;
     }
-
 }
-
-// [ドッグ]ボタン
-function dogButton_Click() {
-    doDogCommand();
-}
-
-// [ドッグ]コマンド
-function doDogCommand() {
-    if (isEditMode()) return;
-    if (isPausing) return;
-    appearDog();
-}
-
 
 let components = new Map();
 
 // 各フィールドの値をコントロールに設定
 function setFieldValue(field, value) {
+    console.log('コントロール値設定:', `[${field}]`, value);
     getComponent(field)?.setValue(value);
 }
 
@@ -643,13 +643,13 @@ function createComponent(field, type, mode = MODE_PLAY) {
                 component = new DropDown(field, getListItems(field), getDefaultValue(field), CLASS_SIMPLE);
                 break;
             case CONTROL_LIST:
-                component = new ListBox(field, getListItems(field), getDefaultValue(field), CLASS_SIMPLE, null, () => { dogButton_Click(); });
+                component = new ListBox(field, getListItems(field), getDefaultValue(field), CLASS_SIMPLE, null, () => { doCommand(COMMAND_DOG); });
                 break;
             case CONTROL_SLIDER:
                 component = new Slider(field, getListItems(field), getDefaultValue(field), CLASS_COMPOSITE);
                 break;
             case CONTORL_IMAGELIST:
-                component = new ImageList(field, getListItems(field), getDefaultValue(field), CLASS_IMAGELIST, () => { dogButton_Click(); });
+                component = new ImageList(field, getListItems(field), getDefaultValue(field), CLASS_IMAGELIST, () => { doCommand(COMMAND_DOG); });
                 break;
             case CONTROL_FIX:
                 component = new FixedLabel(field, getDefaultValue(field), getFieldAttributes(field)?.items, CLASS_DISABLED);
@@ -666,7 +666,6 @@ function createComponent(field, type, mode = MODE_PLAY) {
     return component;
 
 }
-
 
 
 function createControl(component, level = MODE_PLAY, showLabel = true) {
@@ -701,23 +700,24 @@ function clearControls(parent) {
 }
 
 function initializeControls() {
-    // const param = application.getParam('c')?.toString().trim().toLocaleLowerCase() ?? 'ffff';
+    const param = application.getParam('c')?.toString().trim().toLocaleLowerCase() ?? 'tttt';
 
     controls.splice(0);
-    // for (let [field, index] of Array.from(fieldAttributes.keys()).map((f, i) => {return [f, i]})) {
-    //     let type = application.getParam(field)?.toString().trim().toLocaleLowerCase();
-    //     if (index < param?.length && type == null) {
-    //         type = controlHeadCaps.get(param.charAt(index));
-    //     }
-    //     controls.push( { field : field, type : type ?? CONTROL_FIX } );
-    // }
+    for (let [field, index] of Array.from(fieldAttributes.keys()).map((f, i) => {return [f, i]})) {
+        let type = application.getParam(field)?.toString().trim().toLocaleLowerCase();
+        if (index < param?.length && type == null) {
+            type = controlHeadCaps.get(param.charAt(index));
+        }
+        controls.push( { field : field, type : type ?? CONTROL_TEXT } );
+    }
     components.clear();
 }
 
 function textBox_KeyPress(event) {
 
     if (event.keyCode == 13) {
-        doDogCommand();
+        console.log('イベント:', '[項目テキストボックス]Enterキー入力');
+        doCommand(COMMAND_DOG);
         event.preventDefault();
     }
 
@@ -725,7 +725,7 @@ function textBox_KeyPress(event) {
 
 function buildControls(parent, mode = MODE_PLAY, updateType = false) {
 
-    console.log('buildControls', 'コントロール構築');
+    console.log('コントロールパネル構築:');
 
     if (updateType) {
         controls.splice(0);
@@ -739,7 +739,7 @@ function buildControls(parent, mode = MODE_PLAY, updateType = false) {
     clearControls(parent);
     for (let control of controls) {
 
-        console.log('buildControls', `[${fieldAttributes.get(control.field).text}]`, getItemText(controlItems, control.type));
+        console.log('コントロール配置:', `[${fieldAttributes.get(control.field).text}]`, getItemText(controlItems, control.type));
 
         if (control.field == FIELD_KIND && control.type == CONTORL_IMAGELIST) {
             addExtraKinds();
@@ -761,6 +761,7 @@ const application = new Application();
 
 
 function onHanbarger_Click() {
+    console.log('イベント:', '[メニューボタン]マウスクリック');
     doDebugCommand();
 }
 
@@ -780,9 +781,9 @@ console.log = function (...args) {
 };
 
 
-function UpdateLogArea(isDebugMode) {
+function UpdateLogArea(visible) {
     const logArea = document.querySelector(HTML_ID_LOG_AREA);
-    logArea.style.display = isDebugMode ? 'block' : 'none';
+    logArea.style.display = visible ? 'block' : 'none';
 }
 
 function UpdateMainScreen(isDebugMode) {
@@ -827,7 +828,7 @@ application.run().then((msg) => {
     let bg = application.getParam(PARAM_NAME_BG) || 'field';
     setBackground(bg);
 
-    buildButtons();
+    buildButtons(currentMode);
     changeMode(isEditMode(), true);
 
     application.debugOff();
@@ -908,7 +909,9 @@ function appendControl(field, rebuild = true) {
     }
 }
 
-function doClearCommand(mode) {
+function doResetCommand(mode) {
+
+    console.log('コマンド実行', mode == MODE_PLAY ? '実行状態リセット' : '設計内容リセット');
 
     if (mode == MODE_EDIT) {
         initializeControls();
@@ -922,14 +925,19 @@ function doClearCommand(mode) {
     }
 }
 
+function getCommandText() {
+
+    const textBox = document.querySelector(HTML_ID_COMMAND_TEXT);
+    if (!(textBox instanceof HTMLInputElement)) return '';
+
+    return textBox.value;
+
+}
+
 function commandButton_Click() {
 
-    console.log('コマンドボタン押下');
-
-    const tb = document.querySelector(HTML_ID_COMMAND_TEXT);
-    if (!(tb instanceof HTMLInputElement)) return;
-
-    doCommand(tb.value);
+    console.log('イベント:', '[コマンドボタン]マウスクリック');
+    doCommand(getCommandText());
 
 }
 
@@ -938,7 +946,7 @@ function doCommand(text) {
     const command = translateCommand(text);
     if (command.length == 0) return;
 
-    console.log('コマンド:', command);
+    console.log('コマンド実行:', command);
 
     // 両モード共通コマンド
     switch (command) {
@@ -949,7 +957,7 @@ function doCommand(text) {
             changeMode(isPlayMode());
             break;
         case COMMAND_CLEAR:
-            doClearCommand(currentMode);
+            doResetCommand(currentMode);
             break;
         case COMMAND_CLICK:
             enableClick = true;
@@ -1040,7 +1048,7 @@ function doRandomCommand() {
 
 function appearDogByCommand(command) {
 
-    let commands = splitTextBySpace(command);
+    let commands = ToSplitedArray(command);
 
     let appear = false;
     let direction = null;
@@ -1106,15 +1114,18 @@ function appearDogByCommand(command) {
 }
 
 function modeChangeButton_Click() {
+    console.log('イベント:', '[モード変更ボタン]マウスクリック');
 
     changeMode(isPlayMode())
 
 }
 
 function commandText_KeyPress(event) {
+
     if (event.keyCode == 13) {
+        console.log('イベント:', '[コマンドテキストボックス]Enterキー押下');
         event.preventDefault();
-        commandButton_Click();
+        doCommand(getCommandText());
     }
 }
 
@@ -1139,19 +1150,19 @@ function doButtonCommand(text = '') {
     UpdateButtonInfo();
     console.log('ボタン追加', text);
     buttons.push(text);
-    buildButtons();
+    buildButtons(currentMode);
 }
 
 function removeButton() {
     if (isPlayMode()) return;
     if (buttons.length > 0) buttons.pop();
     UpdateButtonInfo();
-    buildButtons();
+    buildButtons(currentMode);
 }
 
-function buildButtons() {
+function buildButtons(mode = MODE_PLAY) {
 
-    console.log('ボタン構築');
+    console.log('ボタンインターフェース構築:', mode == MODE_PLAY ? '実行モード' : '編集モード');
 
     const buttonArea = document.querySelector(HTML_ID_BUTTON_AREA);
     if (buttonArea == null) {
@@ -1160,7 +1171,7 @@ function buildButtons() {
     }
 
     clearChildElements(buttonArea);
-    if (isEditMode()) {
+    if (mode != MODE_PLAY) {
         clearChildElements(buttonArea);
         for (let i = 0; i < buttons.length; i++) {
             const text = buttons[i];
@@ -1168,6 +1179,7 @@ function buildButtons() {
             tb.placeholder = `ボタン${i + 1}`;
             buttonArea.appendChild(tb.htmlElement);
         }
+
     } else {
 
         let items = [];
@@ -1275,7 +1287,7 @@ function changeMode(editMode = false, first = false) {
     console.log('モード変更:', editMode ? `編集モード(${currentMode})` : '再生モード');
 
     buildControls(controlArea, currentMode, !first && !editMode);
-    buildButtons();
+    buildButtons(currentMode);
 
     if (isPlayMode) mainScreen.start();
 

@@ -167,11 +167,12 @@ class TextBox extends Component {
     _items = null;
     _placeholder = null;
 
-    constructor(name, value, items, styleClass) {
+    constructor(name, value, items, styleClass, placeholder) {
         super(name, styleClass)
         this.textBox = this._createInput('text');
         this.textBox.value = value ?? '';
         this._items = items;
+        this.placeholder = placeholder;
         this._appendChild(this.textBox);
     }
 

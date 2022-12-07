@@ -5,6 +5,7 @@
     'canvas.js',
     'sprite.js',
     'component.js',
+    'stringtranslator.js',
     'application.js',
 
 ].forEach((s) => {
