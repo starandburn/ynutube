@@ -9,7 +9,7 @@ const DOG_IMAGE_NO_MAX = 10;
 const DOG_PATTERN_COUNT = 20;
 
 // HTML 要素ID
-const HTML_ID_COMMAND_TEXT = "#commandText";
+const HTML_ID_COMMAND_TEXT = '#commandText';
 const HTML_ID_DOG_BUTTON = '#dogButton';
 const HTML_ID_BAT_BUTTON = '#batButton';
 const HTML_ID_BUTTON_AREA = '#buttonArea';
@@ -20,9 +20,10 @@ const HTML_ID_DOG_COUNT = '#dogCount';
 const HTML_ID_OVERLAY = '#windowOverlay';
 const HTML_ID_CONTROL_AREA = '#controlArea';
 const HTML_ID_SCREEN = '#screen';
-const HTML_ID_CONTENT = "#content";
-const HTML_ID_BUTTON_PLAY_AREA = "#buttonPlayArea";
-const HTML_ID_BUTTON_EDIT_AREA = "#buttonEditArea";
+const HTML_ID_CONTENT = '#content';
+const HTML_ID_BUTTON_PLAY_AREA = '#buttonPlayArea';
+const HTML_ID_BUTTON_EDIT_AREA = '#buttonEditArea';
+const HTML_ID_BUTTON_COMMAND = 'buttonCommand';
 
 // ユーザーが入力できるフィールド項目
 const FIELD_DIRECTION = 'direction';    // 向き
@@ -272,7 +273,7 @@ let viewDogCount = 0;
 let hideDogCount = 0;
 let isPausing = false;
 
-const PARAM_NAME_MODE = "mode";
+const PARAM_NAME_MODE = 'mode';
 
 const MODE_PLAY = 0;
 const MODE_EDIT = 1;
@@ -388,7 +389,7 @@ class Dog extends TransitionSprite {
         if (isOut) {
             this.dispose();
             viewDogCount--;
-            console.log("表示中の犬の数", viewDogCount);
+            console.log('表示中の犬の数', viewDogCount);
         }
     }
 
@@ -726,7 +727,7 @@ function buildControls(parent, mode = MODE_PLAY, updateType = false) {
 
     console.log('buildControls', 'コントロール構築');
 
-    if (updateType){
+    if (updateType) {
         controls.splice(0);
         components.forEach((component) => {
             const field = component.id;
@@ -734,7 +735,7 @@ function buildControls(parent, mode = MODE_PLAY, updateType = false) {
             controls.push({ field: field, type: type });
         });
     }
-    
+
     clearControls(parent);
     for (let control of controls) {
 
@@ -856,7 +857,7 @@ application.run().then((msg) => {
                 if (hited instanceof Dog) {
                     target.removeSprite(hited);
                     viewDogCount--;
-                    console.log("表示中の犬の数", viewDogCount);
+                    console.log('表示中の犬の数', viewDogCount);
                 }
         }
 
@@ -937,7 +938,7 @@ function doCommand(text) {
     const command = translateCommand(text);
     if (command.length == 0) return;
 
-    console.log("コマンド:", command);
+    console.log('コマンド:', command);
 
     // 両モード共通コマンド
     switch (command) {
@@ -1025,10 +1026,10 @@ function doCommand(text) {
                 break;
         }
     }
-    commandText.value = "";
+    commandText.value = '';
 }
 
-function setAutoMode(value){
+function setAutoMode(value) {
     if (autoMode) ClearDogs();
     autoMode = value;
 }
@@ -1119,10 +1120,10 @@ function commandText_KeyPress(event) {
 
 function UpdateButtonInfo() {
 
-    console.log("ボタン情報更新")
+    console.log('ボタン情報更新')
 
     for (let i = 0; i < buttons.length; i++) {
-        const id = `#buttonCommand${i + 1}Component`;
+        const id = `#${HTML_ID_BUTTON_COMMAND}${i + 1}Component`;
         const tb = document.querySelector(id)?.firstChild;
         if (tb instanceof HTMLInputElement) {
             buttons[i] = tb.value;
@@ -1141,7 +1142,7 @@ function doButtonCommand(text = '') {
     buildButtons();
 }
 
-function removeButton(){
+function removeButton() {
     if (isPlayMode()) return;
     if (buttons.length > 0) buttons.pop();
     UpdateButtonInfo();
@@ -1163,7 +1164,7 @@ function buildButtons() {
         clearChildElements(buttonArea);
         for (let i = 0; i < buttons.length; i++) {
             const text = buttons[i];
-            const tb = new TextBox(`buttonCommand${i + 1}`, text);
+            const tb = new TextBox(`${HTML_ID_BUTTON_COMMAND}${i + 1}`, text);
             tb.placeholder = `ボタン${i + 1}`;
             buttonArea.appendChild(tb.htmlElement);
         }
@@ -1180,7 +1181,7 @@ function buildButtons() {
             let caption = '';
             let onClick = `doCommand('${command}')`;
             let optionNode = null;
-            console.log("コマンド", command);
+            console.log('コマンド', command);
             switch (command) {
                 case COMMAND_DOG:
                     caption = '🐕';
@@ -1196,7 +1197,7 @@ function buildButtons() {
                     caption = '❓';
                     break;
                 case COMMAND_CLEAR:
-                    caption = "✖";
+                    caption = '✖';
                     break;
                 default:
                     caption = items.find(x => x.command == command)?.text ?? text.trim();
@@ -1221,11 +1222,11 @@ function ClearDogs() {
 // [編集][再生]モード変更
 function changeMode(editMode = false, first = false) {
 
-    const MODE_TEXT_EDIT = "ただいま設計中";
-    const MODE_DESCRIPTION_EDIT = "インターフェースを作ってみよう！"
+    const MODE_TEXT_EDIT = 'ただいま設計中';
+    const MODE_DESCRIPTION_EDIT = 'インターフェースを作ってみよう！'
 
-    const MODE_TEXT_PLAY = "ただいま実行中";
-    const MODE_DESCRIPTION_PLAY = "作ったものを動かしてみよう！"
+    const MODE_TEXT_PLAY = 'ただいま実行中';
+    const MODE_DESCRIPTION_PLAY = '作ったものを動かしてみよう！'
 
     const CLASS_EDIT_MODE = 'edit-mode';
     const CLASS_LAYOUT = '.layout';
@@ -1241,7 +1242,7 @@ function changeMode(editMode = false, first = false) {
     const modeDescription = document.querySelector(HTML_ID_MODE_DESCRIPTION);
     const commandText = document.querySelector(HTML_ID_COMMAND_TEXT);
 
-    commandText.value = "";
+    commandText.value = '';
 
     ClearDogs();
 
@@ -1266,15 +1267,6 @@ function changeMode(editMode = false, first = false) {
         body.classList.add(CLASS_LIGHT_THEME);
         body.classList.remove(CLASS_DARK_THEME);
 
-        if (!first) {
-            controls.splice(0);
-            components.forEach((component) => {
-                const field = component.id;
-                const type = component.value ?? CONTROL_FIX;
-                controls.push({ field: field, type: type });
-            });
-        }
-
         modeText.textContent = MODE_TEXT_PLAY;
         modeDescription.textContent = MODE_DESCRIPTION_PLAY;
 
@@ -1282,7 +1274,7 @@ function changeMode(editMode = false, first = false) {
 
     console.log('モード変更:', editMode ? `編集モード(${currentMode})` : '再生モード');
 
-    buildControls(controlArea, currentMode);
+    buildControls(controlArea, currentMode, !first && !editMode);
     buildButtons();
 
     if (isPlayMode) mainScreen.start();

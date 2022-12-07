@@ -188,7 +188,7 @@ body.dark-theme {
 .barger-menu-line:before,
 .barger-menu-line:after,
 .barger-menu-line {
-    content: "";
+    content: '';
     width: 18px;
     height: 1px;
     background-color: currentColor;
@@ -478,7 +478,7 @@ body.dark-theme {
     justify-content: end;
 }
 
-.button-area input[type="text"],
+.button-area input[type='text'],
 .button-area button {
     font-size: x-large;
     color: var(--run-button-text-color);
@@ -492,7 +492,7 @@ body.dark-theme {
     border-radius: 24px 24px 24px 24px;
 }
 
-.button-area input[type="text"] {
+.button-area input[type='text'] {
     display: inline;
     font-size: x-large;
     width: 4em;
@@ -510,7 +510,7 @@ body.dark-theme {
     background-color: var(--run-button-active-color);
 }
 
-.button-area input[type="text"],
+.button-area input[type='text'],
 .dark-theme .button-area button {
     color: var(--dark-run-button-text-color);
     background-color: var(--dark-run-button-color);
@@ -592,7 +592,7 @@ body.dark-theme {
     line-height: 1em;
 }
 
-.control input[type="text"],
+.control input[type='text'],
 .control select {
     padding: 8px;
     border-style: solid;
@@ -606,7 +606,7 @@ body.dark-theme {
     box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
-.control input[type="text"]:focus {
+.control input[type='text']:focus {
     outline-style: none;
     outline-width: 0;
     background-color: lemonchiffon;
@@ -620,13 +620,13 @@ body.dark-theme {
 }
 
 
-.control input[type="range"] {
+.control input[type='range'] {
     width: 100%;
     cursor: pointer;
 }
 
-.control input[type="radio"],
-.control input[type="checkbox"] {
+.control input[type='radio'],
+.control input[type='checkbox'] {
     cursor: pointer;
 }
 
