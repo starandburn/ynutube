@@ -15,6 +15,10 @@ class StringTranslator {
         return new StringTranslator(this.text.trim());
     }
 
+    split(separator = ' ') {
+        return this.text.replace(/[　\t]/g, ' ').split(separator).map(x => x.trim()).filter(x => x.length > 0);
+    }
+
     compressSpace() {
         return new StringTranslator(this.text.replace(/[　\t]/g, ' ').trim().split(' ').filter(x => x.trim().length > 0)?.join(' '));
     }
@@ -22,7 +26,7 @@ class StringTranslator {
     toNarrowFromWideAscii() {
         return new StringTranslator(this.text.replace(/[！-～]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)));
     }
-    
+
     toKatakanaFromHiragana() {
         return new StringTranslator(this.text.replace(/[\u3041-\u3096]/g, s => String.fromCharCode(s.charCodeAt(0) + 0x60)));
     }

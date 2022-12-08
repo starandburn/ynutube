@@ -5,6 +5,7 @@
     'canvas.js',
     'sprite.js',
     'component.js',
+    'dog.js',
     'stringtranslator.js',
     'application.js',
 
