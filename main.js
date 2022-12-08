@@ -13,13 +13,11 @@ const HTML_ID_BUTTON_AREA = '#buttonArea';
 const HTML_ID_MODE_TEXT = '#modeText';
 const HTML_ID_MODE_DESCRIPTION = '#modeDescription';
 const HTML_ID_LOG_AREA = '#logArea';
-// const HTML_ID_DOG_COUNT = '#dogCount';
 const HTML_ID_OVERLAY = '#windowOverlay';
 const HTML_ID_CONTROL_AREA = '#controlArea';
 const HTML_ID_SCREEN = '#screen';
 const HTML_ID_CONTENT = '#content';
-// const HTML_ID_BUTTON_PLAY_AREA = '#buttonPlayArea';
-// const HTML_ID_BUTTON_EDIT_AREA = '#buttonEditArea';
+
 const HTML_ID_BUTTON_COMMAND = 'buttonCommand';
 
 // ユーザーが入力できるフィールド項目
@@ -58,11 +56,15 @@ const COMMAND_DEBUG = 'debug';
 const COMMAND_CLEAR = 'clear';
 const COMMAND_RESET = 'reset';
 const COMMAND_MODE = 'mode';
-const COMMAND_CLEAR_BUTTON = 'clearbutton';
 
 const COMMAND_EVERY = 'every';
 const COMMAND_ALL = 'all';
 const COMMAND_CLICK = 'click';
+const COMMAND_RESET_BUTTONS = '-buttons';
+const COMMAND_RESET_CONTROLS = '-controls';
+
+const COMMAND_CONTROLS = 'controls';
+const COMMAND_BUTTONS = 'buttons';
 
 const PARAM_NAME_MODE = 'mode';
 const PARAM_NAME_DEBUG = 'debug';
@@ -70,10 +72,10 @@ const PARAM_NAME_BG = 'bg';
 const PARAM_NAME_SKIP_FRAME = 'skip';
 const PARAM_NAME_FPS = 'fps';
 
-const MODE_PLAY = 0;
-const MODE_EDIT = 1;
-const MODE_DEFAULT = MODE_PLAY;
-
+// 動作モード
+const MODE_PLAY = 0;            // 実行モード
+const MODE_EDIT = 1;            // 編集モード
+const MODE_DEFAULT = MODE_PLAY; // 初期状態
 
 // 選択肢項目
 const directionItems = [    // 向き
@@ -100,11 +102,15 @@ const buttons = [];
 const shadow = new ShadowTile();
 const dogTiles = new Map();
 
+let batTile = null;
+
 function initializeItemTables() {
     console.log('項目テーブル初期化');
     initializeSpeedItems();
     initializeKindItems();
+    createAllItemTables();
 }
+
 function initializeSpeedItems() {
 
     const names = getCommandItems(FIELD_SPEED);
@@ -135,6 +141,12 @@ function appendExtraKinds() {
         kindItems.push({ id: tileNo, text: `特殊犬${imageId}`, src: `img/@dog${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true });
     }
     console.log('種類テーブル特殊犬追加', kindItems);
+    createAllItemTables();
+}
+
+function createAllItemTables() {
+    allItems = [].concat(...Array.from(fieldAttributes.values()).map(x => x.items));
+    console.log('全項目テーブル作成', allItems);
 }
 
 function getItemText(items, key, getKey = (x) => x?.id, log = false) {
@@ -190,8 +202,7 @@ const controlItems = [
     { id: CONTORL_IMAGELIST, text: '🖼イメージリスト', control: [FIELD_KIND] },
 ];
 
-function ToSplitedArray(text, log = true) {
-    // const result = text.replace(/[　\t]/g, ' ').split(' ').map(x => x.trim()).filter(x => x.length > 0);
+function toSplitedArray(text, log = true) {
     const result = new StringTranslator(text).split(' ');
     if (log && result != text) console.log('文字列分割:', text, '->', result);
     return result;
@@ -214,20 +225,26 @@ const tlanslateTable = [
     [CONTROL_SLIDER, 'srider', 'trackbar', 'スライダー', 'トラックバー'],
     [CONTORL_IMAGELIST, 'image', 'イメージリスト', '画像リスト', '画像一覧', 'イメージ'],
     [COMMAND_BUTTON, 'ボタン', 'botan', 'btn', 'buton', 'buttn', 'buttan'],
-    [COMMAND_CLEAR_BUTTON, 'clear button', 'clear botan', 'clear btn', 'clearbotan', 'clearbtn'],
-    [COMMAND_CLEAR, COMMAND_RESET],
+    [COMMAND_RESET, COMMAND_CLEAR],
     [COMMAND_CLICK, 'クリック', 'mouse', 'マウス', 'touch', 'タッチ'],
     [COMMAND_RANDOM, 'ランダム', 'rand', 'rnd', '？', '?'],
+    [COMMAND_DIRECTION_RIGHT, '右', '右向き', 'みぎむき', '逆', 'みぎ', 'ぎゃく', 'migi'],
+    [COMMAND_DIRECTION_LEFT, '左', 'ひだり', '左向き', 'ひだりむき', 'hidari'],
+    [COMMAND_SPEED_FAST, '速い', '早い', 'はやい', 'hayai'],
+    [COMMAND_SPEED_SLOW, '遅い', 'おそい', 'のろい', 'osoi'],
+    [COMMAND_SIZE_SMALL, '小さい', 'ちいさい', 'スモール', 'chisai', 'tisai', 'chiisai', 'tiisai'],
+    [COMMAND_SIZE_BIG, '大きい', 'おおきい', 'でかい', 'ビッグ', 'ビック', 'ookii', 'oki', 'okii', 'dekai'],
 ];
 
 function normalizeText(text, log = true) {
-    const result = new StringTranslator(text).compressSpace().toKatakanaFromHiragana().toNarrowFromWideAscii().toNarrowFromWideKatakana().text;
+    const result = new StringTranslator(text).compressSpace().toKatakanaFromHiragana().toNarrowFromWideAscii().toNarrowFromWideKatakana().text.toLocaleLowerCase();
     if (log && result != text) console.log('文字列正規化:', text, '->', result);
     return result;
 }
 
 function translateCommand(source, log = true) {
 
+    if (source == null || source == undefined) return '';
     const command = normalizeText(source, false);
     const blnMinus = command.startsWith('-');
     let result;
@@ -271,13 +288,13 @@ function resetButtons() {
 let mainScreen;
 let backGround = null;
 let dogCount = 0;
-let viewDogCount = 0;
+let visibleDogCount = 0;
 let hideDogCount = 0;
 let isPausing = false;
 
-
-let controlArea;
-let contentArea;
+let controlArea = null;
+let contentArea = null;
+let buttonArea = null;
 let commandTextBox = null;
 
 let currentMode;
@@ -285,6 +302,7 @@ let clickable = false;
 let autoMode = false;
 
 let components = new Map();
+let allItems = [];
 
 // [一時停止]ボタン
 function pauseButton_Click() {
@@ -298,7 +316,7 @@ function doPauseCommand() {
         isPausing = false;
         mainScreen.resume();
     } else {
-        if (viewDogCount > 0) {
+        if (visibleDogCount > 0) {
             isPausing = true;
             mainScreen.pause();
         }
@@ -310,6 +328,27 @@ function doDebugCommand() {
     console.log('コマンド実行:', 'デバッグモード切替');
     application.debugToggle();
 }
+
+function loadBatTile(id) {
+
+    let img = application.getImage(id);
+    new Promise((resolve) => {
+        if (img != null) resolve();
+        const url = `img/${id}.png`;
+        application.loadImage(id, url).then((msg) => {
+            console.log('蝙蝠画像読込完了:', `[${id}]`, url);
+            img = application.getImage(id);
+        }).catch((msg) => {
+            console.log('エラー:', '蝙蝠画像読込失敗', msg);
+            img = null;
+        }).finally(() => {
+            resolve();
+        });
+    }).then(() => {
+        batTile = new ImageTile(img);
+    });
+}
+
 
 function setBackground(id) {
 
@@ -354,6 +393,7 @@ function loadDogTile(tileNo) {
 }
 
 
+
 // 1体の犬を表示する
 function appearDog(x, y, kind, direction, size, speed) {
 
@@ -381,12 +421,12 @@ function appearDog(x, y, kind, direction, size, speed) {
     dog.resetTransition();
 
     mainScreen.addSprite(dog);
-    viewDogCount++;
+    visibleDogCount++;
 
     dog.onOutOfCanvas = (dog) => {
         console.log('イベント:', `[${dog.tag}]`, '画面外離脱')
         dog.dispose();
-        viewDogCount--;
+        visibleDogCount--;
     }
 
     updateDogCount();
@@ -398,7 +438,7 @@ function appearDog(x, y, kind, direction, size, speed) {
 }
 
 function updateDogCount() {
-    console.log('総数表示:', dogCount, `(表示中:${viewDogCount})`);
+    console.log('総数表示:', dogCount, `(表示中:${visibleDogCount})`);
     const CLASS_DOG_COUNT = '.dog-count';
     for (let countLabel of document.querySelectorAll(CLASS_DOG_COUNT)) {
         if (countLabel == undefined || countLabel == null) continue;
@@ -434,7 +474,8 @@ function getFieldValue(field, value) {
             items = getListItems(field);
     }
 
-    value = value ?? component?.number ?? items?.find((x) => x.command?.toString().toLocaleLowerCase() == component?.text?.toLocaleLowerCase())?.id ?? defaultValue;
+    // value = value ?? component?.number ?? items?.find((x) => x.command?.toString().toLocaleLowerCase() == component?.text?.toLocaleLowerCase())?.id ?? defaultValue;
+    value = value ?? component?.number ?? items?.find((x) => x.command?.toString().toLocaleLowerCase() == translateCommand(component?.text))?.id ?? defaultValue;
     if (component?.text == COMMAND_RANDOM || value == VALUE_RANDOM) {
 
         items = items.filter((x) => x.useRandom);
@@ -493,6 +534,7 @@ function getRandomItems(field) {
     return getFieldAttributes(field)?.items?.filter((x) => x.useRandom);
 }
 
+// 入力コンポーネントのHTMLエレメントを作成
 function createComponent(field, type, mode = MODE_PLAY) {
 
     const CLASS_SIMPLE = 'simple-component';
@@ -502,7 +544,7 @@ function createComponent(field, type, mode = MODE_PLAY) {
 
     let component = null;
 
-    if (mode == MODE_PLAY) {
+    if (isPlayMode(mode)) {
         switch (type) {
             case CONTROL_TEXT:
                 component = new TextBox(field, getDefaultValue(field, true), getCommandItems(field), CLASS_SIMPLE);
@@ -532,17 +574,19 @@ function createComponent(field, type, mode = MODE_PLAY) {
                 break;
         }
     } else {
-        // let items = controlItems.filter( item => { return ( (item.control?.includes(field) ?? true) && ((item.id == type) || level >= item.level)); });
+
+        // 編集モードの場合はドロップダウンリスト固定
         let items = controlItems.filter(item => { return ((item.control?.includes(field) ?? true) && ((item.id == type) || item.enabled)); });
         component = new DropDown(field, items, type, CLASS_SIMPLE);
-    }
 
+    }
     return component;
 
 }
 
+// コントロールエリアにコンポーネントを配置してコントロールを作る
+function makeControl(component, mode = MODE_PLAY, showLabel = true) {
 
-function createControl(component, level = MODE_PLAY, showLabel = true) {
     const CLASS_CONTROL_DESCRIPTION = 'control-description';
     const CLASS_CONTROL = 'control';
     const id = component.id;
@@ -552,7 +596,7 @@ function createControl(component, level = MODE_PLAY, showLabel = true) {
 
     if (showLabel) {
         let description = fieldAttributes.get(id)?.text;
-        if (level != MODE_PLAY) description += 'を決めるコントロール';
+        if (isEditMode(mode)) description += 'を決めるコントロール';
         const label = new FixedLabel(`${id}Label`, description, null, CLASS_CONTROL_DESCRIPTION);
         label.appendTo(control);
     }
@@ -562,14 +606,17 @@ function createControl(component, level = MODE_PLAY, showLabel = true) {
     return control;
 }
 
+// 指定要素の子ノードをすべて削除する
 function clearChildElements(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
 }
 
-function clearControls(parent) {
-    clearChildElements(parent);
+// コントロールを全消去する
+function clearControls() {
+    console.log('コントロール全削除');
+    clearChildElements(controlArea);
     components.clear();
 }
 
@@ -585,6 +632,7 @@ function resetControls(setEnabled = true) {
         console.log(`[${item.id}]${item.text}:`, item.enabled ? '使用可' : '使用不可');
     }
 }
+
 
 function restoreControls() {
     const param = normalizeText(application.getParam('c')) || 'tttt';
@@ -607,9 +655,9 @@ function textBox_KeyPress(event) {
 
 }
 
-function buildControls(parent, mode = MODE_PLAY, updateType = false) {
+function buildControls(mode = MODE_PLAY, updateType = false) {
 
-    console.log('コントロールパネル構築:');
+    console.log('コントロールエリア構築:');
 
     if (updateType) {
         controls.splice(0);
@@ -620,7 +668,7 @@ function buildControls(parent, mode = MODE_PLAY, updateType = false) {
         });
     }
 
-    clearControls(parent);
+    clearControls();
     for (let control of controls) {
 
         console.log('コントロール配置:', `[${fieldAttributes.get(control.field).text}]`, getItemText(controlItems, control.type));
@@ -631,12 +679,12 @@ function buildControls(parent, mode = MODE_PLAY, updateType = false) {
         let component = createComponent(control.field, control.type, mode);
 
         // テキストボックスの場合はEnterキーで発動できるように
-        if (mode == MODE_PLAY && control.type == CONTROL_TEXT && component instanceof TextBox) {
+        if (isPlayMode(mode) && control.type == CONTROL_TEXT && component instanceof TextBox) {
             component.textBox.setAttribute('onKeyPress', 'textBox_KeyPress(event);');
         }
 
         addComponent(component);
-        parent.appendChild(createControl(component, mode));
+        controlArea.appendChild(makeControl(component, mode));
     }
 
 }
@@ -649,9 +697,8 @@ function onHanbarger_Click() {
     doDebugCommand();
 }
 
-function isPlayMode() { return (currentMode == MODE_PLAY); }
-function isEditMode() { return !isPlayMode(); }
-
+function isPlayMode(mode = null) { return ((mode ?? currentMode) == MODE_PLAY); }
+function isEditMode(mode = null) { return !isPlayMode(mode); }
 
 // コンソール出力をオーバーライドしてデバッグエリアにも表示する
 const log = console.log;
@@ -683,6 +730,8 @@ application.onChangeDebugMode = (isDebugMode) => {
 function prepareHtmlElements() {
     contentArea = document.querySelector(HTML_ID_CONTENT);
     controlArea = document.querySelector(HTML_ID_CONTROL_AREA);
+    buttonArea = document.querySelector(HTML_ID_BUTTON_AREA);
+
     commandTextBox = document.querySelector(HTML_ID_COMMAND_TEXT);
     if (commandTextBox instanceof HTMLInputElement && commandTextBox.type != 'text') commandTextBox = null;
 }
@@ -697,20 +746,14 @@ function onMainScreenClick(x, y, button, target) {
             appearDog(x, y + application.getRandom(-8, 8));
             break;
         case 2:
-
-            const newDog = appearDog(x, y, VALUE_RANDOM, VALUE_RANDOM, VALUE_RANDOM, VALUE_RANDOM);
-
-            setFieldValue(FIELD_DIRECTION, newDog.direction);
-            setFieldValue(FIELD_SIZE, newDog.size);
-            setFieldValue(FIELD_SPEED, newDog.speed);
-            setFieldValue(FIELD_KIND, newDog.kind);
-
+            updateFieldValue(appearDog(x, y, VALUE_RANDOM, VALUE_RANDOM, VALUE_RANDOM, VALUE_RANDOM));
             break;
+
         case 1:
             const hited = target.getPointedSprite(x, y, true);
             if (hited instanceof Dog) {
                 target.removeSprite(hited);
-                viewDogCount--;
+                visibleDogCount--;
                 updateDogCount();
             }
     }
@@ -724,6 +767,8 @@ application.run().then((msg) => {
     const bg = application.getParam(PARAM_NAME_BG) || 'field';
     const isDebug = (application.getParam(PARAM_NAME_DEBUG) || 0) != 0;
     currentMode = application.getParam(PARAM_NAME_MODE) ?? MODE_DEFAULT;
+
+    loadBatTile('bat');
 
     prepareHtmlElements();
 
@@ -759,6 +804,7 @@ application.run().then((msg) => {
 
     };
 
+
     mainScreen.onDraw = (ctx, target, debug) => {
 
         if (backGround == null || backGround?.image == null) {
@@ -767,7 +813,7 @@ application.run().then((msg) => {
             backGround.draw(ctx, 0, 0, target.width, target.height);
         }
 
-        target.sprites.forEach(sprite => {
+        target.sprites.filter(x=>x instanceof Dog).forEach(sprite => {
             shadow.draw(ctx, sprite, 0, 0);
         });
 
@@ -785,30 +831,25 @@ function appendControl(field, rebuild = true) {
     const index = controls.findIndex((c) => c.field == field)
     if (index == -1) {
         controls.push({ field: field, type: CONTROL_TEXT });
-        if (rebuild) buildControls(controlArea, currentMode);
-    }
-    else {
-        // if (confirm(`[${fieldAttributes.get(field).text}]のコントロールはもう存在します。\n画面から消しますか？`)) {
-        //     controls.splice(index, 1);
-        //     if (rebuild) buildControls(controlArea, currentMode);
-        // }
+        if (rebuild) buildControls(currentMode);
     }
 }
+
 function removeControl(field, rebuild = true) {
     console.log('コントロール除外', field);
     const index = controls.findIndex((c) => c.field == field)
     if (index == -1 || index >= controls.length) return;
     controls.splice(index, 1);
-    if (rebuild) buildControls(controlArea, currentMode);
+    if (rebuild) buildControls(currentMode);
 }
 
 function doResetCommand(mode) {
 
-    console.log('コマンド実行', mode == MODE_PLAY ? '実行状態リセット' : '設計内容リセット');
+    console.log('コマンド実行', isPlayMode(mode) ? '実行状態リセット' : '設計内容リセット');
 
-    if (mode == MODE_EDIT) {
+    if (isEditMode(mode)) {
         resetControls();
-        buildControls(controlArea, mode);
+        buildControls(mode);
         resetButtons();
         setAutoMode(false);
         setClickable(false);
@@ -818,8 +859,6 @@ function doResetCommand(mode) {
 }
 
 function getCommandText() {
-    // const textBox = document.querySelector(HTML_ID_COMMAND_TEXT);
-    // if (!(textBox instanceof HTMLInputElement)) return '';
     return commandTextBox?.value ?? '';
 }
 
@@ -847,11 +886,11 @@ function doCommand(text) {
             case COMMAND_MODE:
                 changeMode(isPlayMode());
                 return;
-            case COMMAND_CLEAR:
+            case COMMAND_RESET:
                 doResetCommand(currentMode);
                 return;
             case COMMAND_CLICK:
-                clickable = true;
+                setClickable(true);
                 return;
         }
 
@@ -862,20 +901,27 @@ function doCommand(text) {
                     changeMode(false);
                     return;
                 case COMMAND_EVERY:
-                    for (let item of controlItems) {
-                        item.enabled = true;
-                    }
-                    buildControls(controlArea, currentMode, true);
+                    controlItems.forEach(x => x.enabled = true);
+                    buildControls(currentMode, true);
                     return;
                 case COMMAND_ALL:
-                    resetControls();
-                    for (let field of Array.from(fieldAttributes.keys()).map((f, i) => { return f })) {
-                        appendControl(field, false);
-                    }
-                    buildControls(controlArea, currentMode);
+                    doCommand(COMMAND_CONTROLS);
+                    doCommand(COMMAND_BUTTONS);
                     return;
-                case COMMAND_CLEAR_BUTTON:
+                case COMMAND_CONTROLS:
+                    resetControls(false);
+                    Array.from(fieldAttributes.keys()).forEach(x => appendControl(x, false));
+                    buildControls(currentMode);
+                    return;
+                case COMMAND_RESET_CONTROLS:
+                    resetControls(false);
+                    buildControls(currentMode)
+                    return;
+                case COMMAND_RESET_BUTTONS:
                     resetButtons();
+                    return;
+                case COMMAND_BUTTONS:
+                    for (let i = 0; i < 4; i++) doButtonCommand();
                     return;
                 case COMMAND_BUTTON:
                     doButtonCommand();
@@ -883,16 +929,16 @@ function doCommand(text) {
                 case `-${COMMAND_BUTTON}`:
                     removeButton();
                     return;
-                case 'batbutton':
-                case 'bat':
-                case 'バット':
-                    doButtonCommand(COMMAND_BAT);
-                    return;
-                case 'dogbutton':
-                    doButtonCommand(COMMAND_DOG);
-                    return;
+                    doButtonCommand(command);
                 default:
 
+                    // コマンドボタンの直接配置(xxxxbuttonでボタン追加)
+                    if (command.endsWith('button')) {
+                        doButtonCommand(command.replace(/button$/g, ''));
+                        return;
+                    }
+
+                    // 設定可能フィールドの追加と除外（-xxxxxxx)で除外
                     for (let field of fieldAttributes.keys()) {
                         if (field == command) {
                             appendControl(field);
@@ -904,14 +950,21 @@ function doCommand(text) {
                         }
                     }
 
+                    // コントロールの有効化
                     for (let item of controlItems) {
                         if (item.id == command) {
                             item.enabled = true;
-                            buildControls(controlArea, MODE_EDIT, true);
+                            buildControls(currentMode, true);
                             return;
                         }
                     }
-                    return;
+
+                    if (allItems.find(x => x.command == command)) {
+                        doButtonCommand(command);
+                        return;
+                    }
+
+                    break;
             }
         } else {
             // 実行モード中のコマンド
@@ -926,11 +979,15 @@ function doCommand(text) {
                 case COMMAND_STOP:
                     setAutoMode(false);
                     return;
-                default:
-                    appearDogByCommand(command);
+                case COMMAND_BAT:
+                    mainScreen.addSprite(new Bat(mainScreen, batTile, 10, 10));
                     return;
+                default:
+                    if (appearDogByCommand(command)) return;
             }
         }
+
+        console.log('無効なコマンド:', command);
 
     } finally {
         clearCommandText();
@@ -951,13 +1008,14 @@ function doRandomCommand() {
 
 function appearDogByCommand(command) {
 
-    let commands = ToSplitedArray(command);
+    let commands = toSplitedArray(command);
 
     let appear = false;
     let direction = null;
     let speed = null;
     let size = null;
     let kind = null;
+    let random = false;
 
     for (let c of commands) {
         c = translateCommand(c);
@@ -967,6 +1025,7 @@ function appearDogByCommand(command) {
                 if (speed == null) speed = VALUE_RANDOM;
                 if (size == null) size = VALUE_RANDOM;
                 if (kind == null) kind = VALUE_RANDOM;
+                random = true;
                 appear = true;
                 break;
             case COMMAND_DIRECTION_LEFT:
@@ -999,20 +1058,29 @@ function appearDogByCommand(command) {
             default:
 
                 if (extraKinds.includes(c)) appendExtraKinds();
-                const k = kindItems.find(x => x.command == c)?.id;
-                if (k != null && kind == null) {
-                    kind = k;
+                const kindId = kindItems.find(x => x.command == c)?.id;
+                if (kindId != null && kind == null) {
+                    kind = kindId;
                     appear = true;
                 }
         }
     }
     if (appear) {
         const dog = appearDog(null, null, kind, direction, size, speed);
-        setFieldValue(FIELD_DIRECTION, dog.direction);
-        setFieldValue(FIELD_SIZE, dog.size);
-        setFieldValue(FIELD_SPEED, dog.speed);
-        setFieldValue(FIELD_KIND, dog.kind);
+        if (random) updateFieldValue(dog);
     }
+
+    return appear;
+}
+
+function updateFieldValue(dog) {
+
+    if (!(dog instanceof Dog)) return;
+
+    setFieldValue(FIELD_DIRECTION, dog.direction);
+    setFieldValue(FIELD_SIZE, dog.size);
+    setFieldValue(FIELD_SPEED, dog.speed);
+    setFieldValue(FIELD_KIND, dog.kind);
 
 }
 
@@ -1038,9 +1106,9 @@ function UpdateButtonInfo() {
 
     for (let i = 0; i < buttons.length; i++) {
         const id = `#${HTML_ID_BUTTON_COMMAND}${i + 1}Component`;
-        const tb = document.querySelector(id)?.firstChild;
-        if (tb instanceof HTMLInputElement) {
-            buttons[i] = tb.value;
+        const textBox = document.querySelector(id)?.firstChild;
+        if (textBox instanceof HTMLInputElement) {
+            buttons[i] = textBox.value;
         }
         else {
             buttons[i] = '';
@@ -1065,30 +1133,21 @@ function removeButton() {
 
 function buildButtons(mode = MODE_PLAY) {
 
-    console.log('ボタンインターフェース構築:', mode == MODE_PLAY ? '実行モード' : '編集モード');
+    if (buttonArea == null) return;
 
-    const buttonArea = document.querySelector(HTML_ID_BUTTON_AREA);
-    if (buttonArea == null) {
-        console.log('Not Found', HTML_ID_BUTTON_AREA)
-        return;
-    }
+    console.log('ボタンインターフェース構築:', isPlayMode(mode) ? '実行モード' : '編集モード');
 
     clearChildElements(buttonArea);
-    if (mode != MODE_PLAY) {
+    if (isEditMode(mode)) {
         clearChildElements(buttonArea);
         for (let i = 0; i < buttons.length; i++) {
             const text = buttons[i];
-            const tb = new TextBox(`${HTML_ID_BUTTON_COMMAND}${i + 1}`, text);
-            tb.placeholder = `ボタン${i + 1}`;
-            buttonArea.appendChild(tb.htmlElement);
+            const textBox = new TextBox(`${HTML_ID_BUTTON_COMMAND}${i + 1}`, text);
+            textBox.placeholder = `ボタン${i + 1}`;
+            buttonArea.appendChild(textBox.htmlElement);
         }
 
     } else {
-
-        let items = [];
-        Array.from(fieldAttributes.values()).map(x => x.items).forEach(item => {
-            items = [...items, ...item];
-        });
 
         for (let text of buttons) {
             const command = translateCommand(text);
@@ -1111,12 +1170,11 @@ function buildButtons(mode = MODE_PLAY) {
                 case COMMAND_RANDOM:
                     caption = '❓';
                     break;
-                case COMMAND_CLEAR:
+                case COMMAND_RESET:
                     caption = '✖';
                     break;
                 default:
-                    // caption = items.find(x => x.command == command)?.text ?? text.trim();
-                    caption = getItemText(items, command, (x) => x.command);
+                    caption = getItemText(allItems, command, (x) => x.command);
                     break;
             }
             const button = new Button(`command${Button}`, caption, onClick);
@@ -1130,7 +1188,7 @@ function buildButtons(mode = MODE_PLAY) {
 function resetDogs() {
     mainScreen.clearSprites();
     dogCount = 0;
-    viewDogCount = 0;
+    visibleDogCount = 0;
     hideDogCount = 0;
     updateDogCount();
 }
@@ -1193,7 +1251,7 @@ function changeMode(editMode = false, first = false) {
 
     console.log('モード変更:', editMode ? `編集モード(${currentMode})` : '再生モード');
 
-    buildControls(controlArea, currentMode, !first && !editMode);
+    buildControls(currentMode, !first && !editMode);
     buildButtons(currentMode);
 
     if (isPlayMode) mainScreen.start();

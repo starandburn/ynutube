@@ -5,14 +5,14 @@ class StringTranslator {
     _source = null;
 
     constructor(str) {
-        this._source = str;
+        this._source = str?.toString();
     }
 
     get text() { return this._source ?? ''; }
     get isBlank() { return (this.text?.length ?? 0) <= 0; }
 
     trim() {
-        return new StringTranslator(this.text.trim());
+        return new StringTranslator(this.text?.trim());
     }
 
     split(separator = ' ') {
@@ -24,7 +24,8 @@ class StringTranslator {
     }
 
     toNarrowFromWideAscii() {
-        return new StringTranslator(this.text.replace(/[！-～]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)));
+        const result = new StringTranslator(this.text.replace(/[！-～]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)));
+        return result;
     }
 
     toKatakanaFromHiragana() {

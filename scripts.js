@@ -6,6 +6,7 @@
     'sprite.js',
     'component.js',
     'dog.js',
+    'bat.js',
     'stringtranslator.js',
     'application.js',
 
