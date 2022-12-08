@@ -16,20 +16,11 @@
     --command-focus-color: #1c62b9;
     --dark-command-focus-color: var(--command-focus-color);
 
-    --noborder-button-color: #f0f0f0;
-    --noborder-button-active-color: #d0d0d0;
-    --noborder-button-hover-color: #e0e0e0;
-
     --run-button-text-color: #0d0d0f;
     --run-button-color: #f2f2f2;
     --run-button-hover-color: #e5e5e5;
     --run-button-active-color: #cecece;
     --run-button-border-color: #d9d9d9;
-
-    --button-color: #f8f8f8;
-    --button-text-color: #0f0f0f;
-    --button-hover-color: #eee;
-    --button-active-color: #ddd;
 
     --sub-background-color: #d3d3d3;
     --header-color: var(--background-color);
@@ -38,6 +29,9 @@
     --main-color: #ff0000;
     --sub-color: #3ea6ff;
     --placeholder-text-color: #888888;
+
+    --mode-description-color:#888888;
+    --dark-mode-description-color:var(--mode-description-color); 
 
     --dark-background-grad-start-color: #404040;
     --dark-background-grad-end-color: #000000;
@@ -106,7 +100,7 @@ body.dark-theme {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    cursor: auto;
+    cursor: pointer;
 }
 
 .mode-area .user-icon {
@@ -120,16 +114,16 @@ body.dark-theme {
 }
 
 .mode-text {
-    font-size: large;
+    font-size: medium;
 }
 
 .mode-description {
     font-size: small;
-    color: var(--run-button-text-color);
+    color: var(--mode-description-color);
 }
 
 .dark-theme .mode-description {
-    color: var(--dark-run-button-text-color);
+    color: var(--dark-mode-description-color);
 }
 
 .header {
@@ -347,11 +341,11 @@ body.dark-theme {
 }
 
 .command-button:hover {
-    background-color: var(--button-hover-color);
+    background-color: var(--command-button-hover-color);
 }
 
 .command-button:active {
-    background-color: var(--button-active-color);
+    background-color: var(--command-button-active-color);
 }
 
 .dark-theme .command-button {
@@ -485,7 +479,7 @@ body.dark-theme {
     background-color: var(--run-button-color);
     border-color: var(--run-button-border-color);
     border-width: 1px;
-    border-style: none;
+    border-style: solid;
     margin: 8px;
     padding: 4px 20px 6px 20px;
     cursor: pointer;
@@ -508,19 +502,28 @@ body.dark-theme {
 
 .button-area button:active {
     background-color: var(--run-button-active-color);
+    padding: 5px 19px 5px 21px;
 }
 
-.button-area input[type='text'],
+.button-area input[type='text']:focus,
+.button-area button:focus {
+    outline-style: none;
+    outline-width: 0;
+}
+
+.dark-theme .button-area input[type='text'],
 .dark-theme .button-area button {
     color: var(--dark-run-button-text-color);
     background-color: var(--dark-run-button-color);
     border-color: var(--dark-run-button-border-color);
 }
 
+.dark-theme .button-area input[type='text']:hover,
 .dark-theme .button-area button:hover {
     background-color: var(--dark-run-button-hover-color);
 }
 
+.dark-theme .button-area input[type='text']:active,
 .dark-theme .button-area button:active {
     background-color: var(--dark-run-button-active-color);
 }
@@ -542,13 +545,10 @@ body.dark-theme {
     margin-left: 0 !important;
 }
 
-
 .dog-count {
     display: inline-block;
     width: 3em;
 }
-
-
 
 
 .control {

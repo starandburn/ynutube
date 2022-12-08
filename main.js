@@ -234,6 +234,7 @@ const tlanslateTable = [
     [COMMAND_SPEED_SLOW, '遅い', 'おそい', 'のろい', 'osoi'],
     [COMMAND_SIZE_SMALL, '小さい', 'ちいさい', 'スモール', 'chisai', 'tisai', 'chiisai', 'tiisai'],
     [COMMAND_SIZE_BIG, '大きい', 'おおきい', 'でかい', 'ビッグ', 'ビック', 'ookii', 'oki', 'okii', 'dekai'],
+    [COMMAND_CLICK, 'クリック', 'touch', 'タッチ', 'マウス', 'mouse', 'tap', 'タップ'],
 ];
 
 function normalizeText(text, log = true) {
@@ -420,7 +421,7 @@ function appearDog(x, y, kind, direction, size, speed) {
     dog.moveAt(x, y);
     dog.resetTransition();
 
-    mainScreen.addSprite(dog);
+    mainScreen.addSprite(dog, 1);
     visibleDogCount++;
 
     dog.onOutOfCanvas = (dog) => {
@@ -813,7 +814,7 @@ application.run().then((msg) => {
             backGround.draw(ctx, 0, 0, target.width, target.height);
         }
 
-        target.sprites.filter(x=>x instanceof Dog).forEach(sprite => {
+        target.sprites.filter(x => x instanceof Dog).forEach(sprite => {
             shadow.draw(ctx, sprite, 0, 0);
         });
 
@@ -929,7 +930,11 @@ function doCommand(text) {
                 case `-${COMMAND_BUTTON}`:
                     removeButton();
                     return;
+                case COMMAND_DOG:
+                case COMMAND_BAT:
+                case COMMAND_RANDOM:
                     doButtonCommand(command);
+                    return;
                 default:
 
                     // コマンドボタンの直接配置(xxxxbuttonでボタン追加)
@@ -980,7 +985,7 @@ function doCommand(text) {
                     setAutoMode(false);
                     return;
                 case COMMAND_BAT:
-                    mainScreen.addSprite(new Bat(mainScreen, batTile, 10, 10));
+                    appearBat();
                     return;
                 default:
                     if (appearDogByCommand(command)) return;
@@ -993,6 +998,13 @@ function doCommand(text) {
         clearCommandText();
     }
 }
+
+function appearBat() {
+
+    const bat = new Bat(batTile, application.getRandom(mainScreen.width / 8, mainScreen.width / 8 * 7), application.getRandom(mainScreen.height / 8, mainScreen.height / 8 * 7));
+    mainScreen.addSprite(bat, 0);
+}
+
 
 function setAutoMode(value) {
     if (autoMode) resetDogs();
@@ -1118,8 +1130,10 @@ function UpdateButtonInfo() {
 
 function doButtonCommand(text = '') {
     if (isPlayMode()) return;
+    if ((text ?? '') != '' && buttons.includes(text)) return;
     UpdateButtonInfo();
     console.log('ボタン追加', text);
+
     buttons.push(text);
     buildButtons(currentMode);
 }
@@ -1143,7 +1157,8 @@ function buildButtons(mode = MODE_PLAY) {
         for (let i = 0; i < buttons.length; i++) {
             const text = buttons[i];
             const textBox = new TextBox(`${HTML_ID_BUTTON_COMMAND}${i + 1}`, text);
-            textBox.placeholder = `ボタン${i + 1}`;
+            // textBox.placeholder = `ボタン${i + 1}`;
+            textBox.placeholder = '未使用';
             buttonArea.appendChild(textBox.htmlElement);
         }
 
@@ -1201,11 +1216,11 @@ function clearCommandText() {
 // [編集][再生]モード変更
 function changeMode(editMode = false, first = false) {
 
-    const MODE_TEXT_EDIT = 'ただいま設計中';
-    const MODE_DESCRIPTION_EDIT = 'インターフェースを作ってみよう！'
+    const MODE_TEXT_EDIT = 'いぬちゅーばー＠設計中';
+    const MODE_DESCRIPTION_EDIT = 'インターフェースを作ってみよう！（ここをクリックでモード切替）'
 
-    const MODE_TEXT_PLAY = 'ただいま実行中';
-    const MODE_DESCRIPTION_PLAY = '作ったものを動かしてみよう！'
+    const MODE_TEXT_PLAY = 'いぬちゅーばー＠実行中';
+    const MODE_DESCRIPTION_PLAY = '作ったものを動かしてみよう！（ここをクリックでモード切替）'
 
     const CLASS_EDIT_MODE = 'edit-mode';
     const CLASS_LAYOUT = '.layout';
