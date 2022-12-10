@@ -11,11 +11,13 @@
 </head>
 
 <body>
-    <div class="layout">
+    <div id="layout" class="layout">
         <header class="header">
             <div class="header-left  disabled-select">
-                <div class="barger-menu" onClick="onHanbarger_Click();">
-                    <div class="barger-menu-line"></div>
+                <div class="barger-area" onClick="onMenubutton_Click();">
+                    <div class="barger-menu">
+                        <div class="barger-menu-line"></div>
+                    </div>
                 </div>
                 <div class="yt-logo">
                     <div class="yt-logo-image"></div><span id="locationText" class="location-text">NKK</span>
@@ -24,9 +26,9 @@
             <div class="header-center  disabled-select">
                 <div class="command-area">
                     <input type="text" id="commandText" class="command-text" autofocus placeholder="コマンド"
-                        onKeyPress="commandText_KeyPress(event);">
+                        onKeyPress="onCommandText_KeyPress(event);">
                     <!-- </div> -->
-                    <button class="command-button" id="commandButton" onClick="commandButton_Click();">📣</button>
+                    <button class="command-button" id="commandButton" onClick="onCommandButton_Click();">📣</button>
                 </div>
             </div>
             <div class="header-right">
@@ -53,24 +55,32 @@
                     <div class="title-text">【システムエンジニア体験】ユーザーインターフェースを作ってみた。</div>
                 </div>
                 <div class="bottom-panel">
-                    <div id="modeArea" class="mode-area"  onClick="modeChangeButton_Click();"">
+                    <div id="modeArea" class="mode-area">
                         <div id="modeChangeButton" class="mode-change-button">
                             <img class="user-icon" src="img/mode-button.png">
                         </div>
                         <div id="modeInfo" class="mode-info">
                             <p id="modeText" class="mode-text"></p>
-                            <p id="modeDescription" class="mode-description">作ったものを動かしてみよう！</p>
+                            <p id="modeDescription" class="mode-description"></p>
+                        </div>
+                        <div>
+                            <button class="mode-button disabled-select"
+                                onClick="onModeChangeButton_Click();">モード変更</button>
                         </div>
                     </div>
-                    <div id="buttonArea" class="button-area"></div>
+                    <div id="buttonArea" class="button-area disabled-select"></div>
+                </div>
+                <div id="overviewArea" class="overview-area">
+                    <p>copyright&copy; 2022, Japan International Institute of Cybernetics all rights reserved.</p>
+                    <p>System Design & Programing by T.Hoshino</p>
+                    <p></p>
                 </div>
             </div>
-            <div class="side-panel  disabled-select">
+            <div class="side-panel disabled-select">
                 <div id="controlArea" class="control-area"></div>
             </div>
         </div>
         <div class="footer">
-
         </div>
     </div>
     <div id="windowOverlay" class="window-overlay">
@@ -78,8 +88,10 @@
             <span class="spinner"></span>
         </div>
     </div>
-    <div id="logArea" class="log-area">
-        <p>---- デバッグログ ----</p>
+    <div id="debugArea" class="debug-area">
+        <div id="logArea" class="log-area">
+            <p>---- デバッグログ ----</p>
+        </div>
     </div>
 </body>
 

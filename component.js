@@ -89,7 +89,6 @@ class Button extends Component {
     button = null;
     _textNode = null;
     _text = null;
-    _onClick = () => { };
 
     constructor(id, text, onClick, styleClass) {
         super(id, styleClass);
@@ -143,11 +142,6 @@ class FixedLabel extends Component {
         this._textNode.textContent = this._text?.toString().trim() ?? '';
     }
 
-    // get number() {
-    //     const value = parseInt(this.value);
-    //     if (isNaN(value)) return null;
-    //     return value;
-    // }
     get value() {
         return this._value;
     }

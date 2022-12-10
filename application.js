@@ -19,6 +19,7 @@ class Application {
     constructor(debugMode = false) {
         this._debugMode = debugMode;
         this._debugMode = this.getParam('debug') ? true : debugMode;
+        this._self = this;
     }
 
     // 公開メソッド
@@ -29,6 +30,38 @@ class Application {
     log(...theArgs) {
         console.log(...arguments);
     }
+
+
+
+    overrideConsoleLog(logArea) {
+        if (!(logArea instanceof HTMLElement)) return;
+        const origin = console.log;
+        console.log = function (...args) {
+            // _originConsoleLog(...args);
+            // var callerName = null;
+            // try { throw new Error(); }
+            // catch (e) {
+            //     var callerName = 'global';
+            //     var re = /(\w+)@|at (\w+) \(/g, st = e.stack, m;
+            //     while (m = re.exec(st)) {
+            //         callerName = (m != null) ? m[1] || m[2] : 'global';
+            //     }
+            // }
+            origin(...args);
+            const p = document.createElement('p');
+            const h = document.createElement('span');
+            h.classList.add('title');
+            h.textContent = args[0];
+            // p.textContent = `[${callerName}]${args.join(' ')}`;
+
+            p.appendChild(h)
+            p.appendChild(document.createTextNode(args.slice(1).join(' ')));
+
+            // p.textContent = args.slice(1).join(' ');
+            logArea.prepend(p);
+        };
+    }
+    
 
     getParam(name, url) {
         if (!url) url = window.location.href;
@@ -105,7 +138,7 @@ class Application {
                 resolve('画面をロードしました。');
             });
         });
-        return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => resolves).bind(this));
+        return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => [this, ...resolves]).bind(this));
     }
 
 }

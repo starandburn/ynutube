@@ -22,6 +22,10 @@ class Bat extends TransitionSprite {
 
     }
 
+    refreshTile(tile) {
+        this.tile = tile;
+    }
+
     update(stepFrame = 1) {
         super.update(stepFrame);
         if (!this.visible) return;
