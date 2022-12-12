@@ -251,6 +251,8 @@ function initializeItemTables() {
     console.log('項目テーブル初期化');
     createSpeedItems();
     createKindItems();
+
+    console.log('項目テーブル正規化');
     for (let field of fields) {
         for (let item of field.items) {
             item.command = normalizeText(item.command);
@@ -684,52 +686,52 @@ function updateDogCount() {
 
 
 // 各フィールドの値をコントロールに設定
-function setFieldValue(field, value) {
-    console.log('コントロール値設定:', `[${field}]`, value);
-    getComponent(field)?.setValue(value);
+function setFieldValue(fidldId, value) {
+    console.log('コントロール値設定:', `[${fidldId}]`, value);
+    getComponent(fidldId)?.setValue(value);
 }
 
-function getFieldValue(field, value) {
+function getFieldValue(fieldValue, value) {
 
-    const defaultValue = (isNone(value) || value == VALUE_RANDOM) ? getDefaultValue(field) : value;
-    const component = getComponent(field);
+    const defaultValue = (isNone(value) || value == VALUE_RANDOM) ? getDefaultValue(fieldValue) : value;
+    const component = getComponent(fieldValue);
     if (component == null && value != VALUE_RANDOM) return defaultValue;
 
     let items;
-    switch (controls.find((c) => equals(c.field, field))?.type) {
+    switch (controls.find((c) => equals(c.field, fieldValue))?.type) {
         case CONTROL_TEXT:
-            items = getCommandItems(field);
+            items = getCommandItems(fieldValue);
             break;
         case CONTORL_RADIO:
-            items = getOptionItems(field);
+            items = getOptionItems(fieldValue);
             break;
         case CONTROL_CHECK:
-            items = getCheckItems(field);
+            items = getCheckItems(fieldValue);
             break;
         default:
-            items = getListItems(field);
+            items = getListItems(fieldValue);
     }
 
     value = value ?? component?.number ?? items?.find((x) => equals(x.command, translateCommand(component?.text), true, false))?.id ?? defaultValue;
     if (component?.text == COMMAND_RANDOM || value == VALUE_RANDOM) {
         items = items.filter((x) => x.useRandom);
-        value = application.getRandomSelect(...getIdList(items));
+        value = application.getRandomSelect(...getIds(items));
     }
 
-    if (!getIdList(items)?.includes(value)) {
-        console.log('getFieldValue', field, '不正な値')
+    if (!getIds(items)?.includes(value)) {
+        console.log('getFieldValue', fieldValue, '不正な値')
         value = defaultValue;
     }
 
     return value;
 }
 
-function getIdList(item) {
+function getIds(item) {
     return item?.map((x) => x.id);
 }
 
-function getComponent(field) {
-    return components.get(field) ?? null;
+function getComponent(fieldId) {
+    return components.get(fieldId) ?? null;
 }
 
 function addComponent(component) {
@@ -910,7 +912,7 @@ function resetControls(code) {
     }
 }
 
-function restoreButtons(code) {
+function initializeButtons(code) {
     code = normalizeText(code, false);
     if (isBlank(code)) return;
 
@@ -1355,7 +1357,7 @@ function changeMode(editMode = false, first = false) {
 
     console.log('モード変更:', editMode ? `編集モード(${currentMode})` : '再生モード');
 
-    buildControls(currentMode, !first && !editMode);
+    buildControls(currentMode, !first &&  isPlayMode(currentMode));
     buildButtons(currentMode);
 
     commandBox?.focus();
@@ -1372,29 +1374,27 @@ function getBackGroundId(code) {
     return backGroundIds.find(x => equals(x, code));
 }
 
-application.run().then((runInfo) => {
+application.run().then(((runInfo) => {
 
-    const thisApp = runInfo[0];
+    application.overrideConsoleLog(document.querySelector(HTML_ID_LOG_AREA));
+    console.log('アプリケーション開始');
 
-    thisApp.overrideConsoleLog(document.querySelector(HTML_ID_LOG_AREA));
-    console.log('アプリケーション開始', runInfo.slice(1));
+    const flags = normalizeText(application.getParam(PARAM_NAME_FLAGS));
 
-    const flags = normalizeText(thisApp.getParam(PARAM_NAME_FLAGS));
+    const skipFrame = application.getParam(PARAM_NAME_SKIP_FRAME) ?? DEFAULT_SKIP_FRAME;
+    const maxFps = application.getParam(PARAM_NAME_FPS) ?? DEFAULT_MAX_FPS;
+    const backGround = application.getParam(PARAM_NAME_BG) || flags?.match(/[0-9]/);
 
-    const skipFrame = thisApp.getParam(PARAM_NAME_SKIP_FRAME) ?? DEFAULT_SKIP_FRAME;
-    const maxFps = thisApp.getParam(PARAM_NAME_FPS) ?? DEFAULT_MAX_FPS;
-    const backGround = thisApp.getParam(PARAM_NAME_BG) || flags?.match(/[0-9]/);
+    const isDebug = (application.getParam(PARAM_NAME_DEBUG) || flags?.includes(PARAM_NAME_DEBUG)) != 0;
+    const controlsCode = application.getParam(PARAM_NAME_CONTROLS);
+    const buttonCode = application.getParam(PARAM_NAME_BUTTONS);
 
-    const isDebug = (thisApp.getParam(PARAM_NAME_DEBUG) || flags?.includes(PARAM_NAME_DEBUG)) != 0;
-    const controlsCode = thisApp.getParam(PARAM_NAME_CONTROLS);
-    const buttonCode = thisApp.getParam(PARAM_NAME_BUTTONS);
+    const controlsEnabled = application.getParam(PARAM_NAME_CONTROLS_ENABLED);
 
-    const controlsEnabled = thisApp.getParam(PARAM_NAME_CONTROLS_ENABLED);
+    currentMode = application.getParam(PARAM_NAME_MODE) ?? (flags?.includes(PARAM_NAME_EDIT_MODE) ? MODE_EDIT : flags?.includes(PARAM_NAME_RUN_MODE) ? MODE_PLAY : MODE_DEFAULT);
+    canClickScreen = (application.getParam(PARAM_NAME_CLICK) || flags?.includes(PARAM_NAME_CLICK)) != 0;
 
-    currentMode = thisApp.getParam(PARAM_NAME_MODE) ?? (flags?.includes(PARAM_NAME_EDIT_MODE) ? MODE_EDIT : flags?.includes(PARAM_NAME_RUN_MODE) ? MODE_PLAY : MODE_DEFAULT);
-    canClickScreen = (thisApp.getParam(PARAM_NAME_CLICK) || flags?.includes(PARAM_NAME_CLICK)) != 0;
-
-    thisApp.onChangeDebugMode = (isDebugMode) => {
+    application.onChangeDebugMode = (isDebugMode) => {
         UpdateMainScreen(isDebugMode);
         UpdateDebugArea(isDebugMode);
     };
@@ -1402,24 +1402,22 @@ application.run().then((runInfo) => {
     prepareHtmlElements();
     initializeItemTables();
     initializeTranslateTable();
-
     InitializeControls(controlsCode, controlsEnabled);
-    restoreButtons(buttonCode);
+    initializeButtons(buttonCode);
 
-    const element = document.querySelector(HTML_ID_SCREEN);
-    if (!(element instanceof HTMLCanvasElement)) return;
+    const screenCanvas = document.querySelector(HTML_ID_SCREEN);
+    if (!(screenCanvas instanceof HTMLCanvasElement)) return;
 
-    element.style.width = STYLE_VALUE_100PERCENT;
-    element.style.height = STYLE_VALUE_100PERCENT;
+    screenCanvas.style.width = STYLE_VALUE_100PERCENT;
+    screenCanvas.style.height = STYLE_VALUE_100PERCENT;
 
-    mainScreen = new ActiveCanvas(element, 0, 0, null, maxFps, skipFrame, isDebug);
+    mainScreen = new ActiveCanvas(screenCanvas, 0, 0, null, maxFps, skipFrame, isDebug);
     mainScreen.drawOrders.push((s) => s.bottom);
 
     setBackground(getBackGroundId(backGround));
-
     changeMode(isEditMode(), true);
 
-    thisApp.setDebugMode(isDebug);
+    application.setDebugMode(isDebug);
 
     mainScreen.onClick = onMainScreenClick;
 
@@ -1430,7 +1428,6 @@ application.run().then((runInfo) => {
         }
 
     };
-
 
     mainScreen.onDraw = (ctx, target, debug) => {
 
@@ -1451,4 +1448,4 @@ application.run().then((runInfo) => {
 
     document.querySelector(HTML_ID_OVERLAY).style.display = STYLE_VALUE_NONE;
 
-});
+}));

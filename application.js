@@ -76,7 +76,7 @@ class Application {
             param = decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
 
-        console.log('パラメータ取得', `[${name}]${param}`);
+        console.log('パラメータ取得:', `${name} = ${param ?? ''}`);
         return param;
     }
 
@@ -136,9 +136,8 @@ class Application {
                 resolve('画面をロードしました。');
             });
         });
-        return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => [this, ...resolves]).bind(this));
+        return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => [resolves]).bind(this));
     }
-
 }
 
 class ActiveCanvas extends Canvas {
