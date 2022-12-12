@@ -31,8 +31,6 @@ class Application {
         console.log(...arguments);
     }
 
-
-
     overrideConsoleLog(logArea) {
         if (!(logArea instanceof HTMLElement)) return;
         const origin = console.log;
@@ -185,11 +183,9 @@ class ActiveCanvas extends Canvas {
     }
     removeSprite(sprite) {
         const index = this.sprites.indexOf(sprite);
-        console.log('スプライト破棄', sprite.tag);
         this.sprites.splice(index, 1);
     }
     clearSprites() {
-        console.log('スプライト初期化');
         this.sprites = [];
     }
 

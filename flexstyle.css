@@ -1,113 +1,208 @@
+/* 全要素原則マージンなし */
 * {
     margin: 0;
+    /* border: dotted 1px #888 !important; */
 }
 
+/* フォーカス枠原則なし */
 *:focus {
     outline: none;
 }
 
-:root {
-    --background-color: #ffffff;
-    --border-color: #cccccc;
-    --border-shadow-color: #eeeeee;
-
-    --command-button-color: #f8f8f8;
-    --command-button-border-color: #ccc;
-    --command-button-text-color: #0f0f0f;
-    --command-button-hover-color: #eee;
-    --command-button-active-color: #ddd;
-
-    --command-focus-color: #1c62b9;
-    --dark-command-focus-color: var(--command-focus-color);
-
-    --run-button-text-color: #0d0d0f;
-    --run-button-color: #f2f2f2;
-    --run-button-hover-color: #e5e5e5;
-    --run-button-active-color: #cecece;
-    --run-button-border-color: #d9d9d9;
-
-    --sub-background-color: #d3d3d3;
-    --header-color: var(--background-color);
-    --content-color: #ffffff;
-    --text-color: #030303;
-    --main-color: #ff0000;
-    --sub-color: #3ea6ff;
-    --placeholder-text-color: #888888;
-
-    --overview-background-color: #f2f2f2;
-    --dark-overview-background-color: #2a2a2a;
-
-    --button-focus-background-color: #ffffff;
-    --button-focus-outline-color: #0f0f0f;
-    --button-focus-text-color: #0f0f0f;
-
-    --dark-button-focus-background-color: #171515;
-    --dark-button-focus-border-color: #f1f1f1;
-    --dark-button-focus-text-color: #f1f1f1;
-
-    --mode-button-color: #0f0f0f;
-    --mode-button-border-color: var(--mode-button-text-color);
-    --mode-button-text-color: #f1f1f1;
-    --mode-button-hover-color: #272727;
-    --mode-button-active-color: #525252;
-
-    --dark-mode-button-color: #f1f1f1;
-    --dark-mode-button-border-color: var(--dark-mode-button-text-color);
-    --dark-mode-button-text-color: #0f0f0f;
-    --dark-mode-button-hover-color: #d9d9d9;
-    --dark-mode-button-active-color: #aeaeae;
-
-    --mode-description-color: #888888;
-    --dark-mode-description-color: var(--mode-description-color);
-
-    --dark-background-grad-start-color: #404040;
-    --dark-background-grad-end-color: #000000;
-    --dark-background-color: var(--dark-background-grad-end-color);
-
-    --dark-border-color: #303030;
-    --dark-border-shadow-color: #303030;
-
-    --dark-command-button-color: #222222;
-    --dark-command-button-text-color: #ffffff;
-    --dark-command-button-hover-color: #313131;
-    --dark-command-button-active-color: #313131;
-
-    --dark-run-button-color: #272727;
-    --dark-run-button-hover-color: #3f3f3f;
-    --dark-run-button-text-color: #eeeeee;
-    --dark-run-button-active-color: #535353;
-    --dark-run-button-border-color: #3d3d3d;
-
-    --dark-button-color: #222222;
-    --dark-button-text-color: #ffffff;
-    --dark-button-hover-color: #313131;
-    --dark-button-active-color: #313131;
-    --dark-content-color: #000;
-    --dark-header-color: var(--dark-background-color);
-    --dark-sub-background-color: #282828;
-    --dark-text-color: #ffffff;
-    --dark-main-color: #ff0000;
-    --dark-sub-color: #3ea6ff;
-
-    --header-height: 56px;
-    --button-radius-size: 24px;
-}
-
+/* テキストボックスのプレースホルダー */
 ::placeholder {
     color: var(--placeholder-text-color);
 }
 
+.dark-theme ::placeholder {
+    color: var(--dark-placeholder-text-color);
+}
+
+/* ルート変数 */
+:root {
+
+    /* ** 要素ごとの色定義 */
+
+    /* === 基本色 */
+    /* ◇ ライトテーマ */
+    --background-color: white;
+    --text-color: #030303;
+
+    --sub-background-color: #d3d3d3;
+    --background-grad-start-color: var(--background-color);
+    --background-grad-end-color: var(--background-color);
+
+    --border-color: #ccc;
+    --border-shadow-color: #eee;
+
+    --placeholder-text-color: #777;
+
+    /* ◆ ダークテーマ */
+    --dark-background-color: black;
+    --dark-text-color: white;
+
+    --dark-sub-background-color: #282828;
+    --dark-background-grad-start-color: #404040;
+    --dark-background-grad-end-color: var(--dark-background-color);
+
+    --dark-border-color: #303030;
+    --dark-border-shadow-color: var(--dark-border-color);
+
+    --dark-placeholder-text-color: #808080;
+
+
+    /* === サイトカラー */
+    /* ◇ ライトテーマ */
+    --main-color: #ff0000;
+    --sub-color: #3ea6ff;
+    /* ◆ ダークテーマ */
+    --dark-main-color: #ff0000;
+    --dark-sub-color: #3ea6ff;
+
+
+    /* === ヘッダー領域 */
+    /* ◇ ライトテーマ */
+    --header-background-color: var(--background-color);
+    --header-text-color: var(--text-color);
+    /* ◆ ダークテーマ */
+    --dark-header-background-color: var(--dark-background-color);
+    --dark-header-text-color: var(--dark-text-color);
+
+
+    /* === コンテンツ領域 */
+    /* ◇ ライトテーマ */
+    --content-background-color: var(--background-color);
+    --content-text-color: var(--text-color);
+    /* ◆ ダークテーマ */
+    --dark-content-background-color: var(--dark-background-color);
+    --dark-content-text-color: var(--dark-text-color);
+
+
+    /* === フッター領域 */
+    /* ◇ ライトテーマ */
+    --footer-background-color: var(--header-background-color);
+    --footer-text-color: var(--header-text-color);
+    /* ◆ ダークテーマ */
+    --dark-footer-background-color: var(--dark-header-background-color);
+    --dark-footer-text-color: var(--dark-header-text-color);
+
+
+    /* === コマンド入力ボックス */
+    /* ◇ ライトテーマ */
+    --command-box-text-color: var(--text-color);
+    --command-box-background-color: var(--background-color);
+    --command-box-border-color: var(--border-color);
+    --command-box-border-shadow-color: var(--border-shadow-color);
+    --command-box-focus-border-color: #1c62b9;
+    /* ◆ ダークテーマ */
+    --dark-command-box-background-color: var(--dark-background-color);
+    --dark-command-box-border-color: var(--dark-border-color);
+    --dark-command-box-border-shadow-color: var(--dark-border-shadow-color);
+    --dark-command-box-focus-border-color: var(--command-box-focus-border-color);
+
+
+    /* === コマンド入力ボタン */
+    /* ◇ ライトテーマ */
+    --command-button-text-color: #0f0f0f;
+    --command-button-background-color: #f8f8f8;
+    --command-button-border-color: var(--border-color);
+    --command-button-hover-background-color: #eee;
+    --command-button-active-background-color: #ddd;
+    /* ◆ ダークテーマ */
+    --dark-command-button-text-color: white;
+    --dark-command-button-background-color: #222;
+    --dark-command-button-border-color: var(--dark-border-color);
+    --dark-command-button-hover-background-color: #313131;
+    --dark-command-button-active-background-color: var(--dark-command-button-hover-background-color);
+
+
+    /* === アクションボタン  */
+    /* ◇ ライトテーマ */
+    --act-button-text-color: #0d0d0d;
+    --act-button-background-color: #f2f2f2;
+    --act-button-border-color: #d9d9d9;
+    --act-button-hover-background-color: #e5e5e5;
+    --act-button-active-background-color: #cecece;
+    --act-button-focus-background-color: white;
+    --act-button-focus-outline-color: #0f0f0f;
+    --act-button-focus-text-color: var(--act-button-text-color);
+    /* ◆ ダークテーマ */
+    --dark-act-button-text-color: #eee;
+    --dark-act-button-background-color: #272727;
+    --dark-act-button-border-color: #3d3d3d;
+    --dark-act-button-hover-background-color: #3f3f3f;
+    --dark-act-button-active-background-color: #535353;
+    --dark-act-button-focus-background-color: #171515;
+    --dark-act-button-focus-border-color: #f1f1f1;
+    --dark-act-button-focus-text-color: #f1f1f1;
+
+
+    /* === モード変更ボタン */
+    /* ◇ ライトテーマ */
+    --mode-button-text-color: #f1f1f1;
+    --mode-button-background-color: #0f0f0f;
+    --mode-button-border-color: var(--mode-button-background-color);
+    --mode-button-hover-background-color: #272727;
+    --mode-button-active-background-color: #525252;
+    /* ◆ ダークテーマ */
+    --dark-mode-button-text-color: #0f0f0f;
+    --dark-mode-button-background-color: #f1f1f1;
+    --dark-mode-button-border-color: var(--dark-mode-button-background-color);
+    --dark-mode-button-hover-background-color: #d9d9d9;
+    --dark-mode-button-active-background-color: #aeaeae;
+
+
+    /* === メニューボタン */
+    /* ◇ ライトテーマ */
+    --menu-button-text-color: var(--command-button-text-color);
+    --menu-button-background-color: var(--command-button-background-color);
+    --menu-button-border-color: var(--menu-button-background-color);
+    --menu-button-hover-background-color: var(--command-button-hover-background-color);
+    --menu-button-active-background-color: var(--command-button-active-background-color);
+    /* ◆ ダークテーマ */
+    --dark-menu-button-text-color: var(--dark-command-button-text-color);
+    --dark-menu-button-background-color: var(--dark-command-button-background-color);
+    --dark-menu-button-border-color: var(--dark-mode-button-background-color);
+    --dark-menu-button-hover-background-color: var(--dark-command-button-hover-background-color);
+    --dark-menu-button-active-background-color: var(--dark-command-button-active-background-color);
+
+
+    /* === 概要欄 */
+    /* ◇ ライトテーマ */
+    --overview-background-color: #f2f2f2;
+    /* ◆ ダークテーマ */
+    --dark-overview-background-color: #2a2a2a;
+
+    /* === モード説明文
+    /* ◇ ライトテーマ */
+    --mode-description-color: #666;
+    /* ◆ ダークテーマ */
+    --dark-mode-description-color: #aaa;
+
+
+    /* ヘッダー領域高さ */
+    --header-height: 56px;
+
+    /* ボタン角丸サイズ */
+    --button-radius-size: 24px;
+}
+
+
+/* 全体 */
 body {
     overflow-y: scroll;
     background-color: var(--background-color);
     color: var(--text-color);
+    padding: 8px;
 }
 
+/* 全体（ダークテーマ）*/
 body.dark-theme {
     background-color: var(--dark-background-color);
     color: var(--dark-text-color);
 }
 
+/* レイアウト枠 */
 .layout {
     display: flex;
     flex-direction: column;
@@ -115,75 +210,85 @@ body.dark-theme {
     justify-content: center;
 }
 
+/* 下部パネル */
 .bottom-panel {
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-content: center;
 }
 
+/* 動作モード領域 */
 .mode-area {
+    padding: 8px 16px 0 0;
     width: fit-content;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    vertical-align: middle;
+    align-self: flex-start;
+    align-items: center;
+    height: fit-content;
 }
 
+/* 動作モード ユーザーアイコン */
 .mode-area .user-icon {
     margin-right: 16px;
     height: 48px;
     width: 48px;
 }
 
+/* 動作モード 段落 */
 .mode-area p {
     white-space: nowrap;
 }
 
+/* 動作モード名 */
 .mode-text {
     font-size: medium;
 }
 
+/* 動作モード説明文 */
 .mode-description {
     font-size: small;
     color: var(--mode-description-color);
 }
 
+/* 動作モード変更ボタン */
 .mode-button {
-    margin: 2px 16px;
+    margin-left: 16px;
     padding: 6px 24px;
     font-size: large;
     color: var(--mode-button-text-color);
-    border-style: none;
-    border-width: 0px;
+    background-color: var(--mode-button-background-color);
+    border: none;
     border-radius: var(--button-radius-size);
-    background-color: var(--mode-button-color);
     white-space: nowrap;
     width: fit-content;
     cursor: pointer;
 }
 
+/* 動作モード変更ボタン:ホバー */
 .mode-button:hover {
-    background-color: var(--mode-button-hover-color);
+    background-color: var(--mode-button-hover-background-color);
 }
 
+/* 動作モード変更ボタン:アクティブ */
 .mode-button:active {
-    background-color: var(--mode-button-active-color);
+    background-color: var(--mode-button-active-background-color);
     padding: 7px 23px 5px 25px;
 }
 
 .dark-theme .mode-button {
     color: var(--dark-mode-button-text-color);
-    background-color: var(--dark-mode-button-color);
+    background-color: var(--dark-mode-button-background-color);
 }
 
 .dark-theme .mode-button:hover {
-    background-color: var(--dark-mode-button-hover-color);
+    background-color: var(--dark-mode-button-hover-background-color);
 }
 
 .dark-theme .mode-button:active {
-    background-color: var(--dark-mode-button-active-color);
+    background-color: var(--dark-mode-button-active-background-color);
 }
 
 .dark-theme .mode-description {
@@ -191,7 +296,8 @@ body.dark-theme {
 }
 
 .header {
-    background-color: var(--header-color);
+    background-color: var(--header-background-color);
+    color: var(--header-text-color);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -204,9 +310,9 @@ body.dark-theme {
     z-index: 999;
 }
 
-
 .dark-theme .header {
-    background-color: var(--dark-header-color);
+    background-color: var(--dark-header-background-color);
+    color: var(--dark-header-text-color);
 }
 
 .header-left {
@@ -231,7 +337,7 @@ body.dark-theme {
     align-items: center;
 }
 
-.barger-area {
+.menu-button {
     padding: 0;
     margin: 0 2px 0 0;
     width: 40px;
@@ -240,52 +346,52 @@ body.dark-theme {
     cursor: pointer;
 }
 
-.barger-area:hover {
-    background-color: var(--command-button-hover-color);
+.menu-button:hover {
+    background-color: var(--menu-button-hover-background-color);
 }
 
-.barger-area:active {
-    background-color: var(--command-button-active-color);
+.menu-button:active {
+    background-color: var(--menu-button-active-background-color);
 }
 
-.dark-theme .barger-area:hover {
-    background-color: var(--dark-command-button-hover-color);
+.dark-theme .menu-button:hover {
+    background-color: var(--dark-menu-button-hover-background-color);
 }
 
-.dark-theme .barger-area:active {
-    background-color: var(--dark-command-button-active-color);
+.dark-theme .menu-button:active {
+    background-color: var(--dark-menu-button-active-background-color);
 }
 
-.barger-menu {
-    margin: 0;
-    padding: 7px 3px 2px 3px;
+.barger-icon {
+    margin: 7px 3px 2px 8px;
+    padding: 3px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
 }
 
-.barger-menu-line:before,
-.barger-menu-line:after,
-.barger-menu-line {
+.barger-icon-line:before,
+.barger-icon-line:after,
+.barger-icon-line {
     content: '';
     width: 18px;
     height: 1px;
     background-color: currentColor;
     position: relative;
-    left: 8px;
+    left: 0px;
 }
 
-.barger-menu-line:after,
-.barger-menu-line:before {
+.barger-icon-line:after,
+.barger-icon-line:before {
     position: absolute;
     top: -6px;
     left: 0px;
 }
 
-.barger-menu-line:after {
+.barger-icon-line:after {
     top: 6px;
 }
 
@@ -358,9 +464,7 @@ body.dark-theme {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    border-style: none;
-    border-width: 1px;
-    border-color: var(--border-color);
+    border: none;
     font-size: large;
     width: 50%;
     border-radius: 24px;
@@ -370,37 +474,33 @@ body.dark-theme {
     border-color: var(--dark-border-color);
 }
 
-.command-text {
+.command-box {
     padding: 4px 16px;
     flex-grow: 5;
     font-size: large;
     outline-style: none;
     outline-width: 0;
-    background-color: var(--background-color);
-    box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
-    border-color: var(--border-color);
-    border-style: solid;
-    border-width: 1px;
+    color: var(--command-box-text-color);
+    background-color: var(--command-box-background-color);
+    border: solid 1px var(--command-box-border-color);
     border-radius: var(--button-radius-size) 0 0 var(--button-radius-size);
-    color: var(--text-color);
+    box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
-.command-text:focus {
-    outline-style: none;
-    outline-color: var(--command-focus-color);
-    outline-width: 0;
-    border-color: var(--command-focus-color);
+.command-box:focus {
+    outline: none;
+    border-color: var(--command-box-focus-border-color);
 }
 
-.dark-theme .command-text {
-    background: var(--dark-background-color);
+.dark-theme .command-box {
+    background: var(--dark-command-box-background-color);
     box-shadow: none;
-    color: var(--dark-text-color);
-    border-color: var(--dark-border-color);
+    color: var(--dark-command-box-text-color);
+    border-color: var(--dark-command-box-border-color);
 }
 
-.dark-theme .command-text:focus {
-    border-color: var(--dark-command-focus-color);
+.dark-theme .command-box:focus {
+    border-color: var(--dark-command-box-focus-border-color);
 }
 
 .command-button {
@@ -411,44 +511,42 @@ body.dark-theme {
     outline-style: none;
     outline-width: 0;
     cursor: pointer;
-    border-style: solid;
-    border-width: 1px 1px 1px 0px;
-    background-color: var(--command-button-color);
-    border-color: var(--border-color);
-    border-left-style: solid;
+    background-color: var(--command-button-background-color);
+    border: solid 1px var(--command-button-border-color);
+    border-left: none;
+    border-radius: 0 var(--button-radius-size) var(--button-radius-size) 0;
     font-size: large;
     color: var(--text-color);
     width: fit-content;
     min-width: 2em;
-    border-radius: 0 var(--button-radius-size) var(--button-radius-size) 0;
 }
 
 .command-button:hover {
-    background-color: var(--command-button-hover-color);
+    background-color: var(--command-button-hover-background-color);
 }
 
 .command-button:active {
-    background-color: var(--command-button-active-color);
+    background-color: var(--command-button-active-background-color);
     padding: 5px 3px 3px 5px;
 }
 
 .dark-theme .command-button {
-    background-color: var(--dark-button-color);
-    border-color: var(--dark-border-color);
-    color: var(--dark-text-color);
-    border-color: var(--dark-border-color);
+    background-color: var(--dark-command-button-background-color);
+    border-color: var(--dark-command-button-border-color);
+    color: var(--dark-command-button-text-color);
+    border-color: var(--dark-command-button-border-color);
 }
 
 .dark-theme .command-button:hover {
-    background-color: var(--dark-button-hover-color);
+    background-color: var(--dark-command-button-hover-background-color);
 }
 
 .dark-theme .command-button:active {
-    background-color: var(--dark-button-active-color);
+    background-color: var(--dark-command-button-active-background-color);
 }
 
 .content {
-    background-color: var(--content-color);
+    background-color: var(--content-background-color);
     display: flex;
     justify-content: center;
     padding: 24px 4vw;
@@ -469,7 +567,6 @@ body.dark-theme {
     display: flex;
     flex-direction: column;
     flex: 1 0 auto;
-    /* justify-content: space-between;  */
     justify-content: start;
     width: 20vw;
     padding: 0 16px;
@@ -479,9 +576,7 @@ body.dark-theme {
     position: relative;
     background-color: gray;
     height: fit-content;
-    border-style: solid;
-    border-width: 1px;
-    border-color: black;
+    border: solid 1px black;
     padding: 0;
 
 }
@@ -489,9 +584,6 @@ body.dark-theme {
 .screen-canvas {
     background-color: black;
     padding: 0;
-    /* border-style: solid;
-    border-width: 1px;
-    border-color: black; */
     width: 100%;
     box-sizing: border-box;
     display: block;
@@ -505,7 +597,7 @@ body.dark-theme {
     height: 100%;
     display: none;
     background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9));
-    border-style: none;
+    border: none;
 }
 
 .info-area .select-bg-button {
@@ -514,12 +606,12 @@ body.dark-theme {
     cursor: pointer;
     font-size: large;
     color: var(--dark-text-color);
+    height: fit-content;
 }
 
 .info-area .select-bg-button :hover {
     color: var(--dark-sub-color);
 }
-
 
 .edit-mode .info-area {
     display: flex;
@@ -533,11 +625,10 @@ body.dark-theme {
 
 .ad-area {
     padding: 0;
-    display: flex;
+    display: none;
     flex-direction: row;
     justify-content: end;
-    border-style: solid;
-    border-width: 1px;
+    border: solid 1px;
     border-radius: 8px;
     height: 64px;
     margin-bottom: 24px;
@@ -553,15 +644,13 @@ body.dark-theme {
 
 .button-area input[type='text'],
 .button-area button {
-    font-size: x-large;
-    min-height: 48px;
-    color: var(--run-button-text-color);
-    background-color: var(--run-button-color);
-    border-color: var(--run-button-border-color);
-    border-width: 1px;
-    border-style: solid;
     margin: 8px;
     padding: 4px 20px 6px;
+    font-size: x-large;
+    min-height: 48px;
+    color: var(--act-button-text-color);
+    background-color: var(--act-button-background-color);
+    border: solid 1px var(--act-button-border-color);
     border-radius: var(--button-radius-size);
     cursor: pointer;
 }
@@ -575,44 +664,42 @@ body.dark-theme {
 }
 
 .button-area input[type='text']:focus {
-    outline-style: solid !important;
-    outline-width: 2px !important;
-    outline-color: var(--button-focus-outline-color) !important;
-    background-color: var(--button-focus-background-color) !important;
-    color: var(--button-focus-text-color) !important;
+    outline: solid 2px var(--act-button-focus-outline-color) !important;
+    background-color: var(--act-button-focus-background-color) !important;
+    color: var(--act-button-focus-text-color) !important;
 }
 
 .button-area button:hover {
-    background-color: var(--run-button-hover-color);
+    background-color: var(--act-button-hover-background-color);
 }
 
 .button-area button:active {
-    background-color: var(--run-button-active-color);
+    background-color: var(--act-button-active-background-color);
     padding: 5px 19px 5px 21px;
 }
 
 .dark-theme .button-area input[type='text'],
 .dark-theme .button-area button {
-    color: var(--dark-run-button-text-color);
-    background-color: var(--dark-run-button-color);
-    border-color: var(--dark-run-button-border-color);
+    color: var(--dark-act-button-text-color);
+    background-color: var(--dark-act-button-background-color);
+    border-color: var(--dark-act-button-border-color);
 }
 
 .button-area input[type='text']:focus {
     outline-color: var(--dark-button-focus-outline-color) !important;
-    background-color: var(--dark-button-focus-background-color) !important;
-    color: var(--dark-button-focus-text-color) !important;
+    background-color: var(--dark-act-button-focus-background-color) !important;
+    color: var(--dark-act-button-focus-text-color) !important;
 }
 
 
 .dark-theme .button-area input[type='text']:hover,
 .dark-theme .button-area button:hover {
-    background-color: var(--dark-run-button-hover-color);
+    background-color: var(--dark-act-button-hover-background-color);
 }
 
 .dark-theme .button-area input[type='text']:active,
 .dark-theme .button-area button:active {
-    background-color: var(--dark-run-button-active-color);
+    background-color: var(--dark-act-button-active-background-color);
 }
 
 
@@ -634,7 +721,7 @@ body.dark-theme {
 }
 
 .control {
-    border-style: none;
+    border: none;
     font-size: large;
     text-align: left;
     padding: 0 0 16px;
@@ -643,16 +730,14 @@ body.dark-theme {
 .simple-component {
     margin: 0px;
     padding: 0px;
-    border-style: none;
+    border: none;
 }
 
 .composite-component {
     padding: 8px;
-    border-width: 1px;
-    border-style: solid;
+    border: solid 2px var(--border-color);
     display: flex;
     flex-wrap: wrap;
-    border-color: var(--border-color);
     background-color: var(--background-color);
     box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
@@ -660,9 +745,7 @@ body.dark-theme {
 .disabled-component {
     padding: 8px;
     padding-bottom: 2px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: lightgray;
+    border: solid 2px lightgray;
     color: black;
     background-color: whitesmoke;
 }
@@ -677,10 +760,8 @@ body.dark-theme {
 .control input[type='text'],
 .control select {
     padding: 8px;
-    border-style: solid;
     background-color: var(--background-color);
-    border-width: 1px;
-    border-color: var(--border-color);
+    border: solid 2px var(--border-color);
     font-size: large;
     width: 100%;
     box-sizing: border-box;
@@ -689,8 +770,7 @@ body.dark-theme {
 }
 
 .control input[type='text']:focus {
-    outline-style: none;
-    outline-width: 0;
+    outline: none;
     background-color: lemonchiffon;
 }
 
@@ -725,26 +805,21 @@ body.dark-theme {
     color: var(--background-color);
     background-color: var(--text-color);
     border-radius: 4px;
-    border-style: none;
-    border-color: var(--border-color);
+    border: none;
 }
 
 .edit-mode .control-description {
     color: var(--dark-background-color);
     background-color: var(--dark-text-color);
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--dark-border-color);
+    border: solid 1px var(--dark-border-color);
 }
 
 .imagelist-component {
     padding: 0;
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border-color);
+    border: solid 1px var(--border-color);
     background-color: var(--sub-background-color);
     overflow-y: scroll;
-    max-height: 35vh;
+    max-height: 50vh;
     box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
@@ -770,9 +845,7 @@ body.dark-theme {
 }
 
 .control img.selected {
-    outline-style: solid;
-    outline-width: 1px;
-    outline-color: var(--sub-color);
+    outline: solid 1px var(--sub-color);
     background-color: var(--sub-background-color);
 }
 
@@ -780,14 +853,11 @@ body.dark-theme {
     display: block;
     width: 100%;
     padding: 8px;
-    border-style: solid;
-    border-color: var(--border-color);
-    border-width: 1px;
+    border: solid 1px var(--border-color);
     cursor: pointer;
     background-color: var(--background-color);
     box-sizing: border-box;
 }
-
 
 .disabled-select {
     -webkit-touch-callout: none;
@@ -843,18 +913,31 @@ body.dark-theme {
     font-weight: bold;
 }
 
+.debug-area {
+    display: none;
+    flex-flow: row nowrap;
+    justify-content: center;
+    margin: 24px;
+}
+
 .log-area {
+    flex: 1 1 auto;
     padding: 8px;
     background-color: black;
-    border-style: solid;
-    border-width: 1px;
-    border-color: white;
+    border: solid 1px white;
     color: white;
     overflow-y: scroll;
-    width: 100%;
     box-sizing: border-box;
     font-size: small;
     height: 50em;
+}
+
+.var-area {
+    margin-left: 16px;
+    padding: 8px;
+    flex: 1 0 20%;
+    background-color: gray;
+    justify-content: start;
 }
 
 .log-area p {
@@ -865,20 +948,17 @@ body.dark-theme {
 }
 
 .log-area .title {
-    color:#ffff99;
+    color: #ffff99;
     padding: 0 0.5em 0 0;
 }
 
-#develop {
-    display: none;
-}
 
 .overview-area {
     margin: 16px 0;
     background-color: var(--overview-background-color);
     color: var(--text-color);
     padding: 12px;
-    border-style: none;
+    border: none;
     border-radius: 12px;
 }
 

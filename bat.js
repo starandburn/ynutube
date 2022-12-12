@@ -1,7 +1,7 @@
 'use strict';
 
 const BAT_MIN_SCALE = 0.1;
-const BAT_MAX_SCALE = 1.5
+const BAT_MAX_SCALE = 1.8;
 
 class Bat extends TransitionSprite {
 

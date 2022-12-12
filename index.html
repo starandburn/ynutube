@@ -14,9 +14,9 @@
     <div id="layout" class="layout">
         <header class="header">
             <div class="header-left  disabled-select">
-                <div class="barger-area" onClick="onMenubutton_Click();">
-                    <div class="barger-menu">
-                        <div class="barger-menu-line"></div>
+                <div class="menu-button" onClick="onMenubutton_Click();">
+                    <div class="barger-icon">
+                        <div class="barger-icon-line"></div>
                     </div>
                 </div>
                 <div class="yt-logo">
@@ -25,7 +25,7 @@
             </div>
             <div class="header-center  disabled-select">
                 <div class="command-area">
-                    <input type="text" id="commandText" class="command-text" autofocus placeholder="コマンド"
+                    <input type="text" id="commandBox" class="command-box" autofocus placeholder="コマンド"
                         onKeyPress="onCommandText_KeyPress(event);">
                     <!-- </div> -->
                     <button class="command-button" id="commandButton" onClick="onCommandButton_Click();">📣</button>
@@ -77,6 +77,7 @@
                 </div>
             </div>
             <div class="side-panel disabled-select">
+                <div id="adArea" class="ad-area"></div>
                 <div id="controlArea" class="control-area"></div>
             </div>
         </div>
@@ -91,6 +92,8 @@
     <div id="debugArea" class="debug-area">
         <div id="logArea" class="log-area">
             <p>---- デバッグログ ----</p>
+        </div>
+        <div id="varArea" class="var-area">
         </div>
     </div>
 </body>
