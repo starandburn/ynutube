@@ -105,8 +105,10 @@ const CONTROL_SLIDER = 'slider';
 const CONTROL_LIST = 'list';
 const CONTORL_IMAGELIST = 'imagelist';
 
+const DEFAULT_CONTROL = CONTROL_FIX;
+
 const controlItems = [
-    // { id: CONTROL_FIX, text: '📍固定' },
+    { id: CONTROL_FIX, text: '📍固定' },
     { id: CONTROL_TEXT, text: '📝テキストボックス' },
     { id: CONTROL_CHECK, text: '✅チェックボックス' },
     { id: CONTORL_RADIO, text: '🔘ラジオボタン' },
@@ -143,43 +145,25 @@ const fields = [
     { id: FIELD_KIND, text: '種類', items: kindItems, checkText: '違う種類', code: 'k' },
 ];
 
-// const fieldAttributes = new Map([
-//     [FIELD_DIRECTION, {
-//         text: '向き',
-//         items: directionItems,
-//         checkText: '反対を向く',
-//         code: 'd',
-//     }],
-
-//     [FIELD_SIZE, {
-//         text: 'サイズ',
-//         items: sizeItems,
-//         checkText: '大きくする',
-//         code: 'z',
-//     }],
-
-//     [FIELD_SPEED, {
-//         text: 'スピード',
-//         items: speedItems,
-//         checkText: '速くする',
-//         code: 'p',
-//     }],
-
-//     [FIELD_KIND, {
-//         text: '種類',
-//         items: kindItems,
-//         checkText: '種類を変える',
-//         code: 'k',
-//     }],
-
-// ]);
-
 const backGroundIds = [
     'field',
     'sea',
     'fantasy',
     'night',
     'out',
+];
+
+const kindNames = [
+    { id: 'dog1', text: 'ブラッドハウンド' },
+    { id: 'dog2', text: ' ラブラドールレトリバー' },
+    { id: 'dog3', text: ' グレイハウンド' },
+    { id: 'dog4', text: ' シベリアンハスキー' },
+    { id: 'dog5', text: ' ブルドッグ' },
+    { id: 'dog6', text: ' パグ' },
+    { id: 'dog7', text: ' ロットワイラー' },
+    { id: 'dog8', text: ' シェパード' },
+    { id: 'dog9', text: ' グレート・デーン' },
+    { id: 'dog10', text: ' ボクサー' },
 ];
 
 const buttonCodes = [
@@ -265,49 +249,33 @@ function isBlank(str) { return isNone(str) || str.trim().length == 0; }
 function initializeItemTables() {
 
     console.log('項目テーブル初期化');
-    initializeSpeedItems();
-    initializeKindItems();
-    // for (let field of fieldAttributes.keys()) {
-    //     for (let i in getFieldAttribute(field).items) {
-    //         getFieldAttribute(field).items[i].command = normalizeText(getFieldAttribute(field).items[i].command);
-    //     }
-    // }
-
+    createSpeedItems();
+    createKindItems();
     for (let field of fields) {
         for (let item of field.items) {
             item.command = normalizeText(item.command);
         }
+        console.log(field.id, field.text, field.command, field.code);
     }
-
-    // for (let field of fieldAttributes.keys()) {
-    //     for (let i in getFieldAttribute(field).items) {
-    //         console.log(getFieldAttribute(field).items[i].command);
-    //     }
-    // }
-
 }
 
 function initializeTranslateTable() {
     console.log('コマンド変換テーブル初期化');
-    for (let i = 0; i < translateTable.length; i++) {
-        for (let j = 0; j < translateTable[i].length; j++) {
+    for (let i in translateTable) {
+        for (let j in translateTable[i]) {
             translateTable[i][j] = normalizeText(translateTable[i][j]);
         }
+    }
+    for (let group of translateTable) {
+        console.log(group.slice(0, 1), group.slice(1));
     }
 }
 
 function getFieldByCode(code) {
-
-    // for (let key of fieldAttributes.keys()) {
-    //     if (equals(code, fieldAttributes.get(key)?.code)) return key;
-    // }
-    // return null;
-    console.log('フィールド', code);
     return fields.find(f => equals(f.code, code))?.id;
 }
 
 function getControlByCode(code) {
-    code = normalizeText(code);
     return controlItems.find(x => equals(x.code, code))?.id || null;
 }
 
@@ -315,7 +283,7 @@ function toStringFromItems(items) {
     return items?.map(x => `${x?.command ?? 'none'}[${x?.id}]:${x?.text}`)?.join(', ');
 }
 
-function initializeSpeedItems() {
+function createSpeedItems() {
 
     const names = getCommandItems(FIELD_SPEED);
     for (let i = SPEED_MIN; i <= SPEED_MAX; i++) {
@@ -324,16 +292,17 @@ function initializeSpeedItems() {
         if (!isNone(description)) listText += `(${description})`;
         speedItems.push({ id: i, text: listText, command: null, useOption: false, useList: true, useRandom: true });
     }
-    console.log('速度テーブル初期化:', toStringFromItems(speedItems));
+    console.log('速度テーブル作成:', toStringFromItems(speedItems));
 }
 
-function initializeKindItems() {
+function createKindItems() {
     kindItems.splice(0);
     for (let tileNo = DOG_IMAGE_NO_MIN; tileNo <= DOG_IMAGE_NO_MAX; tileNo++) {
         const imageId = `dog${tileNo}`;
-        kindItems.push({ id: tileNo, text: `犬${tileNo}`, src: `img/${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true, default: (tileNo == DOG_IMAGE_NO_MIN), useCheck: (tileNo == DOG_IMAGE_NO_MAX) });
+        const text = kindNames.find(x => equals(x.id, imageId))?.text ?? `犬${tileNo}`;
+        kindItems.push({ id: tileNo, text: text, src: `img/${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true, default: (tileNo == DOG_IMAGE_NO_MIN), useCheck: (tileNo == DOG_IMAGE_NO_MAX) });
     }
-    console.log('種類テーブル初期化:', toStringFromItems(kindItems));
+    console.log('種類テーブル作成:', toStringFromItems(kindItems));
 }
 
 function appendExtraKinds() {
@@ -346,21 +315,12 @@ function appendExtraKinds() {
         kindItems.push({ id: tileNo, text: `特殊犬${imageId}`, src: `img/@dog${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true });
     }
     console.log('種類テーブル特殊犬追加', toStringFromItems(kindItems));
-    createAllItemTables();
     existsExtraKinds = true;
 
 }
 
-// function createAllItemTables() {
-//     allItems = [].concat(...Array.from(fieldAttributes.values()).map(x => x.items));
-//     console.log('全項目テーブル作成', toStringFromItems(allItems));
-// }
-
 function getAllItems() {
-    // const result = Array.from(fieldAttributes?.values())?.map(x => x.items)?.flat();
-    const result = fields.map(f => f.items).flat();
-    // console.log('全項目テーブル', result);
-    return result;
+    return result = fields.map(f => f.items).flat();
 }
 function getTextFromCommand(command) {
     getAllItems().find(x => x.command)?.text;
@@ -440,6 +400,7 @@ function doDebugCommand() {
 function doResetCommand(mode) {
     console.log('コマンド実行', isPlayMode(mode) ? '実行状態リセット' : '設計内容リセット');
     if (isEditMode(mode)) {
+        resetAvailabilities();
         resetControls();
         buildControls(mode);
         resetButtons();
@@ -509,13 +470,12 @@ function doCommand(text) {
                     doCommand(COMMAND_BUTTONS);
                     return;
                 case COMMAND_CONTROLS:
-                    resetControls(false);
-                    // Array.from(fieldAttributes.keys()).forEach(x => appendControl(x, false));
+                    resetControls();
                     fields.forEach(f => appendControl(f.id, false));
                     buildControls(currentMode);
                     return;
                 case COMMAND_RESET_CONTROLS:
-                    resetControls(false);
+                    resetControls();
                     buildControls(currentMode)
                     return;
                 case COMMAND_RESET_BUTTONS:
@@ -544,7 +504,6 @@ function doCommand(text) {
                     }
 
                     // 設定可能フィールドの追加と除外（-xxxxxxx)で除外
-                    // for (let field of fieldAttributes.keys()) {
                     for (let fieldId of fields.map(f => f.id)) {
                         if (equals(fieldId, command, true, false)) {
                             appendControl(fieldId);
@@ -557,15 +516,11 @@ function doCommand(text) {
                     }
 
                     // コントロールの有効化
-                    for (let item of controlItems) {
-                        if (equals(item.id, command, false, false)) {
-                            item.available = true;
-                            buildControls(currentMode, true);
-                            return;
-                        }
+                    if (setAvailability(command, true)) {
+                        buildControls(currentMode, true);
+                        return;
                     }
 
-                    // if (allItems.find(x => equals(x.command, command, false, false))) 
                     if (getAllItems().some(x => equals(x.command, command, false, false))) {
                         doButtonCommand(command);
                         return;
@@ -784,8 +739,7 @@ function addComponent(component) {
 }
 
 function getFieldById(fieldId) {
-    // return fieldAttributes.get(field) ?? null;
-    return fields.find(f=>equals(f.id, fieldId));
+    return fields.find(f => equals(f.id, fieldId));
 }
 
 function getItems(fieldId) {
@@ -808,7 +762,6 @@ function getListItems(fieldId) {
     return getFieldById(fieldId)?.items?.filter((x) => x.useList);
 }
 function getCommandItems(fieldId) {
-    // return getFieldAttribute(field)?.items?.filter((x) => ((x.command?.toString().trim() ?? '') != ''));
     return getFieldById(fieldId)?.items?.filter((x) => !isBlank(x.command));
 }
 function getRandomItems(fieldId) {
@@ -816,7 +769,7 @@ function getRandomItems(fieldId) {
 }
 
 // 入力コンポーネントのHTMLエレメントを作成
-function createComponent(field, type, mode = MODE_PLAY) {
+function createComponent(fieldId, type, mode = MODE_PLAY) {
 
     const CLASS_SIMPLE = 'simple-component';
     const CLASS_COMPOSITE = 'composite-component';
@@ -828,28 +781,28 @@ function createComponent(field, type, mode = MODE_PLAY) {
     if (isPlayMode(mode)) {
         switch (type) {
             case CONTROL_TEXT:
-                component = new TextBox(field, getDefaultValue(field, true), getCommandItems(field), CLASS_SIMPLE);
+                component = new TextBox(fieldId, getDefaultValue(fieldId, true), getCommandItems(fieldId), CLASS_SIMPLE);
                 break;
             case CONTORL_RADIO:
-                component = new RadioButtons(field, getOptionItems(field), getDefaultValue(field), CLASS_COMPOSITE);
+                component = new RadioButtons(fieldId, getOptionItems(fieldId), getDefaultValue(fieldId), CLASS_COMPOSITE);
                 break;
             case CONTROL_CHECK:
-                component = new CheckBox(field, getFieldById(field)?.checkText, getDefaultValue(field), getCheckedValue(field), CLASS_COMPOSITE);
+                component = new CheckBox(fieldId, getFieldById(fieldId)?.checkText, getDefaultValue(fieldId), getCheckedValue(fieldId), CLASS_COMPOSITE);
                 break;
             case CONTROL_DROPDOWN:
-                component = new DropDown(field, getListItems(field), getDefaultValue(field), CLASS_SIMPLE);
+                component = new DropDown(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_SIMPLE);
                 break;
             case CONTROL_LIST:
-                component = new ListBox(field, getListItems(field), getDefaultValue(field), CLASS_SIMPLE, null, () => { doCommand(COMMAND_DOG); });
+                component = new ListBox(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_SIMPLE, null, () => { doCommand(COMMAND_DOG); });
                 break;
             case CONTROL_SLIDER:
-                component = new Slider(field, getListItems(field), getDefaultValue(field), CLASS_COMPOSITE);
+                component = new Slider(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_COMPOSITE);
                 break;
             case CONTORL_IMAGELIST:
-                component = new ImageList(field, getListItems(field), getDefaultValue(field), CLASS_IMAGELIST, () => { doCommand(COMMAND_DOG); });
+                component = new ImageList(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_IMAGELIST, () => { doCommand(COMMAND_DOG); });
                 break;
             case CONTROL_FIX:
-                component = new FixedLabel(field, getDefaultValue(field), getFieldById(field)?.items, CLASS_DISABLED);
+                component = new FixedLabel(fieldId, getDefaultValue(fieldId), getFieldById(fieldId)?.items, CLASS_DISABLED);
                 break;
             default:
                 break;
@@ -857,8 +810,8 @@ function createComponent(field, type, mode = MODE_PLAY) {
     } else {
 
         // 編集モードの場合はドロップダウンリスト固定
-        let items = controlItems.filter(item => { return ((item.control?.includes(field) ?? true) && (equals(item.id, type) || item.available)); });
-        component = new DropDown(field, items, type, CLASS_SIMPLE);
+        let items = controlItems.filter(item => { return ((item.control?.includes(fieldId) ?? true) && (equals(item.id, type) || item.available)); });
+        component = new DropDown(fieldId, items, type, CLASS_SIMPLE);
 
     }
     return component;
@@ -866,7 +819,7 @@ function createComponent(field, type, mode = MODE_PLAY) {
 }
 
 // コントロールを構成するHTMLエレメントを生成して取得する
-function getControlElement(component, mode = MODE_PLAY, showLabel = true) {
+function generateControlElement(component, mode = MODE_PLAY, showLabel = true) {
 
     const CLASS_CONTROL_DESCRIPTION = 'control-description';
     const CLASS_CONTROL = 'control';
@@ -876,7 +829,6 @@ function getControlElement(component, mode = MODE_PLAY, showLabel = true) {
     element.id = `${fieldId}Control`;
 
     if (showLabel) {
-        // let description = fieldAttributes.get(id)?.text;
         let description = fields.find(f => equals(f.id, fieldId, true, false))?.text;
         if (isEditMode(mode)) description += 'を決めるコントロール';
         const label = new FixedLabel(`${fieldId}Label`, description, null, CLASS_CONTROL_DESCRIPTION);
@@ -900,19 +852,14 @@ function clearControlArea() {
     components.clear();
 }
 
-function InitializeControls(code, hex) {
-    console.log('コントロール情報初期化', code, hex);
-    initializeControlCode();
-    resetControls();
-    restoreControls(code, hex);
-    logControls();
-}
+function InitializeControls(code, hexCode) {
+    console.log('コントロール情報初期化', code, hexCode);
 
-function resetControls(setEnabled = true) {
-    console.log('コントロール情報リセット');
-    controls.splice(0);
-    clearControlArea();
-    if (setEnabled) resetControlEnabled();
+    initializeControlCode();
+    resetAvailabilities(hexCode);
+    resetControls(code);
+    logControls();
+
 }
 
 function initializeControlCode() {
@@ -931,36 +878,36 @@ function initializeControlCode() {
     console.log('コントロールコード初期化', controlItems.map(x => `${x.code}:${x.id}`).join());
 }
 
-function resetControlEnabled() {
-    console.log('コントロール使用状況初期化')
-    controlItems.forEach(item => item.available = equals(item.id, CONTROL_TEXT, false, true));
+function resetAvailabilities(hexCode) {
+    console.log('コントロール使用状況リセット', hexCode)
+    controlItems.forEach(item => item.available = equals(item.id, DEFAULT_CONTROL, false, true));
+    setAvailabilitiesByHexCode(hexCode);
 }
 
-function restoreControls(code, hex) {
+function resetControls(code) {
+
     code = normalizeText(code);
-    hex = normalizeText(hex);
+    console.log('コントロール配置リセット', code);
 
-    if (isBlank(code) && isBlank(hex)) return;
-    console.log('コントロール配置復元', code, `0x${hex}`);
-
+    controls.splice(0);
+    clearControlArea();
 
     if (!isBlank(code)) {
-        let field = null;
+        let fieldId = null;
         for (let i = 0; i < code.length; i++) {
             const c = code.charAt(i);
             if (i % 2 == 0) {
-                field = getFieldByCode(c);
-            } else if (field != null) {
-                if (controls.find(x => equals(x.field, field)) != null) continue;
-                const type = getControlByCode(c) ?? CONTROL_TEXT;
+                fieldId = getFieldByCode(c);
+            } else if (fieldId != null) {
+                if (controls.find(x => equals(x.field, fieldId)) != null) continue;
+                const type = getControlByCode(c) ?? DEFAULT_CONTROL;
                 const index = controlItems?.findIndex(x => equals(x.id, type));
                 if (index >= 0) controlItems[index].available = true;
-                controls.push({ field: field, type: type });
-                console.log(field, type);
+                controls.push({ field: fieldId, type: type });
+                console.log(fieldId, type);
             }
         }
     }
-    if (!isBlank(hex)) setControlsAvailability(hex);
 }
 
 function restoreButtons(code) {
@@ -1004,7 +951,7 @@ function logControls() {
 
 }
 
-function getControlsAvailabilityAsHexCode() {
+function getAvailabilitiesAsHexCode() {
     let result = 0;
     for (let e of controlItems.map(x => x.available)) {
         result = result << 1;
@@ -1012,24 +959,32 @@ function getControlsAvailabilityAsHexCode() {
     }
     return result;
 }
-function setControlsAvailability(hexCode) {
-
-    let num = Number.parseInt(`0x${hexCode}`);
-    if (num == NaN) return;
-
+function setAvailabilitiesByHexCode(hexCode) {
+    let num = Number.parseInt(`0x${hexCode}`) || 0;
+    console.log('コントロール利用可否コード', num);
     for (let i = controlItems.length - 1; i >= 0; i--) {
-        controlItems[i].available = ((num & 0x1) != 0);
+        controlItems[i].available = ((num & 0x1) != 0) || equals(controlItems[i].id, DEFAULT_CONTROL, false, true);
         num = num >> 1;
     }
+}
 
+function getControlById(controlId) {
+    return controlItems.find(c => equals(c.id, controlId));
+}
+
+function setAvailability(controlId, value) {
+    const control = getControlById(controlId);
+    if (control == null) return false;
+    control.available = value;
+    return true;
 }
 
 function UpdateControlTypes() {
     controls.splice(0);
     components.forEach((component) => {
-        const field = component.id;
-        const type = component.value ?? CONTROL_FIX;
-        controls.push({ field: field, type: type });
+        const id = component.id;
+        const type = component.value ?? DEFAULT_CONTROL;
+        controls.push({ field: id, type: type });
     });
     console.log("コントロール種類更新:", getControlsCode());
 }
@@ -1057,7 +1012,7 @@ function buildControls(mode = MODE_PLAY, updateType = false) {
         }
 
         addComponent(component);
-        controlArea.appendChild(getControlElement(component, mode));
+        controlArea.appendChild(generateControlElement(component, mode));
     }
 
     console.log('コントロールコード:', getControlsCode());
@@ -1160,7 +1115,7 @@ function prepareHtmlElements() {
 function appendControl(fieldId, rebuild = true) {
     const index = controls.findIndex((c) => equals(c.field, fieldId))
     if (index == -1) {
-        controls.push({ field: fieldId, type: CONTROL_TEXT });
+        controls.push({ field: fieldId, type: DEFAULT_CONTROL });
         if (rebuild) buildControls(currentMode);
     }
 }
