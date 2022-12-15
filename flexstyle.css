@@ -1,52 +1,208 @@
+/* 全要素原則マージンなし */
 * {
-    margin:0;
+    margin: 0;
+    /* border: dotted 1px #888 !important; */
 }
 
+/* フォーカス枠原則なし */
+*:focus {
+    outline: none;
+}
+
+/* テキストボックスのプレースホルダー */
+::placeholder {
+    color: var(--placeholder-text-color);
+}
+
+.dark-theme ::placeholder {
+    color: var(--dark-placeholder-text-color);
+}
+
+/* ルート変数 */
 :root {
-    --background-color :#ffffff;
-    --border-color : #cccccc;
-    --border-shadow-color : #eeeeee;
-    --button-color : #f8f8f8;
-    --noborder-button-color: #f0f0f0;
-    --noborder-button-active-color : #d0d0d0;
-    --noborder-button-hover-color : #e0e0e0;
-    --button-text-color : #0f0f0f;
-    --button-hover-color : #eee;
-    --button-active-color : #ddd;
-    --sub-background-color : #d3d3d3;
-    --header-color:var(--background-color);
-    --content-color : #ffffff;
-    --text-color:#030303;
-    --main-color:#ff0000;
-    --sub-color:#3ea6ff;
 
-    --dark-background-color : #000;
-    --dark-border-color:#303030;
-    --dark-border-shadow-color:#303030;
-    --dark-button-color : #222222;
-    --dark-button-text-color : #ffffff;
-    --dark-button-hover-color : #313131;
-    --dark-button-active-color : #313131;
-    --dark-content-color:#000;
-    --dark-header-color:var(--dark-background-color);
-    --dark-sub-background-color : #282828;
-    --dark-text-color:#ffffff;
-    --dark-main-color:#ff0000;
-    --dark-sub-color:#3ea6ff;
+    /* ** 要素ごとの色定義 */
 
+    /* === 基本色 */
+    /* ◇ ライトテーマ */
+    --background-color: white;
+    --text-color: #030303;
+
+    --sub-background-color: #d3d3d3;
+    --background-grad-start-color: var(--background-color);
+    --background-grad-end-color: var(--background-color);
+
+    --border-color: #ccc;
+    --border-shadow-color: #eee;
+
+    --placeholder-text-color: #777;
+
+    /* ◆ ダークテーマ */
+    --dark-background-color: black;
+    --dark-text-color: white;
+
+    --dark-sub-background-color: #282828;
+    --dark-background-grad-start-color: #404040;
+    --dark-background-grad-end-color: var(--dark-background-color);
+
+    --dark-border-color: #303030;
+    --dark-border-shadow-color: var(--dark-border-color);
+
+    --dark-placeholder-text-color: #808080;
+
+
+    /* === サイトカラー */
+    /* ◇ ライトテーマ */
+    --main-color: #ff0000;
+    --sub-color: #3ea6ff;
+    /* ◆ ダークテーマ */
+    --dark-main-color: #ff0000;
+    --dark-sub-color: #3ea6ff;
+
+
+    /* === ヘッダー領域 */
+    /* ◇ ライトテーマ */
+    --header-background-color: var(--background-color);
+    --header-text-color: var(--text-color);
+    /* ◆ ダークテーマ */
+    --dark-header-background-color: var(--dark-background-color);
+    --dark-header-text-color: var(--dark-text-color);
+
+
+    /* === コンテンツ領域 */
+    /* ◇ ライトテーマ */
+    --content-background-color: var(--background-color);
+    --content-text-color: var(--text-color);
+    /* ◆ ダークテーマ */
+    --dark-content-background-color: var(--dark-background-color);
+    --dark-content-text-color: var(--dark-text-color);
+
+
+    /* === フッター領域 */
+    /* ◇ ライトテーマ */
+    --footer-background-color: var(--header-background-color);
+    --footer-text-color: var(--header-text-color);
+    /* ◆ ダークテーマ */
+    --dark-footer-background-color: var(--dark-header-background-color);
+    --dark-footer-text-color: var(--dark-header-text-color);
+
+
+    /* === コマンド入力ボックス */
+    /* ◇ ライトテーマ */
+    --command-box-text-color: var(--text-color);
+    --command-box-background-color: var(--background-color);
+    --command-box-border-color: var(--border-color);
+    --command-box-border-shadow-color: var(--border-shadow-color);
+    --command-box-focus-border-color: #1c62b9;
+    /* ◆ ダークテーマ */
+    --dark-command-box-background-color: var(--dark-background-color);
+    --dark-command-box-border-color: var(--dark-border-color);
+    --dark-command-box-border-shadow-color: var(--dark-border-shadow-color);
+    --dark-command-box-focus-border-color: var(--command-box-focus-border-color);
+
+
+    /* === コマンド入力ボタン */
+    /* ◇ ライトテーマ */
+    --command-button-text-color: #0f0f0f;
+    --command-button-background-color: #f8f8f8;
+    --command-button-border-color: var(--border-color);
+    --command-button-hover-background-color: #eee;
+    --command-button-active-background-color: #ddd;
+    /* ◆ ダークテーマ */
+    --dark-command-button-text-color: white;
+    --dark-command-button-background-color: #222;
+    --dark-command-button-border-color: var(--dark-border-color);
+    --dark-command-button-hover-background-color: #313131;
+    --dark-command-button-active-background-color: var(--dark-command-button-hover-background-color);
+
+
+    /* === アクションボタン  */
+    /* ◇ ライトテーマ */
+    --act-button-text-color: #0d0d0d;
+    --act-button-background-color: #f2f2f2;
+    --act-button-border-color: #d9d9d9;
+    --act-button-hover-background-color: #e5e5e5;
+    --act-button-active-background-color: #cecece;
+    --act-button-focus-background-color: white;
+    --act-button-focus-outline-color: #0f0f0f;
+    --act-button-focus-text-color: var(--act-button-text-color);
+    /* ◆ ダークテーマ */
+    --dark-act-button-text-color: #eee;
+    --dark-act-button-background-color: #272727;
+    --dark-act-button-border-color: #3d3d3d;
+    --dark-act-button-hover-background-color: #3f3f3f;
+    --dark-act-button-active-background-color: #535353;
+    --dark-act-button-focus-background-color: #171515;
+    --dark-act-button-focus-border-color: #f1f1f1;
+    --dark-act-button-focus-text-color: #f1f1f1;
+
+
+    /* === モード変更ボタン */
+    /* ◇ ライトテーマ */
+    --mode-button-text-color: #f1f1f1;
+    --mode-button-background-color: #0f0f0f;
+    --mode-button-border-color: var(--mode-button-background-color);
+    --mode-button-hover-background-color: #272727;
+    --mode-button-active-background-color: #525252;
+    /* ◆ ダークテーマ */
+    --dark-mode-button-text-color: #0f0f0f;
+    --dark-mode-button-background-color: #f1f1f1;
+    --dark-mode-button-border-color: var(--dark-mode-button-background-color);
+    --dark-mode-button-hover-background-color: #d9d9d9;
+    --dark-mode-button-active-background-color: #aeaeae;
+
+
+    /* === メニューボタン */
+    /* ◇ ライトテーマ */
+    --menu-button-text-color: var(--command-button-text-color);
+    --menu-button-background-color: var(--command-button-background-color);
+    --menu-button-border-color: var(--menu-button-background-color);
+    --menu-button-hover-background-color: var(--command-button-hover-background-color);
+    --menu-button-active-background-color: var(--command-button-active-background-color);
+    /* ◆ ダークテーマ */
+    --dark-menu-button-text-color: var(--dark-command-button-text-color);
+    --dark-menu-button-background-color: var(--dark-command-button-background-color);
+    --dark-menu-button-border-color: var(--dark-mode-button-background-color);
+    --dark-menu-button-hover-background-color: var(--dark-command-button-hover-background-color);
+    --dark-menu-button-active-background-color: var(--dark-command-button-active-background-color);
+
+
+    /* === 概要欄 */
+    /* ◇ ライトテーマ */
+    --overview-background-color: #f2f2f2;
+    /* ◆ ダークテーマ */
+    --dark-overview-background-color: #2a2a2a;
+
+    /* === モード説明文
+    /* ◇ ライトテーマ */
+    --mode-description-color: #666;
+    /* ◆ ダークテーマ */
+    --dark-mode-description-color: #aaa;
+
+
+    /* ヘッダー領域高さ */
     --header-height: 56px;
+
+    /* ボタン角丸サイズ */
+    --button-radius-size: 24px;
 }
 
+
+/* 全体 */
 body {
     overflow-y: scroll;
     background-color: var(--background-color);
-    color:var(--text-color);
-}
-body.dark-theme {
-    background-color: var(--dark-background-color);
-    color:var(--dark-text-color);
+    color: var(--text-color);
+    padding: 8px;
 }
 
+/* 全体（ダークテーマ）*/
+body.dark-theme {
+    background-color: var(--dark-background-color);
+    color: var(--dark-text-color);
+}
+
+/* レイアウト枠 */
 .layout {
     display: flex;
     flex-direction: column;
@@ -54,8 +210,98 @@ body.dark-theme {
     justify-content: center;
 }
 
+/* 下部パネル */
+.bottom-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+/* 動作モード領域 */
+.mode-area {
+    padding: 8px 16px 0 0;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-self: flex-start;
+    align-items: center;
+    height: fit-content;
+}
+
+.mode-area .reset-button {
+    margin-right: 16px;
+    height: 48px;
+    width: 48px;
+}
+
+.mode-area .reset-button:hover {
+    transform: rotatez(10deg);
+}
+
+
+/* 動作モード 段落 */
+.mode-area p {
+    white-space: nowrap;
+}
+
+/* 動作モード名 */
+.mode-text {
+    font-size: medium;
+}
+
+/* 動作モード説明文 */
+.mode-description {
+    font-size: small;
+    color: var(--mode-description-color);
+}
+
+/* 動作モード変更ボタン */
+.mode-button {
+    margin-left: 16px;
+    padding: 6px 24px;
+    font-size: large;
+    color: var(--mode-button-text-color);
+    background-color: var(--mode-button-background-color);
+    border: none;
+    border-radius: var(--button-radius-size);
+    white-space: nowrap;
+    width: fit-content;
+    cursor: pointer;
+}
+
+/* 動作モード変更ボタン:ホバー */
+.mode-button:hover {
+    background-color: var(--mode-button-hover-background-color);
+}
+
+/* 動作モード変更ボタン:アクティブ */
+.mode-button:active {
+    background-color: var(--mode-button-active-background-color);
+    padding: 7px 23px 5px 25px;
+}
+
+.dark-theme .mode-button {
+    color: var(--dark-mode-button-text-color);
+    background-color: var(--dark-mode-button-background-color);
+}
+
+.dark-theme .mode-button:hover {
+    background-color: var(--dark-mode-button-hover-background-color);
+}
+
+.dark-theme .mode-button:active {
+    background-color: var(--dark-mode-button-active-background-color);
+}
+
+.dark-theme .mode-description {
+    color: var(--dark-mode-description-color);
+}
+
 .header {
-    background-color: var(--header-color);
+    background-color: var(--header-background-color);
+    color: var(--header-text-color);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -69,223 +315,260 @@ body.dark-theme {
 }
 
 .dark-theme .header {
-    background-color: var(--dark-header-color);
-    transition: 0.5s;
+    background-color: var(--dark-header-background-color);
+    color: var(--dark-header-text-color);
 }
 
 .header-left {
     display: flex;
     flex-direction: row;
-    padding : 13px 25px;
-    align-content:flex-start;
-    width:fit-content;
+    padding: 8px 25px 13px 16px;
+    align-content: flex-start;
+    width: fit-content;
 }
 
 .header-center {
     padding: 8px 16px;
-    flex-grow : 1;
+    flex-grow: 1;
     display: flex;
-    justify-content:center;
+    justify-content: center;
 }
 
 .header-right {
-    padding: 0px 32px 0 16px;
+    padding: 0 29px 0 16px;
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-.barger-menu {
-    margin: 0;
-    padding: 2px 2px 2px;
+.menu-button {
+    padding: 0;
+    margin: 0 2px 0 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.menu-button:hover {
+    background-color: var(--menu-button-hover-background-color);
+}
+
+.menu-button:active {
+    background-color: var(--menu-button-active-background-color);
+}
+
+.dark-theme .menu-button:hover {
+    background-color: var(--dark-menu-button-hover-background-color);
+}
+
+.dark-theme .menu-button:active {
+    background-color: var(--dark-menu-button-active-background-color);
+}
+
+.barger-icon {
+    margin: 7px 3px 2px 8px;
+    padding: 3px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
+    width: 18px;
+    height: 18px;
 }
-.barger-menu-line:before,
-.barger-menu-line:after,
-.barger-menu-line {
-    content: "";
+
+.barger-icon-line:before,
+.barger-icon-line:after,
+.barger-icon-line {
+    content: '';
     width: 18px;
     height: 1px;
     background-color: currentColor;
     position: relative;
+    left: 0px;
 }
-.barger-menu-line:after,
-.barger-menu-line:before {
+
+.barger-icon-line:after,
+.barger-icon-line:before {
     position: absolute;
     top: -6px;
+    left: 0px;
 }
-.barger-menu-line:after {
+
+.barger-icon-line:after {
     top: 6px;
 }
 
+.update-link {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+}
+
 .yt-logo {
-    margin : 0;
-    padding: 0px 19px;
-    flex-grow:1;
+    margin: 0;
+    padding: 5px 19px 0 14px;
+    flex-grow: 1;
 }
 
 .yt-logo-image {
     margin: 0;
     padding: 0;
-    height : 20px;
-    width : 90px;
-    background-image: url('../img/yt-logo.png');
-    display:inline-block;
+    height: 20px;
+    width: 90px;
+    background-image: url('img/yt-logo.png');
+    display: inline-block;
+}
+
+.reset-button {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
 }
 
 .dark-theme .yt-logo-image {
-    background-image: url('../img/yt-logo-dark.png');
+    background-image: url('img/yt-logo-dark.png');
 }
 
-.logo-locale {
-    font-size : 10px;
+.location-text {
+    font-size: 10px;
     font-family: Arial, Helvetica, sans-serif;
-    margin:0;
-    padding: 0 4px;
+    margin: 0;
+    padding: 0;
     vertical-align: 16px;
+    border: none;
 }
 
 .nkk-name {
-    padding : 0 16px;
+    padding: 0 16px;
     flex-grow: 1;
     text-align: right;
-    height:fit-content;
+    height: fit-content;
 }
 
-.nkk-logo {
-    padding : 0px 0px;
+.user-icon {
+    margin: 7px 0 0 0;
+    padding: 0;
     height: 32px;
+    width: 32px;
     flex-grow: 1;
     border-radius: 50%;
 }
 
 .header-text-sub {
-    margin : 0;
-    padding : 0;
+    margin: 0;
+    padding: 0;
     font-size: small;
     line-height: 1.5em;
 }
 
 .header-text {
-    margin : 0;
-    padding : 0;
-    font-size:medium;
+    margin: 0;
+    padding: 0;
+    font-size: medium;
     line-height: 1em;
 }
 
-
-.mode-area {
-    margin : 0;
-    padding : 0;
+.command-area {
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    /* border-style: solid; */
-    border-style:none;
-    border-width: 1px;
-    border-color: var(--border-color);
+    border: none;
     font-size: large;
-    width : 50%;
-    border-radius: 24px 24px 24px 24px;
+    width: 50%;
+    border-radius: 24px;
 }
 
-.dark-theme .mode-area {
+.dark-theme .command-area {
     border-color: var(--dark-border-color);
 }
 
-.mode-text {
+.command-box {
     padding: 4px 16px;
     flex-grow: 5;
-    /* border-style: none; */
     font-size: large;
     outline-style: none;
     outline-width: 0;
-    background-color: var(--background-color);
-    box-shadow:0px 1px 2px 0px var(--border-shadow-color) inset;    
-    /* border-radius: 2px 0 0 2px; */
-    border-color: var(--border-color);
-    border-style:solid;
-    border-width: 1px 0px 1px 1px;
-    border-radius: 24px 0 0 24px;
-    /* background-color: white;
-    color:black; */
-    color: var(--text-color);
+    color: var(--command-box-text-color);
+    background-color: var(--command-box-background-color);
+    border: solid 1px var(--command-box-border-color);
+    border-radius: var(--button-radius-size) 0 0 var(--button-radius-size);
+    box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
-.dark-theme .mode-text {
-    background: var(--dark-background-color);
-    box-shadow : none;
-    color:var(--dark-text-color);
-    border-color: var(--dark-border-color);
+.command-box:focus {
+    outline: none;
+    border-color: var(--command-box-focus-border-color);
 }
 
-.mode-button {
+.dark-theme .command-box {
+    background: var(--dark-command-box-background-color);
+    box-shadow: none;
+    color: var(--dark-command-box-text-color);
+    border-color: var(--dark-command-box-border-color);
+}
+
+.dark-theme .command-box:focus {
+    border-color: var(--dark-command-box-focus-border-color);
+}
+
+.command-button {
     flex-grow: 1;
     flex-shrink: 1;
     padding: 4px;
     text-align: center;
     outline-style: none;
     outline-width: 0;
-    cursor:pointer;
-    /* border-style : none;
-    border-width:1px; */
-    border-style:solid;
-    border-width: 1px 1px 1px 1px;
-    background-color: var(--button-color);
-    border-color: var(--border-color);
-    border-left-style : solid;
+    cursor: pointer;
+    background-color: var(--command-button-background-color);
+    border: solid 1px var(--command-button-border-color);
+    border-left: none;
+    border-radius: 0 var(--button-radius-size) var(--button-radius-size) 0;
     font-size: large;
-    color:var(--text-color);
-    width:fit-content;
-    min-width: 6em;
-    border-radius: 0px 24px 24px 0px;
+    color: var(--text-color);
+    width: fit-content;
+    min-width: 2em;
 }
 
-.mode-button:hover {
-    background-color: var(--button-hover-color);
-}
-.mode-button:active {
-    background-color: var(--button-active-color);
+.command-button:hover {
+    background-color: var(--command-button-hover-background-color);
 }
 
-.dark-theme .mode-button {
-    background-color: var(--dark-button-color);
-    border-color: var(--dark-border-color);
-    color:var(--dark-text-color);
-    border-color: var(--dark-border-color);
+.command-button:active {
+    background-color: var(--command-button-active-background-color);
+    padding: 5px 3px 3px 5px;
 }
 
-.dark-theme .mode-button:hover {
-    background-color: var(--dark-button-hover-color);
+.dark-theme .command-button {
+    background-color: var(--dark-command-button-background-color);
+    border-color: var(--dark-command-button-border-color);
+    color: var(--dark-command-button-text-color);
+    border-color: var(--dark-command-button-border-color);
 }
-.dark-theme .mode-button:active {
-    background-color: var(--dark-button-active-color);
+
+.dark-theme .command-button:hover {
+    background-color: var(--dark-command-button-hover-background-color);
+}
+
+.dark-theme .command-button:active {
+    background-color: var(--dark-command-button-active-background-color);
 }
 
 .content {
-    background-color: var(--content-color);
+    background-color: var(--content-background-color);
     display: flex;
     justify-content: center;
     padding: 24px 4vw;
-    transition: 0.5s;
 }
 
 .dark-theme .content {
-    background-color: var(--dark-content-color);
-}
-
-.footer {
-    background-color: lightgray;
+    background: linear-gradient(to bottom, var(--dark-background-grad-start-color), var(--dark-background-grad-end-color));
 }
 
 .main-panel {
-    display: flex;    
+    display: flex;
     flex-direction: column;
     flex: 1 1 auto;
     padding: 0 16px;
@@ -295,7 +578,6 @@ body.dark-theme {
     display: flex;
     flex-direction: column;
     flex: 1 0 auto;
-    /* justify-content: space-between;  */
     justify-content: start;
     width: 20vw;
     padding: 0 16px;
@@ -305,123 +587,276 @@ body.dark-theme {
     position: relative;
     background-color: gray;
     height: fit-content;
-    border-style: solid;
-    border-width: 1px;
-    border-color: black;
+    border: solid 1px black;
     padding: 0;
-   
+
 }
 
 .screen-canvas {
     background-color: black;
     padding: 0;
-    /* border-style: solid;
-    border-width: 1px;
-    border-color: black; */
-    width:100%;
+    width: 100%;
     box-sizing: border-box;
-    display:block;
+    display: block;
 }
 
 .info-area {
+    box-sizing: border-box;
     position: absolute;
     left: 0;
     bottom: 0;
     width: 100%;
     height: 100%;
+    padding: 16px;
     display: none;
-    background : linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0), rgba(0,0,0,0.9));
-    border-style: none;
+    flex-direction: column;
+    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9));
+    border: none;
 }
 
 .info-area .select-bg-button {
-    margin:20px;
-    padding:4px;
-    cursor:pointer;
-    font-size:large;
-    color:var(--dark-text-color);
+    padding: 0;
+    margin: 8px;
+    font-size: large;
+    color: var(--dark-text-color);
+    height: fit-content;
+    flex: initial;
 }
 
 .info-area .select-bg-button :hover {
-    color:var(--dark-sub-color);
+    color: var(--dark-sub-color);
 }
 
+.select-bg-area {
+    align-self: center;
+    padding: 16px 16px 8px 32px;
+    display: flex;
+    flex-flow: row wrap;
+    flex: auto;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: center;
+    overflow: auto;
+}
+
+.select-bg-area .thumbnail {
+    max-width: 30%;
+    /* max-height:33%; */
+    border: solid 1px black;
+    box-shadow: 4px 4px 10px 1px var(--dark-border-shadow-color);
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 8px;
+    user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+}
+
+.select-bg-area div.thumbnail {
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 30%;
+    min-height: 38%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    color: black;
+    font-size: large;
+    /* align-self:stretch; */
+
+}
+
+
+.select-bg-area .thumbnail.selected {
+    /* box-sizing: border-box; */
+    border: solid 4px white;
+    margin: 5px;
+}
+
+.select-bg-area .thumbnail:hover {
+    transform: scale(1.2);
+}
+
+.select-bg-area .thumbnail:active {
+    transform: scale(1.1);
+}
 
 .edit-mode .info-area {
     display: flex;
 }
 
-.control-area {
+.widgets-info .title,
+.widget-area .title {
+    text-align: center;
+    margin: 0 0 16px;
+    padding: 4px;
+    border-radius: 24px;
+    border: solid 1px var(--dark-text-color);
+    /* background-color: blue; */
+}
+
+.widget-area {
     padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
+    /* background-color: aqua; */
 }
+
+.widgets-info {
+    padding: 4px 0px;
+    display: none;
+    margin: 32px 0 0;
+    border: none;
+    flex-direction: column;
+    /* background-color: antiquewhite; */
+}
+
+.widgets-info .description,
+.widget-area .description {
+    margin: 8px 0 ;
+    padding:8px;
+    border:dashed 1px  #c90;
+    background-color: #ffc;
+    color:black;
+    font-size: small;
+}
+
+.widgets-info ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    list-style-type: none;
+    flex-wrap: wrap;
+}
+
+.widgets-info li {
+    display: inline-block;
+    width: fit-content;
+    padding: 4px 8px;
+    margin: 2px 4px;
+    background-color: black;
+    border-radius: 8px;
+    color: white;
+    font-size: small;
+    white-space: nowrap;
+}
+
 
 .button-area {
     padding: 0;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: end;
+    align-content: center;
+    align-items: center;
 }
 
+.button-area input[type='text'],
 .button-area button {
-    font-size: xx-large;
-    color:var(--button-text-color);
-    background-color: var(--noborder-button-color);
-    border-color:var(--border-color);
-    border-width: 1px;
-    /* border-style: solid; */
-    border-style: none;
-    margin: 8px;
-    padding: 4px 20px 6px 20px;
-    cursor: pointer;   
+    margin: 8px 4px 8px 12px;
+    /* padding: 4px 20px 6px; */
+    padding: 4px 16px;
+    font-size: x-large;
+    min-height: 48px;
+    /* font-size:large; */
+    color: var(--act-button-text-color);
+    background-color: var(--act-button-background-color);
+    border: solid 1px var(--act-button-border-color);
+    border-radius: var(--button-radius-size);
+    cursor: pointer;
 }
 
-.dog-button {
-    border-radius: 24px 24px 24px 24px;
+.button-area button.append-button,
+.button-area button.remove-button {
+    margin-left: 0px;
+    padding: 0 8px;
+    min-height: fit-content;
+    font-size: larger;
 }
 
-.dog-button-with-bat-button {
-    border-radius : 24px 0px 0px 24px!important;
-    margin-right: 0!important;
-    border-style: solid!important;
-    border-width: 0 2px 0 0!important;
+.button-area button.append-button {
+    margin-left: 8px;
+    font-size: x-large;
 }
 
-.bat-button {
-    border-radius: 0px 24px 24px 0px;
-    margin-left: 0!important;
+
+.button-area input[type='text'] {
+    display: inline;
+    padding: 0;
+    height: 48px !important;
+    width: 6em !important;
+    text-align: center;
+}
+
+.button-area input[type='text']:focus {
+    outline: solid 2px var(--act-button-focus-outline-color) !important;
+    background-color: var(--act-button-focus-background-color) !important;
+    color: var(--act-button-focus-text-color) !important;
 }
 
 .button-area button:hover {
-    background-color: var(--noborder-button-hover-color);
+    background-color: var(--act-button-hover-background-color);
 }
+
+.button-area button.remove-button:active,
+.button-area button.append-button:active {
+    padding: 0 8px;
+}
+
 .button-area button:active {
-    background-color: var(--noborder-button-active-color);
+    background-color: var(--act-button-active-background-color);
+    /* padding: 5px 19px 5px 21px; */
+    padding: 5px 15px 4px 17px;
+}
+
+.dark-theme .button-area input[type='text'],
+.dark-theme .button-area button {
+    color: var(--dark-act-button-text-color);
+    background-color: var(--dark-act-button-background-color);
+    border-color: var(--dark-act-button-border-color);
+}
+
+.button-area input[type='text']:focus {
+    outline-color: var(--dark-button-focus-outline-color) !important;
+    background-color: var(--dark-act-button-focus-background-color) !important;
+    color: var(--dark-act-button-focus-text-color) !important;
+}
+
+
+.dark-theme .button-area input[type='text']:hover,
+.dark-theme .button-area button:hover {
+    background-color: var(--dark-act-button-hover-background-color);
+}
+
+.dark-theme .button-area input[type='text']:active,
+.dark-theme .button-area button:active {
+    background-color: var(--dark-act-button-active-background-color);
+}
+
+
+.concat-button-left {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-right: 0 !important;
+}
+
+.concat-button-right {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    margin-left: 0 !important;
 }
 
 .dog-count {
-    display:inline-block;
-    width : 3em;
+    display: inline-block;
+    width: 3em;
 }
 
-.dark-theme .button-area button {
-    background-color: var(--dark-button-color);
-    border-color: var(--dark-border-color);
-    color:var(--dark-text-color)
-}
-
-.dark-theme .button-area button:hover {
-    background-color: var(--dark-button-hover-color);
-}
-.dark-theme .button-area button:active {
-    background-color: var(--dark-button-active-color);
-}
-
-
-
-.control {
-    border-style: none;
+.widget {
+    border: none;
     font-size: large;
     text-align: left;
     padding: 0 0 16px;
@@ -430,113 +865,105 @@ body.dark-theme {
 .simple-component {
     margin: 0px;
     padding: 0px;
-    border-style: none;
+    border: none;
 }
 
 .composite-component {
     padding: 8px;
-    border-width: 1px;
-    border-style: solid;
+    border: solid 2px var(--border-color);
     display: flex;
     flex-wrap: wrap;
-    border-color:var(--border-color);
     background-color: var(--background-color);
-    box-shadow:0px 1px 2px 0px var(--border-shadow-color) inset;    
+    box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
 .disabled-component {
-    padding:8px;
-    padding-bottom:2px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: lightgray;
+    padding: 8px;
+    padding-bottom: 2px;
+    border: solid 2px lightgray;
     color: black;
-    background-color:whitesmoke;
+    background-color: whitesmoke;
 }
 
 .composite-component p,
 .disabled-component p {
-    margin:0;
-    padding:8px;
+    margin: 0;
+    padding: 8px;
     line-height: 1em;
 }
 
-.control input[type="text"] ,
-.control select {
-    padding:8px;
-    border-style:solid;
-    background-color:var(--background-color);
-    border-width: 1px;
-    border-color: var(--border-color);
+.widget input[type='text'],
+.widget select {
+    padding: 8px;
+    background-color: var(--background-color);
+    border: solid 2px var(--border-color);
     font-size: large;
-    width:100%;
+    width: 100%;
     box-sizing: border-box;
-    cursor:pointer;
-    box-shadow:0px 1px 2px 0px var(--border-shadow-color) inset;    
+    cursor: pointer;
+    box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
-.control input[type="text"]:focus {
-    outline-style: none;
-    outline-width: 0;
+.widget input[type='text']:focus {
+    outline: none;
     background-color: lemonchiffon;
 }
 
-.edit-mode .control select {
-    color:var(--dark-text-color);
+.edit-mode .widget .new {
+    animation: widget-appear 0.2s linear;
+}
+
+.edit-mode .widget select {
+    color: var(--dark-text-color);
     border-color: var(--dark-border-color);
     background-color: var(--dark-background-color);
 }
 
-
-.control input[type="range"] {
+.widget input[type='range'] {
     width: 100%;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-.control input[type="radio"],
-.control input[type="checkbox"] {
-    cursor:pointer;
+.widget input[type='radio'],
+.widget input[type='checkbox'] {
+    cursor: pointer;
 }
 
 .composite-component label {
-    padding : 0 0 0 4px;
-    cursor:pointer;
+    padding: 0 0 0 4px;
+    cursor: pointer;
 }
 
-.control-description {
+.widget-description {
     margin: 0 0 4px;
     padding: 2px 16px;
     font-size: small;
     line-height: 1.5em;
     font-weight: bold;
-    width:fit-content;
+    width: fit-content;
     color: var(--background-color);
-    background-color:var(--text-color);
+    background-color: var(--text-color);
     border-radius: 4px;
-    border-style: none;
-    border-color: var(--border-color);
+    border: none;
 }
 
-.edit-mode .control-description {
+.edit-mode .widget-description {
     color: var(--dark-background-color);
     background-color: var(--dark-text-color);
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--dark-border-color);
+    border: solid 1px var(--dark-border-color);
 }
 
 .imagelist-component {
     padding: 0;
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border-color);
+    border: solid 1px var(--border-color);
     background-color: var(--sub-background-color);
     overflow-y: scroll;
-    max-height: 35vh;
-    box-shadow:0px 1px 2px 0px var(--border-shadow-color) inset;    
+    max-height: 50vh;
+    box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
-.control ul {
-    margin : 0;
+
+.widget ul {
+    margin: 0;
     padding: 0px;
     background-color: white;
     list-style-type: none;
@@ -547,52 +974,47 @@ body.dark-theme {
     align-items: center;
 }
 
-.control li {
+.widget li {
     margin: 0;
     padding: 2px;
     width: 33%;
-    height:fit-content;
+    height: fit-content;
     box-sizing: border-box;
     flex-grow: 0;
 }
 
-.control img.selected {
-    outline-style: solid;
-    outline-width: 1px;
-    outline-color: var(--sub-color);
+.widget img.selected {
+    outline: solid 1px var(--sub-color);
     background-color: var(--sub-background-color);
 }
 
-.control img {
-    display:block;
-    width : 100%;
+.widget img {
+    display: block;
+    width: 100%;
     padding: 8px;
-    border-style: solid;
-    border-color: var(--border-color);
-    border-width: 1px;
+    border: solid 1px var(--border-color);
     cursor: pointer;
     background-color: var(--background-color);
     box-sizing: border-box;
 }
 
 .disabled-select {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
-                                    supported by Chrome and Opera */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-.window-overlay{
+.window-overlay {
     position: fixed;
     top: 0;
     left: 0;
     z-index: 999;
     width: 100%;
-    height:100%;
-    background: rgba(255,255,255,0.5);
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .spinner-box {
@@ -612,31 +1034,92 @@ body.dark-theme {
 }
 
 @keyframes spinner-rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(359deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+@keyframes widget-appear {
+    0% {
+        transform: scale(2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.title-area {
+    padding: 8px;
+}
+
+.title-text {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.debug-area {
+    display: none;
+    flex-flow: row nowrap;
+    justify-content: center;
+    margin: 24px;
 }
 
 .log-area {
-    padding : 8px;
+    flex: 1 1 auto;
+    padding: 8px;
     background-color: black;
-    border-style : solid;
-    border-width : 1px;
-    border-color: white;
-    color:white;
+    border: solid 1px white;
+    color: white;
     overflow-y: scroll;
-    width : 100%;
     box-sizing: border-box;
     font-size: small;
-    height : 10em;
+    height: 50em;
+}
+
+.var-area {
+    margin-left: 16px;
+    padding: 8px;
+    flex: 1 0 20%;
+    background-color: gray;
+    justify-content: start;
 }
 
 .log-area p {
-    margin: 0;
+    margin: 1px;
     padding: 0;
     font-size: small;
     line-height: 1.25em;
 }
 
-#develop {
-    display:none;
+.log-area .title {
+    color: #ffff99;
+    padding: 0 0.5em 0 0;
+}
+
+
+.overview-area {
+    margin: 16px 0;
+    background-color: var(--overview-background-color);
+    color: var(--text-color);
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+}
+
+.dark-theme .overview-area {
+    background-color: var(--dark-overview-background-color);
+    color: var(--dark-text-color);
+}
+
+.overview-area p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+    line-height: 2em;
 }

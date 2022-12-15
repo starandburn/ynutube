@@ -180,9 +180,9 @@ class Canvas {
         const ctx = this.getContext();
         ctx.save();
         if (this.backgroundColor == null || this.backgroundColor == undefined) {
-            if (!isDebugMode) {
-                ctx.clearRect(0, 0, this.width, this.height);
-            } else {
+            // if (!isDebugMode) {
+            //     ctx.clearRect(0, 0, this.width, this.height);
+            // } else {
                 const tileSize = 12;
                 ctx.beginPath();
 
@@ -195,7 +195,7 @@ class Canvas {
                     }
                 }
                 ctx.closePath();
-            }
+            // }
         } else {
             ctx.fillStyle = this.backgroundColor;
             ctx.fillRect(0, 0, this.width, this.height);

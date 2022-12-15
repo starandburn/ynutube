@@ -4,8 +4,8 @@
 class Application {
 
     // 公開定数
-    get ASPECT_RATIO_HD() { return (-9/16) };
-    get ASPECT_RATIO_SD() { return (-3/4) };
+    get ASPECT_RATIO_HD() { return (-9 / 16) };
+    get ASPECT_RATIO_SD() { return (-3 / 4) };
 
     // 公開プロパティ
     get isDebugMode() { return this._debugMode; }
@@ -16,74 +16,103 @@ class Application {
     _debugMode = false;
 
     // コンストラクタ―
-	constructor(debugMode = false) {
+    constructor(debugMode = false) {
         this._debugMode = debugMode;
-        this._debugMode = this.getParam('debug') ? true : debugMode;
-	}
+        this._debugMode = getParam('debug') ? true : debugMode;
+        this._self = this;
+    }
 
     // 公開メソッド
-    getRandom(min, max) { return  Math.floor(Math.random() * (max + 1 - min)) + min; }
-    getRandomSelect(...theArgs){
-        return arguments[this.getRandom(0, arguments.length - 1)];
-    }
-    log(...theArgs) {
-        console.log(...arguments);
-    }
+    // getRandom(min, max) { return Math.floor(Math.random() * (max + 1 - min)) + min; }
+    // getRandomSelect(...theArgs) {
+    //     return arguments[this.getRandom(0, arguments.length - 1)];
+    // }
+    // log(...theArgs) {
+    //     console.log(...arguments);
+    // }
 
-    getParam(name, url) {
-        if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, '\\$&');
-        const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-        const results = regex.exec(url);
+    // overrideConsoleLog(logArea) {
+    //     if (!(logArea instanceof HTMLElement)) return;
+    //     const origin = console.log;
+    //     console.log = function (...args) {
+    //         // _originConsoleLog(...args);
+    //         // var callerName = null;
+    //         // try { throw new Error(); }
+    //         // catch (e) {
+    //         //     var callerName = 'global';
+    //         //     var re = /(\w+)@|at (\w+) \(/g, st = e.stack, m;
+    //         //     while (m = re.exec(st)) {
+    //         //         callerName = (m != null) ? m[1] || m[2] : 'global';
+    //         //     }
+    //         // }
+    //         origin(...args);
+    //         const p = document.createElement('p');
+    //         const h = document.createElement('span');
+    //         h.classList.add('title');
+    //         h.textContent = args[0];
+    //         // p.textContent = `[${callerName}]${args.join(' ')}`;
 
-        let param;
-        if (!results) {
-            param = null;
-        } else if (!results[2]) { 
-            param = '';
-        } else {
-            param = decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
+    //         p.appendChild(h)
+    //         p.appendChild(document.createTextNode(args.slice(1).join(' ')));
 
-        console.log('パラメータ取得', `[${name}]${param}`);
-        return param;
-    }
+    //         // p.textContent = args.slice(1).join(' ');
+    //         logArea.prepend(p);
+    //     };
+    // }
+    
 
-    openWindow(url, name, width = 800, height = 600) {
-        window.open(url, name, `width=${width},height=${height}`);
-    }
+    // getParam(name, url) {
+    //     if (!url) url = window.location.href;
+    //     name = name.replace(/[\[\]]/g, '\\$&');
+    //     const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    //     const results = regex.exec(url);
+
+    //     let param;
+    //     if (!results) {
+    //         param = null;
+    //     } else if (!results[2]) {
+    //         param = '';
+    //     } else {
+    //         param = decodeURIComponent(results[2].replace(/\+/g, ' '));
+    //     }
+
+    //     console.log('パラメータ取得:', `${name} = ${param ?? ''}`);
+    //     return param;
+    // }
+
 
     debugOn() { this.setDebugMode(true); }
     debugOff() { this.setDebugMode(false); }
     debugToggle() { this.setDebugMode(!this.isDebugMode); }
 
-    onChangeDebugMode = (d) => {}; 
+    onChangeDebugMode = (d) => { };
     setDebugMode(value) {
         console.log('デバッグモード切替:', value ? 'on' : 'off');
         this._debugMode = value;
         this.onChangeDebugMode(value);
     }
 
-	prepareImage(id, url) {
-		const image = new Image();
-		const promise = new Promise((resolve) => {
-			image.addEventListener('load', (e) => {
-				this._images.set(id, image);
-                resolve(`画像ファイル${url}'をロードしました。`);                
-			});
-			image.addEventListener('error', (e) => {
-				this._images.set(id, null);
-				resolve(`画像ファイル'${url}'のロードに失敗しました。`);
-			});
-		});
-		image.src = url;
-		this._promises.push(promise);
-	}
+    prepareImage(id, url) {
+        const image = new Image();
+        const promise = new Promise((resolve) => {
+            image.addEventListener('load', (e) => {
+                this._images.set(id, image);
+                resolve(`画像ファイル${url}'をロードしました。`);
+            });
+            image.addEventListener('error', (e) => {
+                this._images.set(id, null);
+                resolve(`画像ファイル'${url}'のロードに失敗しました。`);
+            });
+        });
+        image.src = url;
+        this._promises.push(promise);
+    }
 
     async loadImage(id, url) {
+        console.log(id, url);
         const image = new Image();
         image.src = url;
-		await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             image.addEventListener('load', (e) => {
                 resolve(`画像ファイル'${url}'をロードしました。`);
             });
@@ -96,8 +125,8 @@ class Application {
     }
 
     getImage(id) {
-		return this._images.get(id) || null;
-	}
+        return this._images.get(id) || null;
+    }
 
     run() {
         const loadWindowPromise = new Promise((resolve) => {
@@ -105,9 +134,8 @@ class Application {
                 resolve('画面をロードしました。');
             });
         });
-		return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => resolves).bind(this));
-	}
-
+        return Promise.all([loadWindowPromise, ...this._promises]).then(((resolves) => [resolves]).bind(this));
+    }
 }
 
 class ActiveCanvas extends Canvas {
@@ -141,8 +169,8 @@ class ActiveCanvas extends Canvas {
     }
 
     // 公開デリゲート
-    onUpdate = (stepFrame) => {};   // 更新処理
-    onDraw = (ctx, target, debug) => {};           // 描画処理 
+    onUpdate = (stepFrame) => { };   // 更新処理
+    onDraw = (ctx, target, debug) => { };           // 描画処理 
     drawOrders = [];                // 描画順
 
     // 公開メソッド
@@ -152,17 +180,15 @@ class ActiveCanvas extends Canvas {
     }
     removeSprite(sprite) {
         const index = this.sprites.indexOf(sprite);
-        console.log('スプライト破棄', sprite.tag);
         this.sprites.splice(index, 1);
     }
     clearSprites() {
-        console.log('スプライト初期化');
         this.sprites = [];
     }
 
     sortByDrawOrder(reverse = false, nonDestructive = false, ignoreLayer = false) {
 
-        const sprites = nonDestructive ? this.sprites.slice() : this.sprites; 
+        const sprites = nonDestructive ? this.sprites.slice() : this.sprites;
         sprites.sort((s1, s2) => {
             for (let order of [(s) => ignoreLayer ? 0 : -s.layer, ...this.drawOrders, (s) => s.serialNo]) {
                 if (order) {
@@ -189,11 +215,11 @@ class ActiveCanvas extends Canvas {
 
             const rect = new Rectangle();
             rect.fromArray(sprite.getRectangle());
-            
-            if (rect.contains(x, y)) {
-                if (!strict || !canvas.useDoubleBuffer) return sprite;
 
-                const ctx = canvas.getTemporary();
+            if (rect.contains(x, y)) {
+                if (!strict || !this.useDoubleBuffer) return sprite;
+
+                const ctx = this.getTemporary();
                 sprite.render(ctx, false)
                 const alpha = ctx.getImageData(x, y, 1, 1).data[3];
 
@@ -213,14 +239,14 @@ class ActiveCanvas extends Canvas {
         this.onDraw(ctx, this, this.isDebugMode);
         if (this.isDebugMode) this._fpsText.draw(ctx, 0, 0);
         this.endRender();
-    
+
     }
-    
+
     start() {
         this.stop();
 
         while (this.clientWidth != this.width) {
-            this.beginRender(false,false);
+            this.beginRender(false, false);
         }
 
         this._running = true;
@@ -285,11 +311,11 @@ class ActiveCanvas extends Canvas {
         }
 
         if (stepFrame > 0) {
-    
+
             const fps = Math.round(1 / elapsedSec);
 
             this.onUpdate(stepFrame);
-    
+
             for (let sprite of this.sprites) {
 
                 if (sprite.disposed) {
@@ -301,15 +327,15 @@ class ActiveCanvas extends Canvas {
                     sprite.update(stepFrame);
                 }
             }
-    
+
             this._fpsText.text = `${fps.toFixed(2)}/${this.maxFps.toFixed(0)}fps(${stepFrame - 1} frame skip)`;
             this.render(this.isDebugMode);
-        
+
         }
 
         if (this._running) requestAnimationFrame(this._frameLoop.bind(this));
     }
-    
+
 }
 
 
@@ -326,7 +352,7 @@ class Timer {
 
     _action = () => { };
 
-    constructor(interval, count, action){
+    constructor(interval, count, action) {
 
         this._interval = interval;
         this._count = Math.max(0, count ?? 0);
@@ -354,7 +380,7 @@ class Timer {
         } else {
             this.stop();
         }
-    }    
+    }
 
     resume() {
         this._paused = false;
@@ -380,6 +406,6 @@ class Timer {
                 this.stop();
             }
         }
-   }
+    }
 
 }
