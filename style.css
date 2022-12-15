@@ -154,7 +154,7 @@ body {
         width: 100%;
     }
 
-    .control-area {
+    .widget-area {
         order: 2;
     }
 
@@ -183,7 +183,7 @@ body {
 }
 
 
-.control {
+.widget {
     border-style: none;
     font-size: large;
     text-align: left;
@@ -238,7 +238,7 @@ body {
     background-color:whitesmoke;
 }
 
-.control-description {
+.widget-description {
     margin: 1em 0 0.5em 4px;
     padding: 0;
     font-size: medium;
@@ -248,18 +248,18 @@ body {
     white-space: nowrap;
 }
 
-.control-description p {
+.widget-description p {
     white-space: nowrap;
 }
 
-.control input , 
-.control select, 
-.control option {
+.widget input , 
+.widget select, 
+.widget option {
     font-size:large;
 }
 
-.control input[type="text"] ,
-.control select {
+.widget input[type="text"] ,
+.widget select {
     margin:4px;
     padding:10px;
     border:1px;
@@ -272,14 +272,14 @@ body {
     width:100%;
 }
 
-.control input[type="text"]:focus {
+.widget input[type="text"]:focus {
     outline-style: none;
     outline-width: 0;
     background-color: lemonchiffon;
 }
 
-.control input[type="radio"] ,
-.control input[class="control"] {
+.widget input[type="radio"] ,
+.widget input[class="control"] {
     margin:4px;
     padding:10px;
     border:1px;
@@ -287,11 +287,11 @@ body {
     background-color: white;
 }
 
-.control input[type="range"] {
+.widget input[type="range"] {
     width: 100%;
 }
 
-.control ul {
+.widget ul {
     margin : 0;
     padding: 0;
     background-color: gray;
@@ -299,7 +299,7 @@ body {
     height: min-content;
 }
 
-.control li {
+.widget li {
     list-style-type: none;
     display: inline;
     margin: 0;
@@ -307,14 +307,14 @@ body {
     /* height: fit-content; */
 }
 
-.control img.select {
+.widget img.select {
     outline-style: solid;
     outline-width: 2px;
     outline-color:blue;
     background-color: aqua;
 }
 
-.control img {
+.widget img {
     max-width : 200px;
     width : 30%;
     padding:4px;

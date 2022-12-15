@@ -12,89 +12,128 @@
 
 <body>
     <div id="layout" class="layout">
+        <!-- ヘッダー部 -->
         <header class="header">
+            <!-- ヘッダー左側 -->
             <div class="header-left  disabled-select">
+                <!-- メニューボタン -->
                 <div class="menu-button" onClick="onMenubutton_Click();">
+                    <!-- バーガーアイコン -->
                     <div class="barger-icon">
+                        <!-- アイコン用直線 -->
                         <div class="barger-icon-line"></div>
                     </div>
                 </div>
+                <!-- YnuTubeロゴ -->
                 <div class="yt-logo">
-                    <div class="yt-logo-image"></div><span id="locationText" class="location-text">NKK</span>
+                    <!-- 更新リンク -->
+                    <a id="updateLink" class="update-link">
+                        <div class="yt-logo-image"></div>
+                    </a>
+                    <!-- ロゴ右上テキスト -->
+                    <span id="locationText" class="location-text">NKK</span>
                 </div>
             </div>
+            <!-- ヘッダー中央 -->
             <div class="header-center  disabled-select">
+                <!-- コマンド入力エリア -->
                 <div class="command-area">
+                    <!-- コマンド入力ボックス -->
                     <input type="text" id="commandBox" class="command-box" autofocus placeholder="コマンド"
                         onKeyPress="onCommandText_KeyPress(event);">
-                    <!-- </div> -->
+                    <!-- コマンド入力ボタン -->
                     <button class="command-button" id="commandButton" onClick="onCommandButton_Click();">📣</button>
                 </div>
             </div>
+            <!-- ヘッダ右側 -->
             <div class="header-right">
+                <!-- 学校名 -->
                 <div class="nkk-name">
                     <p class="header-text-sub">Japan International Institute of Cybernetics</p>
                     <p class="header-text">日本国際工科専門学校</p>
                 </div>
-                <a href="https://www.nkk.ac.jp" target="_blank"><img class="user-icon" src="img/nkk-logo.png"></a>
+                <!-- 学校リンク -->
+                <a href="https://www.nkk.ac.jp" target="_blank">
+                    <!-- 校章イメージ -->
+                    <img class="user-icon" src="img/nkk-logo.png">
+                </a>
             </div>
         </header>
+        <!-- コンテンツエリア -->
         <div id="content" class="content">
+            <!-- メインパネル -->
             <div class="main-panel">
+                <!-- 画面エリア -->
                 <div class="screen-area disabled-select">
+                    <!-- 情報エリア（編集モード時のみオーバーレイ表示） -->
                     <div id="infoArea" class="info-area">
                         <p class="select-bg-button">
-                            <a onClick="application.openWindow('selectbg.html', 'dataTransfer');">
-                                背景画像の変更 >>>
-                            </a>
+                            <!-- <a onClick="application.openWindow('selectbg.html', 'dataTransfer');"> -->
+                            背景画像を変更できます
+                            <!-- </a> -->
                         </p>
+                        <!-- 背景画像選択エリア -->
+                        <div id="selectBgArea" class="select-bg-area">
+                        </div>
                     </div>
+                    <!-- 描画キャンバス -->
                     <canvas id="screen" class="screen-canvas"></canvas>
                 </div>
+                <!-- タイトルエリア -->
                 <div class="title-area">
                     <div class="title-text">【システムエンジニア体験】ユーザーインターフェースを作ってみた。</div>
                 </div>
+                <!-- 下部パネル -->
                 <div class="bottom-panel">
+                    <!-- モードエリア -->
                     <div id="modeArea" class="mode-area">
-                        <div id="modeChangeButton" class="mode-change-button">
-                            <img class="user-icon" src="img/mode-button.png">
+                        <!-- リセットボタン -->
+                        <div id="resetButton" class="reset-button">
+                            <img class="reset-button" src="img/reset-button.png" onClick="onResetButton_Click();">
                         </div>
+                        <!-- モード情報 -->
                         <div id="modeInfo" class="mode-info">
                             <p id="modeText" class="mode-text"></p>
                             <p id="modeDescription" class="mode-description"></p>
                         </div>
+                        <!-- モード変更ボタン -->
                         <div>
                             <button class="mode-button disabled-select"
                                 onClick="onModeChangeButton_Click();">モード変更</button>
                         </div>
                     </div>
+                    <!-- ボタンエリア -->
                     <div id="buttonArea" class="button-area disabled-select"></div>
                 </div>
+                <!-- 概要欄 -->
                 <div id="overviewArea" class="overview-area">
-                    <p>copyright&copy; 2022, Japan International Institute of Cybernetics all rights reserved.</p>
-                    <p>System Design & Programing by T.Hoshino</p>
-                    <p></p>
+                    <p>&copy; 2022 Japan International Institute of Cybernetics all rights reserved. </p>
                 </div>
             </div>
+            <!-- サイドパネル -->
             <div class="side-panel disabled-select">
-                <div id="adArea" class="ad-area"></div>
-                <div id="controlArea" class="control-area"></div>
+                <!-- ウィジェット使用状況 -->
+                <div id="widgetsInfo" class="widgets-info"></div>
+                <!-- ウィジェットエリア -->
+                <div id="widgetArea" class="widget-area"></div>
             </div>
         </div>
+        <!-- フッター情報 -->
         <div class="footer">
         </div>
     </div>
+    <!-- 進捗スピナー -->
     <div id="windowOverlay" class="window-overlay">
         <div class="spinner-box">
             <span class="spinner"></span>
         </div>
     </div>
+    <!-- デバッグエリア -->
     <div id="debugArea" class="debug-area">
         <div id="logArea" class="log-area">
             <p>---- デバッグログ ----</p>
         </div>
-        <div id="varArea" class="var-area">
-        </div>
+        <!-- <div id="varArea" class="var-area"> -->
     </div>
 </body>
 

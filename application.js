@@ -18,71 +18,68 @@ class Application {
     // コンストラクタ―
     constructor(debugMode = false) {
         this._debugMode = debugMode;
-        this._debugMode = this.getParam('debug') ? true : debugMode;
+        this._debugMode = getParam('debug') ? true : debugMode;
         this._self = this;
     }
 
     // 公開メソッド
-    getRandom(min, max) { return Math.floor(Math.random() * (max + 1 - min)) + min; }
-    getRandomSelect(...theArgs) {
-        return arguments[this.getRandom(0, arguments.length - 1)];
-    }
-    log(...theArgs) {
-        console.log(...arguments);
-    }
+    // getRandom(min, max) { return Math.floor(Math.random() * (max + 1 - min)) + min; }
+    // getRandomSelect(...theArgs) {
+    //     return arguments[this.getRandom(0, arguments.length - 1)];
+    // }
+    // log(...theArgs) {
+    //     console.log(...arguments);
+    // }
 
-    overrideConsoleLog(logArea) {
-        if (!(logArea instanceof HTMLElement)) return;
-        const origin = console.log;
-        console.log = function (...args) {
-            // _originConsoleLog(...args);
-            // var callerName = null;
-            // try { throw new Error(); }
-            // catch (e) {
-            //     var callerName = 'global';
-            //     var re = /(\w+)@|at (\w+) \(/g, st = e.stack, m;
-            //     while (m = re.exec(st)) {
-            //         callerName = (m != null) ? m[1] || m[2] : 'global';
-            //     }
-            // }
-            origin(...args);
-            const p = document.createElement('p');
-            const h = document.createElement('span');
-            h.classList.add('title');
-            h.textContent = args[0];
-            // p.textContent = `[${callerName}]${args.join(' ')}`;
+    // overrideConsoleLog(logArea) {
+    //     if (!(logArea instanceof HTMLElement)) return;
+    //     const origin = console.log;
+    //     console.log = function (...args) {
+    //         // _originConsoleLog(...args);
+    //         // var callerName = null;
+    //         // try { throw new Error(); }
+    //         // catch (e) {
+    //         //     var callerName = 'global';
+    //         //     var re = /(\w+)@|at (\w+) \(/g, st = e.stack, m;
+    //         //     while (m = re.exec(st)) {
+    //         //         callerName = (m != null) ? m[1] || m[2] : 'global';
+    //         //     }
+    //         // }
+    //         origin(...args);
+    //         const p = document.createElement('p');
+    //         const h = document.createElement('span');
+    //         h.classList.add('title');
+    //         h.textContent = args[0];
+    //         // p.textContent = `[${callerName}]${args.join(' ')}`;
 
-            p.appendChild(h)
-            p.appendChild(document.createTextNode(args.slice(1).join(' ')));
+    //         p.appendChild(h)
+    //         p.appendChild(document.createTextNode(args.slice(1).join(' ')));
 
-            // p.textContent = args.slice(1).join(' ');
-            logArea.prepend(p);
-        };
-    }
+    //         // p.textContent = args.slice(1).join(' ');
+    //         logArea.prepend(p);
+    //     };
+    // }
     
 
-    getParam(name, url) {
-        if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, '\\$&');
-        const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-        const results = regex.exec(url);
+    // getParam(name, url) {
+    //     if (!url) url = window.location.href;
+    //     name = name.replace(/[\[\]]/g, '\\$&');
+    //     const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    //     const results = regex.exec(url);
 
-        let param;
-        if (!results) {
-            param = null;
-        } else if (!results[2]) {
-            param = '';
-        } else {
-            param = decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
+    //     let param;
+    //     if (!results) {
+    //         param = null;
+    //     } else if (!results[2]) {
+    //         param = '';
+    //     } else {
+    //         param = decodeURIComponent(results[2].replace(/\+/g, ' '));
+    //     }
 
-        console.log('パラメータ取得:', `${name} = ${param ?? ''}`);
-        return param;
-    }
+    //     console.log('パラメータ取得:', `${name} = ${param ?? ''}`);
+    //     return param;
+    // }
 
-    openWindow(url, name, width = 800, height = 600) {
-        window.open(url, name, `width=${width},height=${height}`);
-    }
 
     debugOn() { this.setDebugMode(true); }
     debugOff() { this.setDebugMode(false); }
@@ -112,6 +109,7 @@ class Application {
     }
 
     async loadImage(id, url) {
+        console.log(id, url);
         const image = new Image();
         image.src = url;
         await new Promise((resolve, reject) => {

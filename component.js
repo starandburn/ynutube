@@ -82,6 +82,13 @@ class Component {
         this.value = value;
     }
 
+    _update(){
+        if (this.onUpdateValue == null) return;
+        this.onUpdateValue(); 
+    }
+
+    onUpdateValue = () => {};
+
 }
 
 class Button extends Component {
@@ -90,7 +97,8 @@ class Button extends Component {
     _textNode = null;
     _text = null;
 
-    constructor(id, text, onClick, styleClass) {
+    constructor(id, text, onClick, styleClass, before, after) {
+
         super(id, styleClass);
         this.button = this._createElement('button', styleClass);
         if (onClick != null && onClick != undefined) {
@@ -99,7 +107,19 @@ class Button extends Component {
         this._text = text;
         this._textNode = this._createTextNode();
         this._textNode.textContent = this._text?.toString().trim() ?? '';
-        this.button.appendChild(this._textNode);
+
+        let isBefore = true;
+        for (let option of [before, after]) {
+            if (!isBefore) this.button.appendChild(this._textNode);
+            isBefore = false;
+            if (isNone(option)) continue;
+            if (option instanceof HTMLElement) {
+                this.button.appendChild(option);
+            } else {
+                this.button.appendChild(this._createTextNode(option?.toString()));
+            }
+        }
+
         this._appendChild(this.button);
     }
     get text() {
@@ -148,7 +168,8 @@ class FixedLabel extends Component {
     set value(value) {
         this._value = value;
         if (this._texts instanceof Array) {
-            this.text = this._texts?.find((t) => t?.id == this?.value)?.text ?? this.value;
+            // this.text = this._texts?.find((t) => t?.id == this?.value)?.text ?? this.value;
+            this.text = this._texts?.find((t) => t?.value == this?.value)?.text ?? this.value;
         } else {
             this.text = this.value;
         }
@@ -165,6 +186,8 @@ class TextBox extends Component {
         super(name, styleClass)
         this.textBox = this._createInput('text');
         this.textBox.value = value ?? '';
+        this.textBox.addEventListener('change', this._update.bind(this));
+
         this._items = items;
         this.placeholder = placeholder;
         this._appendChild(this.textBox);
@@ -176,7 +199,6 @@ class TextBox extends Component {
     set placeholder(value) {
         this._placeholder = value;
         if (this.textBox instanceof HTMLInputElement) {
-            let text = this._items?.find((x) => x?.id == value)?.command ?? null;
             this.textBox.setAttribute('placeholder', this._placeholder ?? '');
         }
     }
@@ -187,7 +209,8 @@ class TextBox extends Component {
 
     set value(value) {
         if (this.textBox instanceof HTMLInputElement) {
-            let text = this._items?.find((x) => x?.id == value)?.command ?? null;
+            // let text = this._items?.find((x) => x?.id == value)?.command ?? null;
+            let text = this._items?.find((x) => x?.value == value)?.command ?? null;
             this.textBox.value = text ?? value;
         }
     }
@@ -204,14 +227,15 @@ class RadioButtons extends Component {
         this._radioButtons = [];
 
         for (let opt of options) {
-            const id = `${name}_${opt.id}`
+            const id = `${name}_${opt.value}`
             const paragraph = this._createParagraph();
 
             const radioButton = this._createInput('radio');
             radioButton.name = name;
             radioButton.id = id;
-            radioButton.value = opt.id;
-            radioButton.checked = (opt.id == defaultValue);
+            radioButton.value = opt.value;
+            radioButton.checked = (opt.value == defaultValue);
+            radioButton.addEventListener('change', this._update.bind(this));
 
             this._radioButtons.push(radioButton);
             paragraph.appendChild(radioButton);
@@ -258,6 +282,8 @@ class CheckBox extends Component {
         this._checkBox.value = checkedValue;
         this._checkBox.checked = (defaultValue == checkedValue);
 
+        this._checkBox.addEventListener('change', this._update.bind(this));
+
         const paragraph = this._createParagraph();
         paragraph.appendChild(this._checkBox);
 
@@ -287,10 +313,12 @@ class DropDown extends Component {
         super(name, styleClass)
 
         this._selectBox = this._createElement('select');
+        this._selectBox.addEventListener('change', this._update.bind(this));
+
         this._appendChild(this._selectBox);
 
         for (let item of listItems) {
-            const option = this._createOption(item.id, item.text, (item.id == defaultValue));
+            const option = this._createOption(item.value, item.text, (item.value == defaultValue));
             this._options.push(option);
             this._selectBox.appendChild(option);
         }
@@ -298,6 +326,7 @@ class DropDown extends Component {
     }
 
     get value() {
+
         for (let option of this._options) {
             if (option.selected) return option.value;
         }
@@ -322,7 +351,8 @@ class ListBox extends DropDown {
         this._selectBox.size = size || listItems.length;
         this._onDoubleClick = onDoubleClick;
 
-        this._selectBox.addEventListener('dblclick', this._onDoubleClick.bind(this));
+        if (isNone(onDoubleClick)) return;
+        this._selectBox.addEventListener('dblclick', this._onDoubleClick?.bind(this));
     }
 
 }
@@ -357,12 +387,14 @@ class Slider extends Component {
 
     get value() {
         const index = this._range.value;
-        return this._values[index].id;
+        // return this._values[index].id;
+        return this._values[index].value;
     }
 
     set value(value) {
         for (let i = 0; i < this._values.length; i++) {
-            if (this._values[i].id == value) {
+            // if (this._values[i].id == value) {
+            if (this._values[i].value == value) {
                 this._range.value = i;
                 this._update();
                 return;
@@ -371,6 +403,7 @@ class Slider extends Component {
     }
     _update() {
         this._currentText.textContent = this._values[this._range.value]?.text;
+        this.onUpdateValue();
     }
 }
 
@@ -396,7 +429,8 @@ class ImageList extends Component {
             const image = this._createElement('img');
 
             image.src = item?.src;
-            image.id = item?.id;
+            // image.id = item?.id;
+            image.id = item?.value;
             image.alt = item?.text;
 
             image.addEventListener('click', this._onClick.bind(this));
@@ -419,18 +453,20 @@ class ImageList extends Component {
         }
     }
 
-    _update(id) {
+    _update(value) {
 
         const CLASS_SELECTED = 'selected'
 
         for (let image of this._images) {
-            if (image.id == id) {
+            if (image.id == value) {
                 image.classList.add(CLASS_SELECTED);
             } else {
                 image.classList.remove(CLASS_SELECTED);
             }
         }
-        this._value = id;
+        this._value = value;
+
+        this.onUpdateValue();
     }
 
     get value() {

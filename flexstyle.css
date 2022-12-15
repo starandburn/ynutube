@@ -230,12 +230,16 @@ body.dark-theme {
     height: fit-content;
 }
 
-/* 動作モード ユーザーアイコン */
-.mode-area .user-icon {
+.mode-area .reset-button {
     margin-right: 16px;
     height: 48px;
     width: 48px;
 }
+
+.mode-area .reset-button:hover {
+    transform: rotatez(10deg);
+}
+
 
 /* 動作モード 段落 */
 .mode-area p {
@@ -395,6 +399,12 @@ body.dark-theme {
     top: 6px;
 }
 
+.update-link {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+}
+
 .yt-logo {
     margin: 0;
     padding: 5px 19px 0 14px;
@@ -410,7 +420,7 @@ body.dark-theme {
     display: inline-block;
 }
 
-.mode-change-button {
+.reset-button {
     margin: 0;
     padding: 0;
     cursor: pointer;
@@ -424,8 +434,9 @@ body.dark-theme {
     font-size: 10px;
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
-    padding: 0 4px;
+    padding: 0;
     vertical-align: 16px;
+    border: none;
 }
 
 .nkk-name {
@@ -590,47 +601,100 @@ body.dark-theme {
 }
 
 .info-area {
+    box-sizing: border-box;
     position: absolute;
     left: 0;
     bottom: 0;
     width: 100%;
     height: 100%;
+    padding: 16px;
     display: none;
+    flex-direction: column;
     background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9));
     border: none;
 }
 
 .info-area .select-bg-button {
-    margin: 20px;
-    padding: 4px;
-    cursor: pointer;
+    padding: 0;
+    margin: 8px;
     font-size: large;
     color: var(--dark-text-color);
     height: fit-content;
+    flex: initial;
 }
 
 .info-area .select-bg-button :hover {
     color: var(--dark-sub-color);
 }
 
+.select-bg-area {
+    align-self: center;
+    padding: 10px 16px 8px 24px;
+    display: flex;
+    flex-flow: row wrap;
+    flex: auto;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: center;
+    overflow: auto;
+}
+
+.select-bg-area div.thumbnail {
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 30%;
+    height: 40%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    color: black;
+    font-size: large;
+}
+
+.select-bg-area .thumbnail {
+    max-width: 30%;
+    /* max-height:33%; */
+    border: solid 1px black;
+    box-shadow: 4px 4px 10px 1px var(--dark-border-shadow-color);
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 8px;
+    user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+}
+
+.select-bg-area .thumbnail.selected {
+    /* box-sizing: border-box; */
+    border: solid 4px white;
+    margin: 5px;
+}
+
+.select-bg-area .thumbnail:hover {
+    transform: scale(1.2);
+}
+
+.select-bg-area .thumbnail:active {
+    transform: scale(1.1);
+}
+
 .edit-mode .info-area {
     display: flex;
 }
 
-.control-area {
+.widget-area {
     padding: 0;
     display: flex;
     flex-direction: column;
 }
 
-.ad-area {
+.widgets-info {
     padding: 0;
     display: none;
     flex-direction: row;
     justify-content: end;
     border: solid 1px;
     border-radius: 8px;
-    height: 64px;
     margin-bottom: 24px;
 }
 
@@ -640,11 +704,13 @@ body.dark-theme {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: end;
+    align-content: center;
+    align-items: center;
 }
 
 .button-area input[type='text'],
 .button-area button {
-    margin: 8px;
+    margin: 8px 4px 8px 12px;
     padding: 4px 20px 6px;
     font-size: x-large;
     min-height: 48px;
@@ -654,6 +720,21 @@ body.dark-theme {
     border-radius: var(--button-radius-size);
     cursor: pointer;
 }
+
+.button-area button.append-button,
+.button-area button.remove-button {
+    margin-left: 0px;
+    padding: 0 8px;
+    min-height: fit-content;
+    font-size: larger;
+}
+.button-area button.append-button {
+    margin-left: 8px;
+    font-size: x-large;
+}
+
+
+
 
 .button-area input[type='text'] {
     display: inline;
@@ -671,6 +752,11 @@ body.dark-theme {
 
 .button-area button:hover {
     background-color: var(--act-button-hover-background-color);
+}
+
+.button-area button.remove-button:active,
+.button-area button.append-button:active {
+    padding: 0 8px;
 }
 
 .button-area button:active {
@@ -720,7 +806,7 @@ body.dark-theme {
     width: 3em;
 }
 
-.control {
+.widget {
     border: none;
     font-size: large;
     text-align: left;
@@ -757,8 +843,8 @@ body.dark-theme {
     line-height: 1em;
 }
 
-.control input[type='text'],
-.control select {
+.widget input[type='text'],
+.widget select {
     padding: 8px;
     background-color: var(--background-color);
     border: solid 2px var(--border-color);
@@ -769,24 +855,28 @@ body.dark-theme {
     box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
-.control input[type='text']:focus {
+.widget input[type='text']:focus {
     outline: none;
     background-color: lemonchiffon;
 }
 
-.edit-mode .control select {
+.edit-mode .widget .new {
+    animation: widget-appear 0.2s linear;
+}
+
+.edit-mode .widget select {
     color: var(--dark-text-color);
     border-color: var(--dark-border-color);
     background-color: var(--dark-background-color);
 }
 
-.control input[type='range'] {
+.widget input[type='range'] {
     width: 100%;
     cursor: pointer;
 }
 
-.control input[type='radio'],
-.control input[type='checkbox'] {
+.widget input[type='radio'],
+.widget input[type='checkbox'] {
     cursor: pointer;
 }
 
@@ -795,7 +885,7 @@ body.dark-theme {
     cursor: pointer;
 }
 
-.control-description {
+.widget-description {
     margin: 0 0 4px;
     padding: 2px 16px;
     font-size: small;
@@ -808,7 +898,7 @@ body.dark-theme {
     border: none;
 }
 
-.edit-mode .control-description {
+.edit-mode .widget-description {
     color: var(--dark-background-color);
     background-color: var(--dark-text-color);
     border: solid 1px var(--dark-border-color);
@@ -823,7 +913,7 @@ body.dark-theme {
     box-shadow: 0px 1px 2px 0px var(--border-shadow-color) inset;
 }
 
-.control ul {
+.widget ul {
     margin: 0;
     padding: 0px;
     background-color: white;
@@ -835,7 +925,7 @@ body.dark-theme {
     align-items: center;
 }
 
-.control li {
+.widget li {
     margin: 0;
     padding: 2px;
     width: 33%;
@@ -844,12 +934,12 @@ body.dark-theme {
     flex-grow: 0;
 }
 
-.control img.selected {
+.widget img.selected {
     outline: solid 1px var(--sub-color);
     background-color: var(--sub-background-color);
 }
 
-.control img {
+.widget img {
     display: block;
     width: 100%;
     padding: 8px;
@@ -901,6 +991,16 @@ body.dark-theme {
 
     100% {
         transform: rotate(359deg);
+    }
+}
+
+@keyframes widget-appear {
+    0% {
+        transform: scale(2);
+    }
+
+    100% {
+        transform: scale(1);
     }
 }
 
