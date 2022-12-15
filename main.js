@@ -26,6 +26,12 @@ const HTML_ID_UPDATE_LINK = "#updateLink";
 const HTML_ID_SELECT_BG_AREA = '#selectBgArea';
 const HTML_ID_BUTTON_TEXT = 'buttonText';
 
+const CLASS_SIMPLE = 'simple-component';
+const CLASS_COMPOSITE = 'composite-component';
+const CLASS_DISABLED = 'disabled-component';
+const CLASS_IMAGELIST = 'imagelist-component';
+
+
 const STYLE_VALUE_NONE = 'none';
 const STYLE_VALUE_BLOCK = 'block';
 const STYLE_VALUE_FLEX = 'flex';
@@ -114,7 +120,7 @@ const WIDGET_TYPE_ID_IMAGELIST = 'imagelist';
 const DEFAULT_WIDGET = WIDGET_TYPE_ID_TEXT;
 
 const widgetTypes = [
-    { id: WIDGET_TYPE_ID_FIX, text: '📍固定', code: 'f' },
+    // { id: WIDGET_TYPE_ID_FIX, text: '📍固定', code: 'f' },
     { id: WIDGET_TYPE_ID_TEXT, text: '📝テキストボックス', code: 't' },
     { id: WIDGET_TYPE_ID_CHECK, text: '✅チェックボックス', code: 'c' },
     { id: WIDGET_TYPE_ID_RADIO, text: '🔘ラジオボタン', code: 'r' },
@@ -240,7 +246,7 @@ let contentArea = null;
 let buttonArea = null;
 let debugArea = null;
 let commandBox = null;
-let widgetsInfoArea = null;
+let widgetsInfo = null;
 let updateLinkAnchor = null;
 let selectBgArea = null;
 
@@ -826,11 +832,6 @@ function getRandomItems(fieldId) {
 // 入力コンポーネントを作成
 function createComponent(fieldId, type, mode = MODE_PLAY) {
 
-    const CLASS_SIMPLE = 'simple-component';
-    const CLASS_COMPOSITE = 'composite-component';
-    const CLASS_DISABLED = 'disabled-component';
-    const CLASS_IMAGELIST = 'imagelist-component';
-
     let component = null;
 
     if (isPlayMode(mode)) {
@@ -1085,27 +1086,79 @@ function addWidgets(fieldId, type) {
     widgets.push({ fieldId: fieldId, type: type });
 }
 
+function getTitleElement(text) {
+    const result = getDivElement('title');
+    result.textContent = text;
+    return result;
+}
+function getDescriptionElement(...texts) {
+    console.log(...texts);
+    const result = getDivElement('description');
+    for (let text of texts.filter(x => !isBlank(x))) {
+        const p = document.createElement('p');
+        p.textContent = text;
+        result.appendChild(p);
+    }
+    return result;
+}
+
+function getDivElement(classStyle) {
+    const element = document.createElement('div');
+    if (!isNone(classStyle)) element.classList.add(classStyle?.toString());
+    return element;
+}
+
+function buildWidgetTypesInfo(mode) {
+
+    if (isEditMode(mode)) {
+
+        widgetsInfo.appendChild(getTitleElement('利用できるウィジェットの種類'));
+
+        const items = widgetTypes.filter(x => x.enabled);
+        const element = document.createElement('ul');
+        for (let item of items) {
+            const li = document.createElement('li');
+            li.textContent = item.text;
+            element.appendChild(li);
+        }
+
+        widgetsInfo.appendChild(element);
+
+        const desc = [];
+        if (items.length == 0) desc.push('利用できるウィジェットがありません。');
+        if (items.length >= widgetTypes.length) {
+            desc.push('すべてのウィジェットが利用可能です。')
+        } else {
+            desc.push('増やすにはコマンド欄に種類コードを入力してください。');
+        }
+        if (desc.length > 0) widgetsInfo.appendChild(getDescriptionElement(...desc));
+
+        widgetsInfo.style.display = STYLE_VALUE_FLEX;
+
+    } else {
+        widgetsInfo.style.display = STYLE_VALUE_NONE;
+    }
+
+}
+
+
 function buildWidgetArea(mode = MODE_PLAY, update = false, newWidget = false, all = false) {
 
     console.log('ウィジェットエリア構築:', widgets);
 
     if (update) UpdateWidgetTypes();
 
-    clearChildElements(widgetArea);
     clearWidgetArea();
+    clearChildElements(widgetsInfo);
 
-    if (isEditMode(mode)){
-        widgetsInfoArea.style.display = STYLE_VALUE_FLEX;
-
-        const items = widgetTypes.filter(x=>x.enabled);
-        const widgetsList = new ListBox('enabledWidgetsList', items);
-        // widgetsInfoArea.appendChild(widgetsList.htmlElement);
-        console.log(widgetsList.htmlElement);
-
-    } else {
-        widgetsInfoArea.style.display =STYLE_VALUE_NONE;
+    if (isEditMode(mode)) {
+        widgetArea.appendChild(getTitleElement('入力できるウィジェットの項目'));
+        if (widgets.length == 0) {
+            widgetArea.appendChild(getDescriptionElement('入力できるウィジェットはまだありません。', 'コマンド欄に項目コードを入力してください。'));
+            return;
+        }
+        buildWidgetTypesInfo(mode);
     }
-
     for (let widget of widgets) {
 
         console.log('ウィジェット配置:', `[${fields.find(f => equals(f.id, widget.fieldId))?.text}]`, getTextById(widgetTypes, widget.type));
@@ -1127,9 +1180,7 @@ function buildWidgetArea(mode = MODE_PLAY, update = false, newWidget = false, al
         addComponent(component);
         widgetArea.appendChild(generateWidgetElement(component, mode));
     }
-
     console.log('ウィジェット配置コード:', getWidgetsRestoreCode());
-
 }
 
 // -----------------------------------------------
@@ -1310,7 +1361,7 @@ function prepareHtmlElements() {
     selectBgArea = document.querySelector(HTML_ID_SELECT_BG_AREA);
     contentArea = document.querySelector(HTML_ID_CONTENT);
     widgetArea = document.querySelector(HTML_ID_WIDGET_AREA);
-    widgetsInfoArea = document.querySelector(HTML_ID_WIDGETS_INFO)
+    widgetsInfo = document.querySelector(HTML_ID_WIDGETS_INFO)
     buttonArea = document.querySelector(HTML_ID_BUTTON_AREA);
     debugArea = document.querySelector(HTML_ID_DEBUG_AREA);
     commandBox = document.querySelector(HTML_ID_COMMAND_BOX);

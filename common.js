@@ -48,7 +48,7 @@ function getParam(name, url, ifBlankNoLog = true) {
 
 function getRandom(min, max) { return Math.floor(Math.random() * (max + 1 - min)) + min; }
 function getRandomSelect(...theArgs) {
-    return arguments[this.getRandom(0, arguments.length - 1)];
+    return arguments[getRandom(0, arguments.length - 1)];
 }
 function log(...theArgs) {
     console.log(...arguments);
