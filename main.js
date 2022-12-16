@@ -31,7 +31,6 @@ const CLASS_COMPOSITE = 'composite-component';
 const CLASS_DISABLED = 'disabled-component';
 const CLASS_IMAGELIST = 'imagelist-component';
 
-
 const STYLE_VALUE_NONE = 'none';
 const STYLE_VALUE_BLOCK = 'block';
 const STYLE_VALUE_FLEX = 'flex';
@@ -71,6 +70,7 @@ const COMMAND_DOG = 'dog';
 const COMMAND_BAT = 'bat';
 const COMMAND_RUN = 'run';
 const COMMAND_GO = 'go';
+const COMMAND_SAMPLE = 'sample';
 
 const COMMAND_PLAY = 'play';
 const COMMAND_EDIT = 'edit';
@@ -120,14 +120,14 @@ const WIDGET_TYPE_ID_IMAGELIST = 'imagelist';
 const DEFAULT_WIDGET = WIDGET_TYPE_ID_TEXT;
 
 const widgetTypes = [
-    // { id: WIDGET_TYPE_ID_FIX, text: '📍固定', code: 'f' },
-    { id: WIDGET_TYPE_ID_TEXT, text: '📝テキストボックス', code: 't' },
-    { id: WIDGET_TYPE_ID_CHECK, text: '✅チェックボックス', code: 'c' },
-    { id: WIDGET_TYPE_ID_RADIO, text: '🔘ラジオボタン', code: 'r' },
-    { id: WIDGET_TYPE_ID_DROPDOWN, text: '🔽ドロップダウン', code: 'd' },
-    { id: WIDGET_TYPE_ID_LIST, text: '🚦リストボックス', code: 'l' },
-    { id: WIDGET_TYPE_ID_SLIDER, text: '🎚スライダー', code: 's' },
-    { id: WIDGET_TYPE_ID_IMAGELIST, text: '🖼イメージリスト', code: 'i', usableFields: [FIELD_ID_KIND] },
+    // { id: WIDGET_TYPE_ID_FIX, text: '固定', code: 'f' , icon:'📍' },
+    { id: WIDGET_TYPE_ID_TEXT, text: 'テキストボックス', code: 't', icon: '📝', short: 'テキスト' },
+    { id: WIDGET_TYPE_ID_CHECK, text: 'チェックボックス', code: 'c', icon: '✅', short: 'チェック' },
+    { id: WIDGET_TYPE_ID_RADIO, text: 'ラジオボタン', code: 'r', icon: '🔘', short: 'ラジオ' },
+    { id: WIDGET_TYPE_ID_DROPDOWN, text: 'ドロップダウン', code: 'd', icon: '🔽', short: 'ドロップ' },
+    { id: WIDGET_TYPE_ID_LIST, text: 'リストボックス', code: 'l', icon: '🚦', short: 'リスト' },
+    { id: WIDGET_TYPE_ID_SLIDER, text: 'スライダー', code: 's', icon: '🎚', short: 'スライダ' },
+    { id: WIDGET_TYPE_ID_IMAGELIST, text: 'イメージリスト', code: 'i', icon: '🖼', short: 'イメージ', usableFields: [FIELD_ID_KIND] },
 ];
 
 // 選択肢項目
@@ -208,12 +208,12 @@ const translateTable = [
     [WIDGET_TYPE_ID_RADIO, 'radiobutton', 'option', 'optionbox', 'ラジオボタン', 'ラジオ', 'オプション'],
     [WIDGET_TYPE_ID_DROPDOWN, 'drop', 'ドロップ', 'dropdownbox', 'dropdownlist', 'combobox', 'combo', 'ドロップダウン', 'ドロップダウンリスト'],
     [WIDGET_TYPE_ID_LIST, 'listbox', 'リストボックス', '一覧', 'リスト'],
-    [WIDGET_TYPE_ID_SLIDER, 'slid', 'srider', 'trackbar', 'スライダー', 'トラックバー'],
+    [WIDGET_TYPE_ID_SLIDER, 'slid', 'srider', 'trackbar', 'スライダー', 'スライダ', 'トラックバー'],
     [WIDGET_TYPE_ID_IMAGELIST, 'image', 'イメージリスト', '画像リスト', '画像一覧', 'イメージ'],
     [COMMAND_BUTTON, 'ボタン', 'botan', 'btn', 'buton', 'buttn', 'buttan'],
-    [COMMAND_RESET, COMMAND_CLEAR],
+    [COMMAND_RESET, COMMAND_CLEAR, 'リセット', 'クリア', 'クリアー'],
     [COMMAND_CLICK, 'クリック', 'mouse', 'マウス', 'touch', 'タッチ'],
-    [COMMAND_RANDOM, 'ランダム', 'rand', 'rnd', '？', '?'],
+    [COMMAND_RANDOM, 'ランダム', 'randam', 'rand', 'rnd', '？', '?'],
     [COMMAND_DIRECTION_RIGHT, '右', '右向き', 'みぎむき', '逆', 'みぎ', 'ぎゃく', 'migi'],
     [COMMAND_DIRECTION_LEFT, '左', 'ひだり', '左向き', 'ひだりむき', 'hidari'],
     [COMMAND_SPEED_FAST, '速い', '早い', 'はやい', 'hayai'],
@@ -260,6 +260,21 @@ let isAutoMode = false;
 let isPausing = false;
 let existsExtraKinds = false;
 let defaultWidgetTypesEnabled;
+
+function setHiddenCommands() {
+
+    const table = [
+        { id: 'clickCommand', on: 'setClickable(true)' },
+    ];
+
+    for (let c of table) {
+        const elements = document.querySelectorAll(`#${c.id}`);
+        for (let e of elements) {
+            e.setAttribute('ondblclick', c.on);
+        }
+    }
+
+}
 
 function initializeWidgetItems(log = false) {
     console.log('項目テーブル初期化');
@@ -866,7 +881,7 @@ function createComponent(fieldId, type, mode = MODE_PLAY) {
     } else {
 
         // 編集モードの場合はドロップダウンリスト固定
-        let items = widgetTypes.filter(x => ((equals(x.id, type)) || x.enabled) && (x.usableFields?.includes(fieldId) ?? true)).map(x => [{ value: x.id, text: x.text }]).flat();
+        let items = widgetTypes.filter(x => ((equals(x.id, type)) || x.enabled) && (x.usableFields?.includes(fieldId) ?? true)).map(x => [{ value: x.id, text: `${x.icon}${x.text}` }]).flat();
         component = new DropDown(fieldId, items, type, CLASS_SIMPLE);
         component.onUpdateValue = () => {
             UpdateWidgetTypes();
@@ -1110,6 +1125,9 @@ function getDivElement(classStyle) {
 
 function buildWidgetTypesInfo(mode) {
 
+    const CLASS_WIDGET_TYPE_TAG = 'widget-type-tag';
+
+    clearChildElements(widgetsInfo);
     if (isEditMode(mode)) {
 
         widgetsInfo.appendChild(getTitleElement('利用できるウィジェットの種類'));
@@ -1118,8 +1136,12 @@ function buildWidgetTypesInfo(mode) {
         const element = document.createElement('ul');
         for (let item of items) {
             const li = document.createElement('li');
-            li.textContent = item.text;
-            element.appendChild(li);
+            li.textContent = item?.short ?? item?.text;
+
+            li.classList.add(CLASS_WIDGET_TYPE_TAG);
+            li.onclick = () => { setAllWidgets(item.id) };
+
+            if (!isBlank(li.textContent)) element.appendChild(li);
         }
 
         widgetsInfo.appendChild(element);
@@ -1141,6 +1163,20 @@ function buildWidgetTypesInfo(mode) {
 
 }
 
+function setAllWidgets(typeId) {
+    console.log('全ウィジェット値設定')
+
+    UpdateWidgetTypes();
+    for (let widget of widgets){
+        const type = getWidgetTypeById(typeId);
+        if (isNone(type.usableFields) || type.usableFields?.includes(widget.fieldId))
+        {
+            setFieldValue(widget.fieldId, typeId);
+        }
+    }
+
+}
+
 
 function buildWidgetArea(mode = MODE_PLAY, update = false, newWidget = false, all = false) {
 
@@ -1149,7 +1185,7 @@ function buildWidgetArea(mode = MODE_PLAY, update = false, newWidget = false, al
     if (update) UpdateWidgetTypes();
 
     clearWidgetArea();
-    clearChildElements(widgetsInfo);
+    buildWidgetTypesInfo(mode);
 
     if (isEditMode(mode)) {
         widgetArea.appendChild(getTitleElement('入力できるウィジェットの項目'));
@@ -1157,8 +1193,8 @@ function buildWidgetArea(mode = MODE_PLAY, update = false, newWidget = false, al
             widgetArea.appendChild(getDescriptionElement('入力できるウィジェットはまだありません。', 'コマンド欄に項目コードを入力してください。'));
             return;
         }
-        buildWidgetTypesInfo(mode);
     }
+
     for (let widget of widgets) {
 
         console.log('ウィジェット配置:', `[${fields.find(f => equals(f.id, widget.fieldId))?.text}]`, getTextById(widgetTypes, widget.type));
@@ -1366,6 +1402,8 @@ function prepareHtmlElements() {
     debugArea = document.querySelector(HTML_ID_DEBUG_AREA);
     commandBox = document.querySelector(HTML_ID_COMMAND_BOX);
     if (commandBox instanceof HTMLInputElement && commandBox.type != 'text') commandBox = null;
+
+    setHiddenCommands();
 }
 
 function appendField(fieldId, rebuild = true) {

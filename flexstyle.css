@@ -737,9 +737,10 @@ body.dark-theme {
     width: fit-content;
     padding: 4px 8px;
     margin: 2px 4px;
-    background-color: black;
+    background-color: var(--dark-command-button-background-color);
+    border:1px solid var(--dark-command-box-border-color);
+    color: var(--dark-command-box-text-color);
     border-radius: 8px;
-    color: white;
     font-size: small;
     white-space: nowrap;
 }
@@ -1122,4 +1123,9 @@ body.dark-theme {
     font-family: Arial, Helvetica, sans-serif;
     font-size: small;
     line-height: 2em;
+}
+
+
+.widget-type-tag {
+    cursor:pointer;
 }
