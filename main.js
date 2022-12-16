@@ -127,7 +127,7 @@ const widgetTypes = [
     { id: WIDGET_TYPE_ID_DROPDOWN, text: 'ドロップダウン', code: 'd', icon: '🔽', short: 'ドロップ' },
     { id: WIDGET_TYPE_ID_LIST, text: 'リストボックス', code: 'l', icon: '🚦', short: 'リスト' },
     { id: WIDGET_TYPE_ID_SLIDER, text: 'スライダー', code: 's', icon: '🎚', short: 'スライダ' },
-    { id: WIDGET_TYPE_ID_IMAGELIST, text: 'イメージリスト', code: 'i', icon: '🖼', short: 'イメージ(種類のみ)', usableFields: [FIELD_ID_KIND] },
+    { id: WIDGET_TYPE_ID_IMAGELIST, text: 'イメージリスト', code: 'i', icon: '🖼', short: 'イメージ'},//, usableFields: [FIELD_ID_KIND] },
 ];
 
 // 選択肢項目
@@ -281,9 +281,10 @@ function setHiddenCommands() {
 function initializeWidgetItems(log = false) {
     console.log('項目テーブル初期化');
 
-    createSpeedItems();
-    createKindItems();
-    normalizeWidgetItems();
+    createSpeedItems(log);
+    createKindItems(log);
+    normalizeWidgetItems(log);
+    initializeWidgetItemImageSources(log);
 
     if (log) console.log('全項目テーブル:', toStringFromItems(getItems()));
 
@@ -298,6 +299,16 @@ function normalizeWidgetItems(log = false) {
         item.text = item.text?.trim() ?? STRING_EMPTY;
     }
 }
+
+function initializeWidgetItemImageSources(log = false) {
+    for (let item of widgetItems.filter(x=> x.useList)) {
+        if (isBlank(item.src)){
+            item.src = `img/${item.command}.png`;
+        }
+    }
+    console.log('イメージリスト用画像ソース初期化', !log ? '' : getItems().map(x=> x.src));
+}
+
 
 function normalizeTranslateTable(log = false) {
     console.log('コマンド変換テーブル正規化');
@@ -332,9 +343,10 @@ function createSpeedItems(log = false) {
     const names = getCommandItems(FIELD_ID_SPEED);
     for (let value = SPEED_MIN; value <= SPEED_MAX; value++) {
         let listText = `速度${value}`;
-        let description = getTextByValue(names, value);
+        const imgSrc = `img/speed${value}.png`;
+        const description = getTextByValue(names, value);
         if (!isNone(description)) listText += `(${description})`;
-        widgetItems.push({ field: FIELD_ID_SPEED, value: value, text: listText, command: null, useOption: false, useList: true, useRandom: true });
+        widgetItems.push({ field: FIELD_ID_SPEED, value: value, text: listText, src: imgSrc, command: null, useOption: false, useList: true, useRandom: true });
     }
     console.log('速度項目作成追加', !log ? '' : toStringFromItems(getItems(FIELD_ID_SPEED)));
 }
@@ -1731,7 +1743,7 @@ application.run().then(((runInfo) => {
     };
 
     prepareHtmlElements();
-    initializeWidgetItems();
+    initializeWidgetItems(true);
     normalizeTranslateTable();
     InitializeWidgets(widgetsCode, widgetsType);
     initializeButtons(buttonCode);
