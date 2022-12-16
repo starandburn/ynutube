@@ -127,7 +127,7 @@ const widgetTypes = [
     { id: WIDGET_TYPE_ID_DROPDOWN, text: 'ドロップダウン', code: 'd', icon: '🔽', short: 'ドロップ' },
     { id: WIDGET_TYPE_ID_LIST, text: 'リストボックス', code: 'l', icon: '🚦', short: 'リスト' },
     { id: WIDGET_TYPE_ID_SLIDER, text: 'スライダー', code: 's', icon: '🎚', short: 'スライダ' },
-    { id: WIDGET_TYPE_ID_IMAGELIST, text: 'イメージリスト', code: 'i', icon: '🖼', short: 'イメージ', usableFields: [FIELD_ID_KIND] },
+    { id: WIDGET_TYPE_ID_IMAGELIST, text: 'イメージリスト', code: 'i', icon: '🖼', short: 'イメージ(種類のみ)', usableFields: [FIELD_ID_KIND] },
 ];
 
 // 選択肢項目
@@ -264,9 +264,11 @@ let defaultWidgetTypesEnabled;
 function setHiddenCommands() {
 
     const table = [
-        { id: 'clickCommand', on: 'setClickable(true)' },
+        { id: 'clickCommand', on: 'setClickable(true);updateLinkUrl();' },
+        { id: 'debugCommand', on: 'doDebugCommand();' },
+        { id: 'everyTypesCommand', on: 'doCommand(\'every\');' },
+        { id: 'allWidgetsCommand', on: 'doCommand(\'widgets\');' },
     ];
-
     for (let c of table) {
         const elements = document.querySelectorAll(`#${c.id}`);
         for (let e of elements) {
@@ -528,7 +530,7 @@ function doCommand(text) {
                     return;
                 case COMMAND_ALL:
                     doCommand(COMMAND_WIDGETS);
-                    doCommand(COMMAND_BUTTONS);
+                    doCommand(COMMAND_BUTTON);
                     return;
                 case COMMAND_WIDGETS:
                     resetWidgets();
@@ -864,7 +866,7 @@ function createComponent(fieldId, type, mode = MODE_PLAY) {
                 component = new DropDown(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_SIMPLE);
                 break;
             case WIDGET_TYPE_ID_LIST:
-                component = new ListBox(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_SIMPLE, null, () => { doCommand(COMMAND_DOG); });
+                component = new ListBox(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_SIMPLE, Math.min(getListItems(fieldId).length, 5), () => { doCommand(COMMAND_DOG); });
                 break;
             case WIDGET_TYPE_ID_SLIDER:
                 component = new Slider(fieldId, getListItems(fieldId), getDefaultValue(fieldId), CLASS_COMPOSITE);
@@ -1130,9 +1132,24 @@ function buildWidgetTypesInfo(mode) {
     clearChildElements(widgetsInfo);
     if (isEditMode(mode)) {
 
-        widgetsInfo.appendChild(getTitleElement('利用できるウィジェットの種類'));
-
         const items = widgetTypes.filter(x => x.enabled);
+
+        widgetsInfo.appendChild(getTitleElement('利用できるウィジェット種別'));
+
+        const desc = [];
+        if (items.length == 0) {
+            desc.push('有効なウィジェット種別がありません。');
+        } else if (widgets.length > 0) {
+            // desc.push('種別を押すと全項目に一括設定します。');
+        }
+        if (items.length >= widgetTypes.length) {
+            desc.push('すべてのウィジェットが利用可能です。')
+        } else {
+            desc.push('コマンドで種別を増やせます。');
+        }
+
+        if (desc.length > 0) widgetsInfo.appendChild(getDescriptionElement(...desc));
+
         const element = document.createElement('ul');
         for (let item of items) {
             const li = document.createElement('li');
@@ -1146,15 +1163,6 @@ function buildWidgetTypesInfo(mode) {
 
         widgetsInfo.appendChild(element);
 
-        const desc = [];
-        if (items.length == 0) desc.push('利用できるウィジェットがありません。');
-        if (items.length >= widgetTypes.length) {
-            desc.push('すべてのウィジェットが利用可能です。')
-        } else {
-            desc.push('増やすにはコマンド欄に種類コードを入力してください。');
-        }
-        if (desc.length > 0) widgetsInfo.appendChild(getDescriptionElement(...desc));
-
         widgetsInfo.style.display = STYLE_VALUE_FLEX;
 
     } else {
@@ -1164,17 +1172,14 @@ function buildWidgetTypesInfo(mode) {
 }
 
 function setAllWidgets(typeId) {
-    console.log('全ウィジェット値設定')
-
+    console.log('ウィジェット種類一括変更')
     UpdateWidgetTypes();
-    for (let widget of widgets){
+    for (let widget of widgets) {
         const type = getWidgetTypeById(typeId);
-        if (isNone(type.usableFields) || type.usableFields?.includes(widget.fieldId))
-        {
+        if (isNone(type.usableFields) || type.usableFields?.includes(widget.fieldId)) {
             setFieldValue(widget.fieldId, typeId);
         }
     }
-
 }
 
 
@@ -1190,7 +1195,9 @@ function buildWidgetArea(mode = MODE_PLAY, update = false, newWidget = false, al
     if (isEditMode(mode)) {
         widgetArea.appendChild(getTitleElement('入力できるウィジェットの項目'));
         if (widgets.length == 0) {
-            widgetArea.appendChild(getDescriptionElement('入力できるウィジェットはまだありません。', 'コマンド欄に項目コードを入力してください。'));
+            widgetArea.appendChild(getDescriptionElement(
+                '入力項目はまだありません。',
+                'コマンドで項目を追加できます。'));
             return;
         }
     }
@@ -1334,7 +1341,10 @@ function updateLinkUrl() {
 
 function onMenubutton_Click() {
     console.log('イベント:', '[メニューボタン]マウスクリック');
-    doDebugCommand();
+    if (confirm('サンプルを別タブに表示します。\n今作っているものに戻るにはタブを切り替えてください。')){
+        window.open('./?n=c1&w=dczrprkl&u=7f&t=dog.random', '_blank');
+    }
+    // doDebugCommand();
 }
 
 // [一時停止]ボタン
