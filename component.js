@@ -102,7 +102,8 @@ class Button extends Component {
         super(id, styleClass);
         this.button = this._createElement('button', styleClass);
         if (onClick != null && onClick != undefined) {
-            this.button.setAttribute('onClick', onClick);
+            // this.button.setAttribute('onClick', onClick);
+            this.button.onclick = onClick;
         }
         this._text = text;
         this._textNode = this._createTextNode();
