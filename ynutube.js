@@ -40,51 +40,27 @@ const KEY_CODE_ENTER = 13;
 const STRING_EMPTY = '';
 
 // ユーザーが入力できるフィールド項目
-const FIELD_ID_DIRECTION = 'direction';    // 向き
-const FIELD_ID_SIZE = 'size';              // 大きさ
-const FIELD_ID_SPEED = 'speed';            // 速度
-const FIELD_ID_KIND = 'kind';              // 種類
-const FIELD_ID_EXTRA_KIND = "extrakind";   // 拡張種類
+const Field = Object.freeze({
+    Direction: 'direction',
+    Size: 'size',
+    Speed: 'speed',
+    Kind: 'kind',
+    ExtraKind: 'extrakind',
+});
 
 // テキストで入力する場合のコマンド文字列
-const COMMAND_DIRECTION_LEFT = 'left';      // 左向き
-const COMMAND_DIRECTION_RIGHT = 'right';    // 右向き
-
-const COMMAND_SPEED_SLOW = 'slow';      // 遅い
-const COMMAND_SPEED_NORMAL = 'normal';  // 普通の速度
-const COMMAND_SPEED_FAST = 'fast';      // 速い
-
-const COMMAND_SIZE_NORMAL = 'normal';           // 普通の大きさ
-const COMMAND_SIZE_SMALL = 'small';             // 小さい
-const COMMAND_SIZE_BIG = 'big';                 // 大きい   
-const COMMAND_SIZE_SUPERSMALL = 'supersmall';   // とても大きい
-const COMMAND_SIZE_SUPERBIG = 'superbig';       // とても小さい
-
-const COMMAND_RANDOM = 'random';                // ランダム
-const COMMAND_AUTO = 'auto';    // 自動
-const COMMAND_STOP = 'stop';
-
-const COMMAND_BUTTON = 'button';
-const COMMAND_DOG = 'dog';
-const COMMAND_BAT = 'bat';
-const COMMAND_RUN = 'run';
-const COMMAND_GO = 'go';
-const COMMAND_SAMPLE = 'sample';
-
-const COMMAND_PLAY = 'play';
-const COMMAND_EDIT = 'edit';
-const COMMAND_DEBUG = 'debug';
-const COMMAND_CLEAR = 'clear';
-const COMMAND_RESET = 'reset';
-const COMMAND_MODE = 'mode';
-
-const COMMAND_EVERY = 'every';
-const COMMAND_ALL = 'all';
-const COMMAND_CLICK = 'click';
-const COMMAND_WIDGETS = 'widgets';
-const COMMAND_BUTTONS = 'buttons';
-const COMMAND_RESET_BUTTONS = '-buttons';
-const COMMAND_RESET_WIDGETS = '-widgets';
+const Command = Object.freeze({
+    Direction: { Left: 'left', Right: 'right' },
+    Speed: { Slow: 'slow', Normal: 'normal', Fast: 'fast' },
+    Size: { Normal: 'normal', Small: 'small', Big: 'big', SuperSmall: 'supersmall', SuperBig: 'superbig' },
+    Dog: 'dog', Bat: 'bat', Go: 'go', Random: 'random', Click: 'click',
+    Auto: 'auto', Stop: 'stop',
+    Button: 'button',
+    Mode: 'mode', Play: 'play', Edit: 'edit', Run: 'run',
+    Debug: 'debug', Reset: 'reset', Clear: 'clear',
+    Buttons: 'buttons', Widets: 'widgets', ResetButtons: '-buttons', ResetWidgets: '-widgets',
+    All: 'all', Every: 'every',
+});
 
 const PARAM_NAME_MODE = 'm';
 const PARAM_NAME_EDIT_MODE = 'e';
@@ -101,66 +77,34 @@ const PARAM_SEPARATOR_BUTTON = '.';
 const PARAM_NAME_ENABLED_WIDGETS_TYPE = 'u';
 
 // 動作モード
-const MODE_PLAY = 0;            // 実行モード
-const MODE_EDIT = 1;            // 編集モード
-const MODE_DEFAULT = MODE_PLAY; // 初期状態
+
+const Mode = Object.freeze({
+    Play: 0,
+    Edit: 1,
+});
 
 // ウィジェット（UI部品）
-const WIDGET_TYPE_ID_FIX = 'fix';
-const WIDGET_TYPE_ID_TEXT = 'text';
-const WIDGET_TYPE_ID_CHECK = 'check';
-const WIDGET_TYPE_ID_RADIO = 'radio';
-const WIDGET_TYPE_ID_DROPDOWN = 'dropdown';
-const WIDGET_TYPE_ID_SLIDER = 'slider';
-const WIDGET_TYPE_ID_LIST = 'list';
-const WIDGET_TYPE_ID_IMAGELIST = 'imagelist';
-
-// 既定で使用されるウィジェット
-const DEFAULT_WIDGET = WIDGET_TYPE_ID_TEXT;
+const WidgetType = Object.freeze({
+    FixedLabel: 'fix',
+    TextBox: 'text',
+    CheckBox: 'check',
+    RadioButton: 'radio',
+    DropDownList: 'dropdown',
+    Slider: 'slider',
+    ListBox: 'list',
+    ImageList: 'imagelist',
+});
 
 class YnuTube extends Application {
 
-    MODE_DEFAULT = MODE_PLAY; // 初期状態
-
-    // 既定で使用されるウィジェット
-    DEFAULT_WIDGET = WIDGET_TYPE_ID_TEXT;
-
-    widgetTypes = [
-        // { id: WIDGET_TYPE_ID_FIX, text: '固定', code: 'f' , icon:'📍' },
-        { id: WIDGET_TYPE_ID_TEXT, text: 'テキストボックス', code: 't', icon: '📝', short: 'テキスト' },
-        { id: WIDGET_TYPE_ID_CHECK, text: 'チェックボックス', code: 'c', icon: '✅', short: 'チェック' },
-        { id: WIDGET_TYPE_ID_RADIO, text: 'ラジオボタン', code: 'r', icon: '🔘', short: 'ラジオ' },
-        { id: WIDGET_TYPE_ID_DROPDOWN, text: 'ドロップダウン', code: 'd', icon: '🔽', short: 'ドロップ' },
-        { id: WIDGET_TYPE_ID_LIST, text: 'リストボックス', code: 'l', icon: '🚦', short: 'リスト' },
-        { id: WIDGET_TYPE_ID_SLIDER, text: 'スライダー', code: 's', icon: '🎚', short: 'スライダ' },
-        { id: WIDGET_TYPE_ID_IMAGELIST, text: 'イメージリスト', code: 'i', icon: '🖼', short: 'イメージ' },//, usableFields: [FIELD_ID_KIND] },
-    ];
-
     // 選択肢項目
-    extraKinds = ['hotdog', 'mame', 'siro', 'wanwan', 'xmas'];
-
-    fields = [
-        { id: FIELD_ID_DIRECTION, text: '向き', checkText: '反対を向く', code: 'd' },
-        { id: FIELD_ID_SIZE, text: 'サイズ', checkText: '大きくする', code: 'z' },
-        { id: FIELD_ID_SPEED, text: 'スピード', checkText: '速くする', code: 'p' },
-        { id: FIELD_ID_KIND, text: '種類', checkText: '違う種類', code: 'k' },
+    extraKinds = [
+        'hotdog',
+        'mame',
+        'siro',
+        'wanwan',
+        'xmas',
     ];
-
-    widgetItems = [
-        { field: FIELD_ID_DIRECTION, value: DIRECTION_LEFT, text: '左向き', command: COMMAND_DIRECTION_LEFT, useOption: true, useList: true, useRandom: true, default: true },
-        { field: FIELD_ID_DIRECTION, value: DIRECTION_RIGHT, text: '右向き', command: COMMAND_DIRECTION_RIGHT, useOption: true, useList: true, useRandom: true, useCheck: true },
-
-        { field: FIELD_ID_SIZE, value: SIZE_SUPERSMALL, text: '超小さい', command: COMMAND_SIZE_SUPERSMALL, useOption: false, useList: true, useRandom: false },
-        { field: FIELD_ID_SIZE, value: SIZE_SMALL, text: '小さい', command: COMMAND_SIZE_SMALL, useOption: true, useList: true, useRandom: true },
-        { field: FIELD_ID_SIZE, value: SIZE_NORMAL, text: '普通', command: COMMAND_SIZE_NORMAL, useOption: true, useList: true, useRandom: true, default: true },
-        { field: FIELD_ID_SIZE, value: SIZE_BIG, text: '大きい', command: COMMAND_SIZE_BIG, useOption: true, useList: true, useRandom: true, useCheck: true },
-        { field: FIELD_ID_SIZE, value: SIZE_SUPERBIG, text: '超大きい', command: COMMAND_SIZE_SUPERBIG, useOption: false, useList: true, useRandom: false },
-
-        { field: FIELD_ID_SPEED, value: SPEED_SLOW, text: '遅い', command: COMMAND_SPEED_SLOW, useOption: true, useList: false, useRandom: true },
-        { field: FIELD_ID_SPEED, value: SPEED_NORMAL, text: '普通', command: COMMAND_SPEED_NORMAL, useOption: true, useList: false, useRandom: true, default: true },
-        { field: FIELD_ID_SPEED, value: SPEED_FAST, text: '速い', command: COMMAND_SPEED_FAST, useOption: true, useList: false, useRandom: true, useCheck: true },
-    ];
-
     backGroundIds = [
         'field',
         'sea',
@@ -168,7 +112,6 @@ class YnuTube extends Application {
         'night',
         'out',
     ];
-
     kindNames = [
         { id: 'dog1', text: 'ブラッドハウンド' },
         { id: 'dog2', text: ' ラブラドールレトリバー' },
@@ -187,47 +130,87 @@ class YnuTube extends Application {
         { id: 'xmas', text: 'クリスマス' },
     ];
 
+    defaultMode = Mode.Play;
+
+    // 既定で使用されるウィジェット
+    defaultWidget = WidgetType.TextBox;
+
+    widgetTypes = [
+        // { id: WidgetType.FixedList, text: '固定', code: 'f' , icon:'📍' },
+        { id: WidgetType.TextBox, text: 'テキストボックス', code: 't', icon: '📝', short: 'テキスト' },
+        { id: WidgetType.CheckBox, text: 'チェックボックス', code: 'c', icon: '✅', short: 'チェック' },
+        { id: WidgetType.RadioButton, text: 'ラジオボタン', code: 'r', icon: '🔘', short: 'ラジオ' },
+        { id: WidgetType.DropDownList, text: 'ドロップダウン', code: 'd', icon: '🔽', short: 'ドロップ' },
+        { id: WidgetType.ListBox, text: 'リストボックス', code: 'l', icon: '🚦', short: 'リスト' },
+        { id: WidgetType.Slider, text: 'スライダー', code: 's', icon: '🎚', short: 'スライダ' },
+        { id: WidgetType.ImageList, text: 'イメージリスト', code: 'i', icon: '🖼', short: 'イメージ' },
+    ];
+
+
+    fields = [
+        { id: Field.Direction, text: '向き', checkText: '反対を向く', code: 'd' },
+        { id: Field.Size, text: 'サイズ', checkText: '大きくする', code: 'z' },
+        { id: Field.Speed, text: 'スピード', checkText: '速くする', code: 'p' },
+        { id: Field.Kind, text: '種類', checkText: '違う種類', code: 'k' },
+    ];
+
+    widgetItems = [
+        { field: Field.Direction, value: DogDirection.Left, text: '左向き', command: Command.Direction.Left, useOption: true, useList: true, useRandom: true, default: true },
+        { field: Field.Direction, value: DogDirection.Right, text: '右向き', command: Command.Direction.Right, useOption: true, useList: true, useRandom: true, useCheck: true },
+
+        { field: Field.Size, value: DogSize.SuperSmall, text: '超小さい', command: Command.Size.SuperSmall, useOption: false, useList: true, useRandom: false },
+        { field: Field.Size, value: DogSize.Small, text: '小さい', command: Command.Size.Small, useOption: true, useList: true, useRandom: true },
+        { field: Field.Size, value: DogSize.Normal, text: '普通', command: Command.Size.Normal, useOption: true, useList: true, useRandom: true, default: true },
+        { field: Field.Size, value: DogSize.Big, text: '大きい', command: Command.Size.Big, useOption: true, useList: true, useRandom: true, useCheck: true },
+        { field: Field.Size, value: DogSize.SuperBig, text: '超大きい', command: Command.Size.SuperBig, useOption: false, useList: true, useRandom: false },
+
+        { field: Field.Speed, value: DogSpeed.Slow, text: '遅い', command: Command.Speed.Slow, useOption: true, useList: false, useRandom: true },
+        { field: Field.Speed, value: DogSpeed.Normal, text: '普通', command: Command.Speed.Normal, useOption: true, useList: false, useRandom: true, default: true },
+        { field: Field.Speed, value: DogSpeed.Fast, text: '速い', command: Command.Speed.Fast, useOption: true, useList: false, useRandom: true, useCheck: true },
+    ];
+
+
     buttonCommands = [
-        { command: COMMAND_DOG, text: '🐕', concatLeft: true, afterClass: 'dog-count', afterId: 'dogCount' },
-        { command: COMMAND_BAT, text: '🦇', concatRight: true },
-        { command: COMMAND_RANDOM, text: '❓', concatRight: true },
-        { command: COMMAND_RESET, text: '✖', concatRight: true },
-        { command: COMMAND_SIZE_BIG },
-        { command: COMMAND_SIZE_SMALL },
-        { command: COMMAND_DIRECTION_LEFT },
-        { command: COMMAND_DIRECTION_RIGHT },
-        { command: COMMAND_SPEED_FAST },
-        { command: COMMAND_SPEED_SLOW },
+        { command: Command.Dog, text: '🐕', concatLeft: true, afterClass: 'dog-count', afterId: 'dogCount' },
+        { command: Command.Bat, text: '🦇', concatRight: true },
+        { command: Command.Random, text: '❓', concatRight: true },
+        { command: Command.Reset, text: '✖', concatRight: true },
+        { command: Command.Size.Big },
+        { command: Command.Size.Small },
+        { command: Command.Direction.Left },
+        { command: Command.Direction.Right },
+        { command: Command.Speed.Fast },
+        { command: Command.Speed.Slow },
     ];
 
     translateTable = [
-        [FIELD_ID_DIRECTION, 'dir', 'muki', '向き', 'むき', 'houkou', '方向', 'ほうこう'],
-        [FIELD_ID_SIZE, 'siz', 'サイズ', '大きさ', 'おおきさ', 'saizu', 'ookisa'],
-        [FIELD_ID_SPEED, 'sped', 'spe', 'spd', 'スピード', '速さ', '早さ', 'はやさ', 'hayasa', 'supido'],
-        [FIELD_ID_KIND, 'kin', 'knd', 'typ', 'type', 'タイプ', '種類', 'しゅるい', '画像', 'がぞう', '犬種', 'けんしゅ', 'shurui', 'syurui', 'keshu', 'kensyu'],
-        [COMMAND_PLAY, 'playmode', COMMAND_RUN, COMMAND_GO, '再生', '再生モード', '実行', '始め', 'はじめ', '動け', 'うごけ'],
-        [COMMAND_EDIT, 'editmode', '編集', '編集モード', 'make', '作る', '直す', 'つくる', 'なおす'],
-        [COMMAND_DEBUG, 'デバッグ'],
-        [COMMAND_DOG, '犬', 'いぬ', '走れ', 'はしれ'],
-        [WIDGET_TYPE_ID_TEXT, 'textbox', 'input', 'テキストボックス'],
-        [WIDGET_TYPE_ID_CHECK, 'checkbox', 'チェックボックス', 'チェック'],
-        [WIDGET_TYPE_ID_RADIO, 'radiobutton', 'option', 'optionbox', 'ラジオボタン', 'ラジオ', 'オプション'],
-        [WIDGET_TYPE_ID_DROPDOWN, 'drop', 'ドロップ', 'dropdownbox', 'dropdownlist', 'combobox', 'combo', 'ドロップダウン', 'ドロップダウンリスト'],
-        [WIDGET_TYPE_ID_LIST, 'listbox', 'リストボックス', '一覧', 'リスト'],
-        [WIDGET_TYPE_ID_SLIDER, 'slid', 'srider', 'trackbar', 'スライダー', 'スライダ', 'トラックバー'],
-        [WIDGET_TYPE_ID_IMAGELIST, 'image', 'イメージリスト', '画像リスト', '画像一覧', 'イメージ'],
-        [COMMAND_BUTTON, 'ボタン', 'botan', 'btn', 'buton', 'buttn', 'buttan'],
-        [COMMAND_RESET, COMMAND_CLEAR, 'リセット', 'クリア', 'クリアー'],
-        [COMMAND_CLICK, 'クリック', 'mouse', 'マウス', 'touch', 'タッチ'],
-        [COMMAND_RANDOM, 'ランダム', 'randam', 'rand', 'rnd', '？', '?'],
-        [COMMAND_DIRECTION_RIGHT, '右', '右向き', 'みぎむき', '逆', 'みぎ', 'ぎゃく', 'migi'],
-        [COMMAND_DIRECTION_LEFT, '左', 'ひだり', '左向き', 'ひだりむき', 'hidari'],
-        [COMMAND_SPEED_FAST, '速い', '早い', 'はやい', 'hayai'],
-        [COMMAND_SPEED_SLOW, '遅い', 'おそい', 'のろい', 'osoi'],
-        [COMMAND_SIZE_SMALL, '小さい', 'ちいさい', 'スモール', 'chisai', 'tisai', 'chiisai', 'tiisai'],
-        [COMMAND_SIZE_BIG, '大きい', 'おおきい', 'でかい', 'ビッグ', 'ビック', 'ookii', 'oki', 'okii', 'dekai'],
-        [COMMAND_CLICK, 'クリック', 'touch', 'タッチ', 'マウス', 'mouse', 'tap', 'タップ'],
-        [COMMAND_WIDGETS, 'controls', 'wijets', 'widets', 'wigets'],
+        [Field.Direction, 'dir', 'muki', '向き', 'むき', 'houkou', '方向', 'ほうこう'],
+        [Field.Size, 'siz', 'サイズ', '大きさ', 'おおきさ', 'saizu', 'ookisa'],
+        [Field.Speed, 'sped', 'spe', 'spd', 'スピード', '速さ', '早さ', 'はやさ', 'hayasa', 'supido'],
+        [Field.Kind, 'kin', 'knd', 'typ', 'type', 'タイプ', '種類', 'しゅるい', '画像', 'がぞう', '犬種', 'けんしゅ', 'shurui', 'syurui', 'keshu', 'kensyu'],
+        [WidgetType.TextBox, 'textbox', 'input', 'テキストボックス'],
+        [WidgetType.CheckBox, 'checkbox', 'チェックボックス', 'チェック'],
+        [WidgetType.RadioButton, 'radiobutton', 'option', 'optionbox', 'ラジオボタン', 'ラジオ', 'オプション'],
+        [WidgetType.DropDownList, 'drop', 'ドロップ', 'dropdownbox', 'dropdownlist', 'combobox', 'combo', 'ドロップダウン', 'ドロップダウンリスト'],
+        [WidgetType.ListBox, 'listbox', 'リストボックス', '一覧', 'リスト'],
+        [WidgetType.Slider, 'slid', 'srider', 'trackbar', 'スライダー', 'スライダ', 'トラックバー'],
+        [WidgetType.ImageList, 'image', 'イメージリスト', '画像リスト', '画像一覧', 'イメージ'],
+        [Command.Play, 'playmode', Command.Run, Command.Go, '再生', '再生モード', '実行', '始め', 'はじめ', '動け', 'うごけ'],
+        [Command.Edit, 'editmode', '編集', '編集モード', 'make', '作る', '直す', 'つくる', 'なおす'],
+        [Command.Debug, 'デバッグ'],
+        [Command.Dog, '犬', 'いぬ', '走れ', 'はしれ'],
+        [Command.Button, 'ボタン', 'botan', 'btn', 'buton', 'buttn', 'buttan'],
+        [Command.Reset, Command.Clear, 'リセット', 'クリア', 'クリアー'],
+        [Command.Click, 'クリック', 'mouse', 'マウス', 'touch', 'タッチ'],
+        [Command.Random, 'ランダム', 'randam', 'rand', 'rnd', '？', '?'],
+        [Command.Direction.Right, '右', '右向き', 'みぎむき', '逆', 'みぎ', 'ぎゃく', 'migi'],
+        [Command.Direction.Left, '左', 'ひだり', '左向き', 'ひだりむき', 'hidari'],
+        [Command.Speed.Fast, '速い', '早い', 'はやい', 'hayai'],
+        [Command.Speed.Slow, '遅い', 'おそい', 'のろい', 'osoi'],
+        [Command.Size.Small, '小さい', 'ちいさい', 'スモール', 'chisai', 'tisai', 'chiisai', 'tiisai'],
+        [Command.Size.Big, '大きい', 'おおきい', 'でかい', 'ビッグ', 'ビック', 'ookii', 'oki', 'okii', 'dekai'],
+        [Command.Click, 'クリック', 'touch', 'タッチ', 'マウス', 'mouse', 'tap', 'タップ'],
+        [Command.Widgets, 'controls', 'wijets', 'widets', 'wigets'],
     ];
 
 
@@ -259,7 +242,7 @@ class YnuTube extends Application {
     totalDogCount = 0;
     visibleDogCount = 0;
 
-    currentMode = MODE_DEFAULT;
+    currentMode = this.defaultMode;
 
     canClickScreen = false;
     isAutoMode = false;
@@ -267,45 +250,41 @@ class YnuTube extends Application {
     existsExtraKinds = false;
     defaultWidgetTypesEnabled;
 
-    setHiddenCommands() {
+    setEventHandlers() {
 
-        const table = [
-            // { id: 'clickCommand', on: 'setClickable(true);updateLinkUrl();' },
-            // { id: 'debugCommand', on: 'doDebugCommand();' },
-            // { id: 'everyTypesCommand', on: 'doCommand(\'every\');' },
-            // { id: 'allWidgetsCommand', on: 'doCommand(\'widgets\');' },
-            { id: 'clickCommand', on: (()=>{
-                this.setClickable(true);
-                this.updateLinkUrl();
-            }).bind(this) },
-            { id: 'debugCommand', on: this.doDebugCommand.bind(this) },
-            { id: 'everyTypesCommand', on: this.doCommand.bind(this, 'every') },
-            { id: 'allWidgetsCommand', on: this.doCommand.bind(this, 'widgets')},
+        console.log('イベントハンドラー設定')
+        const EVENT_CLICK = 0;
+        const EVENT_DOUBLECLICK = 1;
+        const EVENT_KEYPRESS = 2;
+
+        const events = [
+            { id: 'clickCommand', type: EVENT_DOUBLECLICK, handler: this.setClickable.bind(this, true, true) },
+            { id: 'debugCommand', type: EVENT_DOUBLECLICK, handler: this.doDebugCommand.bind(this) },
+            { id: 'everyTypesCommand', type: EVENT_DOUBLECLICK, handler: this.doCommand.bind(this, Command.Every) },
+            { id: 'allWidgetsCommand', type: EVENT_DOUBLECLICK, handler: this.doCommand.bind(this, Command.Widets) },
+            { id: 'modeButton', type: EVENT_CLICK, handler: this.onModeChangeButton_Click.bind(this) },
+            { id: 'resetButton', type: EVENT_CLICK, handler: this.onResetButton_Click.bind(this) },
+            { id: 'menuButton', type: EVENT_CLICK, handler: this.onMenubutton_Click.bind(this) },
+            { id: 'commandButton', type: EVENT_CLICK, handler: this.onCommandButton_Click.bind(this) },
+            { id: 'commandBox', type: EVENT_KEYPRESS, handler: this.onCommandText_KeyPress.bind(this) },
         ];
-        for (let c of table) {
-            const elements = document.querySelectorAll(`#${c.id}`);
-            for (let e of elements) {
-                // e.setAttribute('ondblclick', c.on);
-                e.ondblclick = c.on;
+        for (let item of events) {
+            let id = item.id?.trim();
+            if (!id.startsWith('#')) id = `#${id}`;
+            const elements = document.querySelectorAll(id);
+            for (let element of elements) {
+                switch (item?.type) {
+                    case EVENT_CLICK:
+                        element.onclick = item?.handler;
+                        break;
+                    case EVENT_DOUBLECLICK:
+                        element.ondblclick = item?.handler;
+                        break;
+                    case EVENT_KEYPRESS:
+                        element.onkeypress = item?.handler;
+                }
             }
         }
-
-
-        const modeButton = document.querySelector('#modeButton');
-        modeButton.onclick = this.onModeChangeButton_Click.bind(this);
-
-        const resetButton = document.querySelector('#resetButton');
-        resetButton.onclick = this.onResetButton_Click.bind(this);
-
-        const menuButton = document.querySelector('#menuButton');
-        menuButton.onclick = this.onMenubutton_Click.bind(this);
-
-        const commandButton = document.querySelector('#commandButton');
-        commandButton.onclick = this.onCommandButton_Click.bind(this);
-
-        const commadBox = document.querySelector('#commandBox');
-        commadBox.onkeypress = this.onCommandText_KeyPress.bind(this);
-
     }
 
     initializeWidgetItems(log = false) {
@@ -370,15 +349,15 @@ class YnuTube extends Application {
 
     createSpeedItems(log = false) {
 
-        const names = this.getCommandItems(FIELD_ID_SPEED);
+        const names = this.getCommandItems(Field.Speed);
         for (let value = SPEED_MIN; value <= SPEED_MAX; value++) {
             let listText = `速度${value}`;
             const imgSrc = `img/speed${value}.png`;
             const description = this.getTextByValue(names, value);
             if (!isNone(description)) listText += `(${description})`;
-            this.widgetItems.push({ field: FIELD_ID_SPEED, value: value, text: listText, src: imgSrc, command: null, useOption: false, useList: true, useRandom: true });
+            this.widgetItems.push({ field: Field.Speed, value: value, text: listText, src: imgSrc, command: null, useOption: false, useList: true, useRandom: true });
         }
-        console.log('速度項目作成追加', !log ? '' : this.toStringFromItems(this.getItems(FIELD_ID_SPEED)));
+        console.log('速度項目作成追加', !log ? '' : this.toStringFromItems(this.getItems(Field.Speed)));
     }
 
     createKindItems(log = false) {
@@ -386,27 +365,27 @@ class YnuTube extends Application {
         for (let value = DOG_IMAGE_NO_MIN; value <= DOG_IMAGE_NO_MAX; value++) {
             const imageId = `dog${value}`;
             const text = this.kindNames.find(x => equals(x.id, imageId))?.text ?? `犬${value}`;
-            this.widgetItems.push({ field: FIELD_ID_KIND, value: value, text: text, src: `img/${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true, default: (value == DOG_IMAGE_NO_MIN), useCheck: (value == DOG_IMAGE_NO_MAX) });
+            this.widgetItems.push({ field: Field.Kind, value: value, text: text, src: `img/${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true, default: (value == DOG_IMAGE_NO_MIN), useCheck: (value == DOG_IMAGE_NO_MAX) });
         }
 
         let value = DOG_IMAGE_NO_MAX;
         for (let imageId of this.extraKinds) {
-            if (this.getItems(FIELD_ID_KIND, FIELD_ID_EXTRA_KIND).map(x => x.imageId).includes(imageId)) continue;
+            if (this.getItems(Field.Kind, Field.ExtraKind).map(x => x.imageId).includes(imageId)) continue;
             value++;
             const text = this.kindNames.find(x => equals(x.id, imageId))?.text ?? `特殊犬${value - DOG_IMAGE_NO_MAX + 1}`;
-            this.widgetItems.push({ field: FIELD_ID_EXTRA_KIND, value: value, text: text, src: `img/@dog${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true });
+            this.widgetItems.push({ field: Field.ExtraKind, value: value, text: text, src: `img/@dog${imageId}.png`, imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true });
         }
 
-        console.log('種類項目作成追加', !log ? '' : this.toStringFromItems(this.getItems(FIELD_ID_KIND, FIELD_ID_EXTRA_KIND)));
+        console.log('種類項目作成追加', !log ? '' : this.toStringFromItems(this.getItems(Field.Kind, Field.ExtraKind)));
     }
 
     appendExtraKinds(log = false) {
 
         if (this.existsExtraKinds) return;
-        for (let item of this.getItems(FIELD_ID_EXTRA_KIND)) item.field = FIELD_ID_KIND;
+        for (let item of this.getItems(Field.ExtraKind)) item.field = Field.Kind;
         this.existsExtraKinds = true;
 
-        console.log('種類テーブル特殊犬追加', !log ? '' : this.toStringFromItems(getItems(FIELD_ID_KIND)));
+        console.log('種類テーブル特殊犬追加', !log ? '' : this.toStringFromItems(this.getItems(Field.Kind)));
 
     }
 
@@ -503,7 +482,7 @@ class YnuTube extends Application {
             this.resetButtons();
             this.buildButtons(mode);
             this.setAutoMode(false);
-            this.setClickable(false);
+            this.setClickable(false, false);
             this.updateLinkUrl();
         }
         this.resetSprites();
@@ -516,14 +495,10 @@ class YnuTube extends Application {
     }
 
     // ボタン追加コマンド
-    // appendButton(text = STRING_EMPTY, rebuild = true) {
-    appendButton(text = '', rebuild = true) {
+    appendButton(text = STRING_EMPTY, rebuild = true) {
         if (!isBlank(text) && this.buttonTexts?.includes(x => equals(x.value, text))) return;
         console.log('ボタン追加', text);
 
-        // const textBox = new TextBox(`${HTML_ID_BUTTON_TEXT}${this.buttonTexts.length + 1}`, text);
-        // const textBox = new TextBox(`${HTML_ID_BUTTON_TEXT}${(this.buttonTexts?.length ?? 0) + 1}`, text);
-        console.log('TEXT', text);
         const textBox = new TextBox(`${HTML_ID_BUTTON_TEXT}${(this.buttonTexts?.length ?? 0) + 1}`, text);
         textBox.placeholder = '未使用';
         textBox.onUpdateValue = (() => {
@@ -549,16 +524,16 @@ class YnuTube extends Application {
 
             // 両モード共通コマンド
             switch (command) {
-                case COMMAND_DEBUG:
+                case Command.Debug:
                     this.doDebugCommand();
                     return;
-                case COMMAND_MODE:
+                case Command.Mode:
                     this.changeMode(isPlayMode(currentMode));
                     return;
-                case COMMAND_RESET:
+                case Command.Reset:
                     this.doResetCommand(currentMode);
                     return;
-                case COMMAND_CLICK:
+                case Command.Click:
                     this.setClickable(true);
                     return;
             }
@@ -566,48 +541,43 @@ class YnuTube extends Application {
             // 編集モード中のコマンド
             if (this.isEditMode(this.currentMode)) {
                 switch (command) {
-                    case COMMAND_PLAY:
+                    case Command.Play:
                         this.changeMode(false);
                         return;
-                    case COMMAND_EVERY:
+                    case Command.Every:
                         this.widgetTypes.forEach(x => x.enabled = true);
                         this.buildWidgetArea(this.currentMode, true);
                         return;
-                    case COMMAND_ALL:
-                        this.doCommand(COMMAND_WIDGETS);
-                        this.doCommand(COMMAND_BUTTON);
+                    case Command.All:
+                        this.doCommand(Command.Widets);
+                        this.doCommand(Command.Button);
                         return;
-                    case COMMAND_WIDGETS:
+                    case Command.Widets:
                         this.resetWidgets();
                         this.fields.forEach(f => this.appendField(f.id));
                         this.buildWidgetArea(this.currentMode, false, false, true);
                         return;
-                    case COMMAND_RESET_WIDGETS:
+                    case Command.ResetWidgets:
                         this.resetWidgets();
                         this.buildWidgetArea(this.currentMode)
                         return;
-                    case COMMAND_RESET_BUTTONS:
+                    case Command.ResetButtons:
                         this.resetButtons();
                         this.buildButtons(this.currentMode);
                         return;
-                    case COMMAND_BUTTONS:
+                    case Command.Buttons:
                         for (let i = 0; i < 4; i++) this.appendButton();
                         return;
-                    case COMMAND_BUTTON:
+                    case Command.Button:
                         this.appendButton();
                         return;
-                    case `-${COMMAND_BUTTON}`:
+                    case `-${Command.Button}`:
                         this.removeButton();
                         return;
-                    // case COMMAND_DOG:
-                    // case COMMAND_BAT:
-                    // case COMMAND_RANDOM:
-                    //     appendButton(command);
-                    //     return;
                     default:
 
                         // コマンドボタンの直接配置(xxxxbuttonでボタン追加)
-                        if (command.endsWith('button')) {
+                        if (command.endsWith(Command.Button)) {
                             this.appendButton(command.replace(/button$/g, STRING_EMPTY));
                             return;
                         }
@@ -630,27 +600,22 @@ class YnuTube extends Application {
                             return;
                         }
 
-                        // if (widgetItems.some(x => equals(x.command, command, false, false))) {
-                        //     appendButton(command);
-                        //     return;
-                        // }
-
                         break;
                 }
             } else {
                 // 実行モード中のコマンド
 
                 switch (command) {
-                    case COMMAND_EDIT:
+                    case Command.Edit:
                         this.changeMode(true);
                         return;
-                    case COMMAND_AUTO:
+                    case Command.Auto:
                         this.setAutoMode(true);
                         return;
-                    case COMMAND_STOP:
+                    case Command.Stop:
                         this.setAutoMode(false);
                         return;
-                    case COMMAND_BAT:
+                    case Command.Bat:
                         this.appearBat();
                         return;
                     default:
@@ -733,7 +698,7 @@ class YnuTube extends Application {
 
         if (this.dogTiles.has(tileNo)) return;
 
-        const item = this.getItems(FIELD_ID_KIND).find((k) => equals(k.value, tileNo));
+        const item = this.getItems(Field.Kind).find((k) => equals(k.value, tileNo));
         const src = item?.src;
         const id = item?.imageId;
 
@@ -756,24 +721,24 @@ class YnuTube extends Application {
     // 犬を表示する
     appearDog(x, y, kind, direction, size, speed) {
 
-        kind = this.getFieldValue(FIELD_ID_KIND, kind);
+        kind = this.getFieldValue(Field.Kind, kind);
         this.loadDogTile(kind);
 
         const dog = new Dog(this.mainScreen, this.dogTiles, kind, 0, 0, 0, 0, 0, getRandom(0, DOG_PATTERN_COUNT - 1));
 
-        dog.directionTranslate = (d) => this.getTextByValue(getItems(FIELD_ID_DIRECTION), d);
-        dog.sizeTranslate = (s) => this.getTextByValue(getItems(FIELD_ID_SIZE), s);
-        dog.speedTranslate = (s) => this.getTextByValue(getItems(FIELD_ID_SPEED), s);
-        dog.kindTranslate = (k) => this.getTextByValue(getItems(FIELD_ID_KIND), k);
+        dog.directionTranslate = (d) => this.getTextByValue(getItems(Field.Direction), d);
+        dog.sizeTranslate = (s) => this.getTextByValue(getItems(Field.Size), s);
+        dog.speedTranslate = (s) => this.getTextByValue(getItems(Field.Speed), s);
+        dog.kindTranslate = (k) => this.getTextByValue(getItems(Field.Kind), k);
 
         this.totalDogCount++;
         dog.tag = `DOG_${this.totalDogCount.toString().padStart(4, '0')}`;
 
-        dog.direction = this.getFieldValue(FIELD_ID_DIRECTION, direction);
-        dog.size = this.getFieldValue(FIELD_ID_SIZE, size);
-        dog.speed = this.getFieldValue(FIELD_ID_SPEED, speed);
+        dog.direction = this.getFieldValue(Field.Direction, direction);
+        dog.size = this.getFieldValue(Field.Size, size);
+        dog.speed = this.getFieldValue(Field.Speed, speed);
 
-        x = Math.round(x ?? (equals(dog.direction, DIRECTION_LEFT, false, true) ? this.mainScreen.right + dog.halfWidth - 1 : -dog.halfWidth + 1));
+        x = Math.round(x ?? (equals(dog.direction, DogDirection.Left, false, true) ? this.mainScreen.right + dog.halfWidth - 1 : -dog.halfWidth + 1));
         y = Math.round(y ?? (getRandom(0, this.mainScreen.bottom - Math.floor(dog.height) - 1) + dog.halfHeight) + dog.halfHeight);
 
         dog.moveAt(x, y);
@@ -790,7 +755,7 @@ class YnuTube extends Application {
 
         this.updateDogCount();
 
-        console.log('犬を表示:', `[${dog.tag}]`, `座標:(${dog.x}, ${dog.y})`, `種類:${this.getTextByValue(this.getItems(FIELD_ID_KIND), dog.kind)}`, this.getTextByValue(this.getItems(FIELD_ID_DIRECTION), dog.direction), this.getTextByValue(this.getItems(FIELD_ID_SIZE), dog.size), this.getTextByValue(this.getItems(FIELD_ID_SPEED), dog.speed));
+        console.log('犬を表示:', `[${dog.tag}]`, `座標:(${dog.x}, ${dog.y})`, `種類:${this.getTextByValue(this.getItems(Field.Kind), dog.kind)}`, this.getTextByValue(this.getItems(Field.Direction), dog.direction), this.getTextByValue(this.getItems(Field.Size), dog.size), this.getTextByValue(this.getItems(Field.Speed), dog.speed));
 
         return dog;
 
@@ -820,23 +785,21 @@ class YnuTube extends Application {
 
         let items;
         switch (this.widgets.find((c) => equals(c.fieldId, fieldId))?.type) {
-            case WIDGET_TYPE_ID_TEXT:
+            case WidgetType.TextBox:
                 items = this.getCommandItems(fieldId);
                 break;
-            case WIDGET_TYPE_ID_RADIO:
+            case WidgetType.RadioButton:
                 items = this.getOptionItems(fieldId);
                 break;
-            case WIDGET_TYPE_ID_CHECK:
+            case WidgetType.CheckBox:
                 items = this.getCheckItems(fieldId);
                 break;
             default:
                 items = this.getListItems(fieldId);
         }
 
-
-        // preferredValue = preferredValue ?? component?.number ?? items?.find((x) => equals(x.command, translateCommand(component?.text), true, false))?.id ?? defaultValue;
         value = value ?? component?.number ?? items?.find((x) => equals(x.command, this.translateCommand(component?.text), true, false))?.value ?? defaultValue;
-        if (component?.text == COMMAND_RANDOM || value == VALUE_RANDOM) {
+        if (equals(component?.text, Command.Random) || value == VALUE_RANDOM) {
             items = items.filter((x) => x.useRandom);
             value = getRandomSelect(...this.getValues(items));
         }
@@ -850,7 +813,6 @@ class YnuTube extends Application {
     }
 
     getValues(item) {
-        // return item?.map((x) => x.id);
         return item?.map((x) => x.value);
     }
 
@@ -892,34 +854,34 @@ class YnuTube extends Application {
     }
 
     // 入力コンポーネントを作成
-    createComponent(fieldId, type, mode = MODE_PLAY) {
+    createComponent(fieldId, type, mode = Mode.Play) {
 
         let component = null;
 
         if (this.isPlayMode(mode)) {
             switch (type) {
-                case WIDGET_TYPE_ID_TEXT:
+                case WidgetType.TextBox:
                     component = new TextBox(fieldId, this.getDefaultValue(fieldId, true), this.getCommandItems(fieldId), CLASS_SIMPLE);
                     break;
-                case WIDGET_TYPE_ID_RADIO:
+                case WidgetType.RadioButton:
                     component = new RadioButtons(fieldId, this.getOptionItems(fieldId), this.getDefaultValue(fieldId), CLASS_COMPOSITE);
                     break;
-                case WIDGET_TYPE_ID_CHECK:
+                case WidgetType.CheckBox:
                     component = new CheckBox(fieldId, this.getFieldById(fieldId)?.checkText, this.getDefaultValue(fieldId), this.getCheckedValue(fieldId), CLASS_COMPOSITE);
                     break;
-                case WIDGET_TYPE_ID_DROPDOWN:
+                case WidgetType.DropDownList:
                     component = new DropDown(fieldId, this.getListItems(fieldId), this.getDefaultValue(fieldId), CLASS_SIMPLE);
                     break;
-                case WIDGET_TYPE_ID_LIST:
+                case WidgetType.ListBox:
                     component = new ListBox(fieldId, this.getListItems(fieldId), this.getDefaultValue(fieldId), CLASS_SIMPLE, Math.min(this.getListItems(fieldId).length, 5), () => { this.doCommand(COMMAND_DOG); });
                     break;
-                case WIDGET_TYPE_ID_SLIDER:
+                case WidgetType.Slider:
                     component = new Slider(fieldId, this.getListItems(fieldId), this.getDefaultValue(fieldId), CLASS_COMPOSITE);
                     break;
-                case WIDGET_TYPE_ID_IMAGELIST:
+                case WidgetType.ImageList:
                     component = new ImageList(fieldId, this.getListItems(fieldId), this.getDefaultValue(fieldId), CLASS_IMAGELIST, () => { this.doCommand(COMMAND_DOG); });
                     break;
-                case WIDGET_TYPE_ID_FIX:
+                case WidgetType.FixedLabel:
                     component = new FixedLabel(fieldId, this.getDefaultValue(fieldId), this.getItems(fieldId), CLASS_DISABLED);
                     break;
                 default:
@@ -940,7 +902,7 @@ class YnuTube extends Application {
     }
 
     // ウィジェットを構成するHTMLエレメントを生成して取得する
-    generateWidgetElement(component, mode = MODE_PLAY, showLabel = true) {
+    generateWidgetElement(component, mode = Mode.Play, showLabel = true) {
 
         const CLASS_WIDGET_DESCRIPTION = 'widget-description';
         const CLASS_WIDGET = 'widget';
@@ -981,7 +943,7 @@ class YnuTube extends Application {
     resetWidgetTypes(hexCode) {
         console.log('ウィジェット使用状況リセット', hexCode)
 
-        this.widgetTypes.forEach(item => item.enabled = equals(item.id, DEFAULT_WIDGET, false, true));
+        this.widgetTypes.forEach(item => item.enabled = equals(item.id, this.defaultWidget, false, true));
         this.defaultWidgetTypesEnabled = this.getWidgetTypesEnabledAsHexCode();
 
         this.setWidgetTypesEnabledByHexCode(hexCode);
@@ -1116,7 +1078,7 @@ class YnuTube extends Application {
         let number = Number.parseInt(`0x${hexCode}`) || 0;
         console.log('ウィジェット利用可否値', number);
         for (let i = this.widgetTypes.length - 1; i >= 0; i--) {
-            this.widgetTypes[i].enabled = ((number & 0x1) != 0) || equals(this.widgetTypes[i].id, DEFAULT_WIDGET, false, true);
+            this.widgetTypes[i].enabled = ((number & 0x1) != 0) || equals(this.widgetTypes[i].id, this.defaultWidget, false, true);
             number = number >> 1;
         }
     }
@@ -1138,7 +1100,7 @@ class YnuTube extends Application {
         this.clearWidgets();
         this.components.forEach((component) => {
             const id = component.id;
-            const type = component.value ?? DEFAULT_WIDGET;
+            const type = component.value ?? this.defaultWidget;
             this.addWidgets(id, type);
         });
         console.log('ウィジェット種類更新:', this.getWidgetsRestoreCode());
@@ -1228,7 +1190,7 @@ class YnuTube extends Application {
     }
 
 
-    buildWidgetArea(mode = MODE_PLAY, update = false, newWidget = false, all = false) {
+    buildWidgetArea(mode = Mode.Play, update = false, newWidget = false, all = false) {
 
         console.log('ウィジェットエリア構築:', this.widgets);
 
@@ -1251,7 +1213,7 @@ class YnuTube extends Application {
 
             console.log('ウィジェット配置:', `[${this.fields.find(f => equals(f.id, widget.fieldId))?.text}]`, this.getTextById(this.widgetTypes, widget.type));
 
-            if (equals(widget.fieldId, FIELD_ID_KIND) && equals(widget.type, WIDGET_TYPE_ID_IMAGELIST)) {
+            if (equals(widget.fieldId, Field.Kind) && equals(widget.type, WidgetType.ImageList)) {
                 this.appendExtraKinds();
             }
             let component = this.createComponent(widget.fieldId, widget.type, mode);
@@ -1261,8 +1223,7 @@ class YnuTube extends Application {
             }
 
             // テキストボックスの場合はEnterキーで発動できるように
-            if (this.isPlayMode(mode) && equals(widget.type, WIDGET_TYPE_ID_TEXT) && component instanceof TextBox) {
-                // component.textBox.setAttribute('onKeyPress', 'onTextBox_KeyPress(event);');
+            if (this.isPlayMode(mode) && equals(widget.type, WidgetType.TextBox) && component instanceof TextBox) {
                 component.textBox.onkeypress = this.onTextBox_KeyPress.bind(this);
             }
 
@@ -1302,8 +1263,8 @@ class YnuTube extends Application {
 
     onResetButton_Click() {
         if (confirm('すべての設計内容をリセットします。\nこの操作は元に戻せません。\n\nよろしければ[OK]を押してください。')) {
-            this.doResetCommand(MODE_EDIT);
-            this.doResetCommand(MODE_PLAY);
+            this.doResetCommand(Mode.Edit);
+            this.doResetCommand(Mode.Play);
             this.changeMode(this.isEditMode(this.currentMode));
         }
     }
@@ -1358,7 +1319,7 @@ class YnuTube extends Application {
 
         let flags = STRING_EMPTY;
 
-        if (!equals(this.currentMode, MODE_DEFAULT, false, false)) flags += this.isEditMode(this.currentMode) ? PARAM_NAME_EDIT_MODE : PARAM_NAME_RUN_MODE;
+        if (!equals(this.currentMode, this.defaultMode, false, false)) flags += this.isEditMode(this.currentMode) ? PARAM_NAME_EDIT_MODE : PARAM_NAME_RUN_MODE;
         if (this.canClickScreen) flags += PARAM_NAME_CLICK;
         if (this.isDebugMode) flags += PARAM_NAME_DEBUG;
 
@@ -1430,7 +1391,7 @@ class YnuTube extends Application {
         this.doCommand(command);
     }
 
-    isPlayMode(mode = null) { return ((mode ?? this.currentMode) == MODE_PLAY); }
+    isPlayMode(mode = null) { return ((mode ?? this.currentMode) == Mode.Play); }
     isEditMode(mode = null) { return !this.isPlayMode(mode); }
 
     updateDebugArea(visible) {
@@ -1459,14 +1420,14 @@ class YnuTube extends Application {
         this.commandBox = document.querySelector(HTML_ID_COMMAND_BOX);
         if (this.commandBox instanceof HTMLInputElement && this.commandBox.type != 'text') this.commandBox = null;
 
-        this.setHiddenCommands();
+        this.setEventHandlers();
     }
 
     appendField(fieldId, rebuild = true) {
         console.log('フィールド項目追加', fieldId);
         const index = this.widgets.findIndex((c) => equals(c.fieldId, fieldId))
         if (index == -1) {
-            this.widgets.push({ fieldId: fieldId, type: DEFAULT_WIDGET });
+            this.widgets.push({ fieldId: fieldId, type: this.defaultWidget });
             if (rebuild) this.buildWidgetArea(this.currentMode, false, true);
         }
     }
@@ -1496,10 +1457,10 @@ class YnuTube extends Application {
         if (this.isAutoMode) resetSprites();
         this.isAutoMode = value;
     }
-    setClickable(value) {
+    setClickable(value, updateLink = true) {
         this.canClickScreen = value;
+        if (updateLink) updateLinkUrl();
     }
-
 
     appearDogByCommand(command) {
 
@@ -1515,7 +1476,7 @@ class YnuTube extends Application {
         for (let command of commands) {
             command = this.translateCommand(command);
             switch (command) {
-                case COMMAND_RANDOM:
+                case Command.Random:
                     if (direction == null) direction = VALUE_RANDOM;
                     if (speed == null) speed = VALUE_RANDOM;
                     if (size == null) size = VALUE_RANDOM;
@@ -1523,37 +1484,38 @@ class YnuTube extends Application {
                     random = true;
                     appear = true;
                     break;
-                case COMMAND_DIRECTION_LEFT:
-                case COMMAND_DIRECTION_RIGHT:
+                case Command.Direction.Left:
+                case Command.Direction.Right:
                     if (direction != null) break;
-                    direction = this.getItems(FIELD_ID_DIRECTION).find(x => equals(x.command, command, false, false))?.value;
+                    direction = this.getItems(Field.Direction).find(x => equals(x.command, command, false, false))?.value;
                     appear = true;
                     break;
-                case COMMAND_SPEED_FAST:
-                case COMMAND_SPEED_SLOW:
+                case Command.Speed.Fast:
+                case Command.Speed.Slow:
                     if (speed != null) break;
-                    speed = this.getItems(FIELD_ID_SPEED).find(x => equals(x.command, command, false, false))?.value;
+                    speed = this.getItems(Field.Speed).find(x => equals(x.command, command, false, false))?.value;
                     appear = true;
                     break;
-                case COMMAND_SIZE_BIG:
-                case COMMAND_SIZE_SMALL:
-                case COMMAND_SIZE_SUPERSMALL:
-                case COMMAND_SIZE_SUPERBIG:
+                case Command.Size.Big://COMMAND_SIZE_BIG:
+                case Command.Size.Small://COMMAND_SIZE_SMALL:
+                case Command.Size.SuperSmall://COMMAND_SIZE_SUPERSMALL:
+                case Command.Size.SuperBig://COMMAND_SIZE_SUPERBIG:
                     if (size != null) break;
-                    size = this.getItems(FIELD_ID_SIZE).find(x => equals(x.command, command, false, false))?.value;
+                    size = this.getItems(Field.Speed).find(x => equals(x.command, command, false, false))?.value;
                     appear = true;
                     break;
-                case 'normal':
+                case Command.Size.Normal:
+                case Command.Speed.Normal:
                     appear = true;
                     break;
-                case COMMAND_DOG:
-                case COMMAND_PLAY:
+                case Command.Dog:
+                case Command.Play:
                     appear = true;
                     break;
                 default:
 
                     if (this.extraKinds.includes(command)) this.appendExtraKinds();
-                    const kindId = this.getItems(FIELD_ID_KIND).find(x => equals(x.command, command, false, false))?.value;
+                    const kindId = this.getItems(Field.Kind).find(x => equals(x.command, command, false, false))?.value;
                     if (!isNone(kindId) && isNone(kind)) {
                         kind = kindId;
                         appear = true;
@@ -1574,10 +1536,10 @@ class YnuTube extends Application {
 
         if (!(dog instanceof Dog)) return;
 
-        this.setFieldValue(FIELD_ID_DIRECTION, dog.direction);
-        this.setFieldValue(FIELD_ID_SIZE, dog.size);
-        this.setFieldValue(FIELD_ID_SPEED, dog.speed);
-        this.setFieldValue(FIELD_ID_KIND, dog.kind);
+        this.setFieldValue(Field.Direction, dog.direction);
+        this.setFieldValue(Field.Size, dog.size);
+        this.setFieldValue(Field.Speed, dog.speed);
+        this.setFieldValue(Field.Kind, dog.kind);
 
     }
 
@@ -1601,7 +1563,7 @@ class YnuTube extends Application {
         console.log('ボタンエリア消去', this.buttonArea);
     }
 
-    buildButtons(mode = MODE_PLAY) {
+    buildButtons(mode = Mode.Play) {
 
         if (this.buttonArea == null) return;
 
@@ -1705,7 +1667,7 @@ class YnuTube extends Application {
 
         if (editMode) {
 
-            this.currentMode = MODE_EDIT;
+            this.currentMode = Mode.Edit;
             this.layoutArea?.classList.add(CLASS_EDIT_MODE);
 
             body?.classList.add(CLASS_DARK_THEME);
@@ -1716,7 +1678,7 @@ class YnuTube extends Application {
 
         } else {
 
-            this.currentMode = MODE_PLAY;
+            this.currentMode = Mode.Play;
             this.layoutArea?.classList.remove(CLASS_EDIT_MODE);
 
             body?.classList.add(CLASS_LIGHT_THEME);
@@ -1754,7 +1716,6 @@ class YnuTube extends Application {
     run() {
         super.run().then(() => {
 
-
             overrideConsoleLog(document.querySelector(HTML_ID_LOG_AREA));
             console.log('アプリケーション開始');
 
@@ -1770,7 +1731,7 @@ class YnuTube extends Application {
 
             const widgetsType = getParam(PARAM_NAME_ENABLED_WIDGETS_TYPE);
 
-            this.currentMode = getParam(PARAM_NAME_MODE) ?? (flags?.includes(PARAM_NAME_EDIT_MODE) ? MODE_EDIT : flags?.includes(PARAM_NAME_RUN_MODE) ? MODE_PLAY : MODE_DEFAULT);
+            this.currentMode = getParam(PARAM_NAME_MODE) ?? (flags?.includes(PARAM_NAME_EDIT_MODE) ? Mode.Edit : flags?.includes(PARAM_NAME_RUN_MODE) ? Mode.Play : defaultMode);
             this.canClickScreen = (getParam(PARAM_NAME_CLICK) || flags?.includes(PARAM_NAME_CLICK)) != 0;
 
             this.onChangeDebugMode = (isDebugMode) => {

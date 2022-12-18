@@ -6,39 +6,35 @@ const DOG_PATTERN_COUNT = 20;
 const VALUE_RANDOM = Number.MIN_SAFE_INTEGER;   // ランダム指定の数値
 
 // 向き
-const DIRECTION_LEFT = 1;
-const DIRECTION_RIGHT = 2;
+const DogDirection = Object.freeze({
+    Left : 1,
+    Right : 2,
+});
 
 // サイズ
-const SIZE_NORMAL = 1;
-const SIZE_SMALL = 2;
-const SIZE_BIG = 3
-const SIZE_SUPERSMALL = 0;
-const SIZE_SUPERBIG = 4;
+const DogSize = Object.freeze({
+    Normal : 0,
+    Small : 1,
+    Big : 2,
+    SuperSmall : 3,
+    SuperBig : 4,
+});
+
 
 // 速度
 const SPEED_MIN = 1;
 const SPEED_MAX = 10;
 const SPEED_RANGE = (SPEED_MAX - SPEED_MIN + 1);
-const SPEED_SLOW = SPEED_MIN;
-const SPEED_FAST = SPEED_MAX;
-const SPEED_NORMAL = Math.floor(SPEED_RANGE / 2);
+
+const DogSpeed = Object.freeze({
+    Slow : SPEED_MIN,
+    Fast : SPEED_MAX,
+    Normal : Math.floor(SPEED_RANGE / 2),
+});
 
 // 登場する犬を表すDogクラス（変化スプライトを継承）
 class Dog extends TransitionSprite {
 
-    /**
-     * コンストラクタ―
-     * @param {表示範囲のキャンバス} areaCanvas 
-     * @param {元画像タイル} srcTiles 
-     * @param {種類} kind 
-     * @param {x座標} x 
-     * @param {y座標} y 
-     * @param {向き定数} direction 
-     * @param {サイズ定数} size 
-     * @param {スピード} speed 
-     * @param {開始パターン番号} startPattern 
-     */
     constructor(areaCanvas, srcTiles, kind, x, y, direction, size, speed, startPattern) {
 
         const tile = srcTiles.get(kind);
@@ -75,7 +71,8 @@ class Dog extends TransitionSprite {
     _direction;
     set direction(value) {
         this._direction = value;
-        this.hMirror = (value != DIRECTION_LEFT);
+        // this.hMirror = (value != DIRECTION_LEFT);
+        this.hMirror = (value != DogDirection.Left);
     }
     get direction() { return this._direction; }
 
@@ -104,15 +101,20 @@ class Dog extends TransitionSprite {
     getDrawHeight() {
         const height = this.areaHeight / 5;
         switch (this.size) {
-            case SIZE_NORMAL:
+            // case SIZE_NORMAL:
+            case DogSize.Normal:
                 return height;
-            case SIZE_SMALL:
+            // case SIZE_SMALL:
+            case DogSize.Small:
                 return height / 2;
-            case SIZE_BIG:
+            // case SIZE_BIG:
+            case DogSize.Big:
                 return height * 2;
-            case SIZE_SUPERSMALL:
+            // case SIZE_SUPERSMALL:
+            case DogSize.SuperSmall:
                 return height / 4;
-            case SIZE_SUPERBIG:
+            // case SIZE_SUPERBIG:
+            case DogSize.SuperBig:
                 return this.areaHeight;
             default:
                 return height;
@@ -133,11 +135,13 @@ class Dog extends TransitionSprite {
 
         let isOut = false;
         switch (this.direction) {
-            case DIRECTION_LEFT:
+            // case DIRECTION_LEFT:
+            case DogDirection.Left:
                 this.x -= dx;
                 isOut = (this.right < 0);
                 break;
-            case DIRECTION_RIGHT:
+            // case DIRECTION_RIGHT:
+            case DogDirection.Right:
                 this.x += dx;
                 isOut = (this.left > this._areaCanvas.right);
                 break;
@@ -146,7 +150,7 @@ class Dog extends TransitionSprite {
         if (isOut) this.onOutOfCanvas(this);
 
     }
-    onOutOfCanvas = (dog) => {};
+    onOutOfCanvas = (dog) => { };
 
     get distanceX() {
         const MIN_DISTANCE = 0.5;
