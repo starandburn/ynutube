@@ -2,6 +2,10 @@
 
 class ActiveCanvas extends Canvas {
 
+    SKIP_FRAME_AUTO = -1; // オートフレームスキップの値
+    DEFAULT_MAX_FPS = 60; // 最大FPS
+    DEFAULT_SKIP_FRAME = this.SKIP_FRAME_AUTO; // フレームスキップのデフォルト値 
+
     // 公開プロパティ
     sprites = [];
     maxFps;
@@ -17,14 +21,12 @@ class ActiveCanvas extends Canvas {
 
     // コンストラクタ―
     constructor(element, width, height, backgroundColor, maxFps, skipFrame, isDebugMode = false) {
-        const DEFAULT_MAX_FPS = 60;
-        const DEFAULT_SKIP_FRAME = -1;
 
         super(element, width, height, backgroundColor, true);
 
         this.isDebugMode = isDebugMode;
-        this.maxFps = Math.max(1, parseInt(maxFps) || DEFAULT_MAX_FPS);
-        this._skipFrame = parseInt(skipFrame) ?? DEFAULT_SKIP_FRAME;
+        this.maxFps = Math.max(1, parseInt(maxFps) || this.DEFAULT_MAX_FPS);
+        this._skipFrame = parseInt(skipFrame) ?? this.DEFAULT_SKIP_FRAME;
         this._fpsText = new TextTile(16, 32, '', 'white', null, '16px Arial', true);
 
         this.start();

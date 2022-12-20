@@ -1,16 +1,16 @@
 'use strict';
 
-const BAT_MIN_SCALE = 0.1;
-const BAT_MAX_SCALE = 1.8;
-
 class Bat extends TransitionSprite {
+
+    BAT_MIN_SCALE = 0.1;
+    BAT_MAX_SCALE = 1.8;
 
     constructor(tile, x, y) {
 
         super(tile, x, y, 0, 0, 1, 1, 1, 20, 1, 10, true, false, 0, false);
 
         this.setBaseCenter();
-        this.scale = BAT_MIN_SCALE;
+        this.scale = this.BAT_MIN_SCALE;
 
         this._isFowarding = true;
         this.visible = true;
@@ -31,10 +31,10 @@ class Bat extends TransitionSprite {
         if (!this.visible) return;
 
         let scale = this.scaleX * (this._isFowarding ? 1.1 : 0.9);
-        if (scale >= BAT_MAX_SCALE) {
+        if (scale >= this.BAT_MAX_SCALE) {
             this._isFowarding = false;
-            scale = BAT_MAX_SCALE;
-        } else if (scale <= BAT_MIN_SCALE) {
+            scale = this.BAT_MAX_SCALE;
+        } else if (scale <= this.BAT_MIN_SCALE) {
             scale = 0
             this.visible = false;
             this.dispose();

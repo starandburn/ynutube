@@ -18,7 +18,6 @@ class Application {
     // コンストラクタ―
     constructor(debugMode = false) {
         this._debugMode = debugMode;
-        this._debugMode = getParam('debug') ? true : debugMode;
         this._self = this;
     }
 
