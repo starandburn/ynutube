@@ -1277,7 +1277,7 @@ class YnuTube extends Application {
         for (let id of this.backgroundIds) {
             const img = Html.createImgElement(this.makeBgId(id), CLASS_THUMBNAIL, this.makeImageUrl(id));
             img.onclick = () => this.changeBackground(id);
-            selectBgArea.appendChild(img);
+            this.selectBgArea.appendChild(img);
         }
 
         this.updateBgSelected();
