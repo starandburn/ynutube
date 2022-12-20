@@ -1,18 +1,41 @@
 'use strict';
 
-[
-    'figure.js',
-    'canvas.js',
-    'sprite.js',
-    'component.js',
-    'common.js',
-    'dog.js',
-    'bat.js',
-    'stringtranslator.js',
-    'application.js',
+// 読み込むスクリプトファイル(先頭から順番に読み込み)
+const scripts =
+    [
+        'common.js',
+        'html.js',
+        'timer.js',
+        'figure.js',
+        'component.js',
+        'canvas.js',
+        'activecanvas.js',
+        'sprite.js',
+        'dog.js',
+        'bat.js',
+        'application.js',
+        'ynutube.js',
+    ];
 
-].forEach((s) => {
-    const tag = `<script src="${s}"></script> `;
-    console.log('スクリプト読み込み', `'${s}'`);
-    document.write(tag);
-});
+// １件ずつ同期しながら読み込み    
+let promise = Promise.resolve();
+for (let src of scripts) {
+    promise = promise.then(loadScript.bind(this, src));
+}
+
+function loadScript(src) {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = src;
+    document.head.insertAdjacentElement('beforeend', script);
+    return new Promise((resolve, reject) => {
+        script.onload = () => {
+            // console.log('スクリプト読み込み完了', src);
+            resolve(`スクリプト'${src}'読み込み完了`);
+        }
+        script.onerror = () => {
+            console.log('スクリプト読み込み失敗', src);
+            reject(`スクリプト'${src}'読み込み失敗`);
+        }
+    });
+}

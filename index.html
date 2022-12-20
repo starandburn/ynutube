@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <title>YnuTube</title>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <link href="flexstyle.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
     <script src="scripts.js"></script>
-    <script src="main.js"></script>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 
@@ -18,7 +17,7 @@
             <!-- ヘッダー左側 -->
             <div class="header-left  disabled-select">
                 <!-- メニューボタン -->
-                <div class="menu-button" onClick="onMenubutton_Click();">
+                <div id="menuButton" class="menu-button">
                     <!-- バーガーアイコン -->
                     <div class="barger-icon">
                         <!-- アイコン用直線 -->
@@ -40,10 +39,9 @@
                 <!-- コマンド入力エリア -->
                 <div class="command-area">
                     <!-- コマンド入力ボックス -->
-                    <input type="text" id="commandBox" class="command-box" autofocus placeholder="コマンド"
-                        onKeyPress="onCommandText_KeyPress(event);">
+                    <input type="text" id="commandBox" class="command-box" autofocus placeholder="コマンド">
                     <!-- コマンド入力ボタン -->
-                    <button class="command-button" id="commandButton" onClick="onCommandButton_Click();">📣</button>
+                    <button class="command-button" id="commandButton">📣</button>
                 </div>
             </div>
             <!-- ヘッダ右側 -->
@@ -87,9 +85,7 @@
                     <!-- モードエリア -->
                     <div id="modeArea" class="mode-area">
                         <!-- リセットボタン -->
-                        <div id="resetButton" class="reset-button">
-                            <img class="reset-button" src="img/reset-button.png" onClick="onResetButton_Click();">
-                        </div>
+                        <img id="resetButton" class="reset-button" src="img/reset-button.png">
                         <!-- モード情報 -->
                         <div id="modeInfo" class="mode-info">
                             <p id="modeText" class="mode-text"></p>
@@ -97,8 +93,7 @@
                         </div>
                         <!-- モード変更ボタン -->
                         <div>
-                            <button class="mode-button disabled-select"
-                                onClick="onModeChangeButton_Click();">モード変更</button>
+                            <button id="modeButton" class="mode-button disabled-select">モード変更</button>
                         </div>
                     </div>
                     <!-- ボタンエリア -->
@@ -107,10 +102,12 @@
                 <!-- 概要欄 -->
                 <div id="overviewArea" class="overview-area">
                     <copyright>
-                        <p><span id="debugCommand" class="disabled-select">&copy;</span>2022 Japan International
-                            Institute
-                            of Cybernetics <span id="allWidgetsCommand" class="disabled-select">all</span> rights <span
-                                id="everyTypesCommand" class="disabled-select">reserved</span>. </p>
+                        <p><span id="debugCommand" class="disabled-select">&copy;</span>
+                            <span>2022</span>
+                            <span>Japan International Institute of Cybernetics</span>
+                            <span id="allWidgetsCommand" class="disabled-select">all</span>
+                            rights <span id="everyTypesCommand" class="disabled-select">reserved</span>.
+                        </p>
                     </copyright>
                 </div>
             </div>
