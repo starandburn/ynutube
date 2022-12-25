@@ -24,13 +24,13 @@ for (let src of scripts) {
 }
 
 function loadScript(src) {
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = src;
-    document.head.insertAdjacentElement('beforeend', script);
     return new Promise((resolve, reject) => {
-        script.onload = () => {
-            // console.log('スクリプト読み込み完了', src);
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = src;
+        document.head.insertAdjacentElement('beforeend', script);
+            script.onload = () => {
+            console.log('スクリプト読み込み完了', src);
             resolve(`スクリプト'${src}'読み込み完了`);
         }
         script.onerror = () => {

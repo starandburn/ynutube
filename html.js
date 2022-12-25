@@ -82,4 +82,10 @@ const Html = Object.freeze({
     isNone: (obj) => (obj == null || obj == undefined || obj == NaN),
     isBlank: (str) => (Html.isNone(str) || ((str?.toString().trim().length ?? 0) == 0)),
 
+    setStyleSize: (element, width, height) => {
+        const STYLE_VALUE_100PERCENT = '100%';
+        element.style.width = width || STYLE_VALUE_100PERCENT;
+        element.style.height = height || STYLE_VALUE_100PERCENT;
+    },
+
 });

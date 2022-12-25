@@ -2,13 +2,8 @@
 
 class YnuTube extends Application {
 
-    DogImageNo = Object.freeze({
-        Min: 1,
-        Max: 10,
-    })
-
     HtmlId = Object.freeze({
-        Layout: 'layout',
+        LayoutArea: 'layout',
         CommandBox: 'commandBox',
         ButtonArea: 'buttonArea',
         ModeText: 'modeText',
@@ -16,10 +11,10 @@ class YnuTube extends Application {
         LogArea: 'logArea',
         DebugArea: 'debugArea',
         WindowOverlay: 'windowOverlay',
-        WidgetsInfo: 'widgetsInfo',
+        WidgetTypeArea: 'widgetsInfo',
         WidgetArea: 'widgetArea',
-        Screen: 'screen',
-        Content: 'content',
+        ScreenCanvas: 'screen',
+        ContentArea: 'content',
         UpdateLink: 'updateLink',
         SelectBgArea: 'selectBgArea',
         ButtonText: 'buttonText',
@@ -28,7 +23,6 @@ class YnuTube extends Application {
         AppendButton: 'appendButton',
     });
 
-    // HTML 要素ID
     ClassName = Object.freeze({
         Simple: 'simple-component',
         Composite: 'composite-component',
@@ -69,15 +63,6 @@ class YnuTube extends Application {
         WidgetType: this.WidgetType.TextBox,
     });
 
-
-    // 選択肢項目
-    extraKinds = [
-        'hotdog',
-        'mame',
-        'siro',
-        'wanwan',
-        'xmas',
-    ];
     backgroundIds = [
         'field',
         'sea',
@@ -85,7 +70,7 @@ class YnuTube extends Application {
         'night',
         'out',
     ];
-    kindNames = [
+    kinds = [
         { id: 'dog1', text: 'ブラッドハウンド' },
         { id: 'dog2', text: ' ラブラドールレトリバー' },
         { id: 'dog3', text: ' グレイハウンド' },
@@ -100,9 +85,8 @@ class YnuTube extends Application {
         { id: 'mame', text: '豆しば', extra: true },
         { id: 'siro', text: 'シロ', extra: true },
         { id: 'wanwan', text: 'ワンワン', extra: true },
-        { id: 'xmas', text: 'クリスマス', extra: true },
+        // { id: 'xmas', text: 'クリスマス', extra: true },
     ];
-
 
     widgetTypes = [
         // { id: WidgetType.FixedList, text: '固定', code: 'f' , icon:'📍' },
@@ -156,18 +140,18 @@ class YnuTube extends Application {
 
     widgetItems = [
 
-        { field: this.Field.Direction, value: DogCommon.Direction.Left, text: '左向き', command: this.Command.Direction.Left, useOption: true, useList: true, useRandom: true, default: true },
-        { field: this.Field.Direction, value: DogCommon.Direction.Right, text: '右向き', command: this.Command.Direction.Right, useOption: true, useList: true, useRandom: true, useCheck: true },
+        { field: this.Field.Direction, value: Dog.Direction.Left, text: '左向き', command: this.Command.Direction.Left, useOption: true, useList: true, useRandom: true, default: true },
+        { field: this.Field.Direction, value: Dog.Direction.Right, text: '右向き', command: this.Command.Direction.Right, useOption: true, useList: true, useRandom: true, useCheck: true },
 
-        { field: this.Field.Size, value: DogCommon.Size.SuperSmall, text: '超小さい', command: this.Command.Size.SuperSmall, useOption: false, useList: true, useRandom: false },
-        { field: this.Field.Size, value: DogCommon.Size.Small, text: '小さい', command: this.Command.Size.Small, useOption: true, useList: true, useRandom: true },
-        { field: this.Field.Size, value: DogCommon.Size.Normal, text: '普通', command: this.Command.Size.Normal, useOption: true, useList: true, useRandom: true, default: true },
-        { field: this.Field.Size, value: DogCommon.Size.Big, text: '大きい', command: this.Command.Size.Big, useOption: true, useList: true, useRandom: true, useCheck: true },
-        { field: this.Field.Size, value: DogCommon.Size.SuperBig, text: '超大きい', command: this.Command.Size.SuperBig, useOption: false, useList: true, useRandom: false },
+        { field: this.Field.Size, value: Dog.Size.SuperSmall, text: '超小さい', command: this.Command.Size.SuperSmall, useOption: false, useList: true, useRandom: false },
+        { field: this.Field.Size, value: Dog.Size.Small, text: '小さい', command: this.Command.Size.Small, useOption: true, useList: true, useRandom: true },
+        { field: this.Field.Size, value: Dog.Size.Normal, text: '普通', command: this.Command.Size.Normal, useOption: true, useList: true, useRandom: true, default: true },
+        { field: this.Field.Size, value: Dog.Size.Big, text: '大きい', command: this.Command.Size.Big, useOption: true, useList: true, useRandom: true, useCheck: true },
+        { field: this.Field.Size, value: Dog.Size.SuperBig, text: '超大きい', command: this.Command.Size.SuperBig, useOption: false, useList: true, useRandom: false },
 
-        { field: this.Field.Speed, value: DogCommon.Speed.Slow, text: '遅い', command: this.Command.Speed.Slow, useOption: true, useList: false, useRandom: true },
-        { field: this.Field.Speed, value: DogCommon.Speed.Normal, text: '普通', command: this.Command.Speed.Normal, useOption: true, useList: false, useRandom: true, default: true },
-        { field: this.Field.Speed, value: DogCommon.Speed.Fast, text: '速い', command: this.Command.Speed.Fast, useOption: true, useList: false, useRandom: true, useCheck: true },
+        { field: this.Field.Speed, value: Dog.Speed.Slow, text: '遅い', command: this.Command.Speed.Slow, useOption: true, useList: false, useRandom: true },
+        { field: this.Field.Speed, value: Dog.Speed.Normal, text: '普通', command: this.Command.Speed.Normal, useOption: true, useList: false, useRandom: true, default: true },
+        { field: this.Field.Speed, value: Dog.Speed.Fast, text: '速い', command: this.Command.Speed.Fast, useOption: true, useList: false, useRandom: true, useCheck: true },
     ];
 
 
@@ -236,7 +220,7 @@ class YnuTube extends Application {
     buttonArea = null;
     debugArea = null;
     commandBox = null;
-    widgetsInfo = null;
+    widgetsTypeArea = null;
     updateLinkAnchor = null;
     selectBgArea = null;
 
@@ -278,27 +262,24 @@ class YnuTube extends Application {
             { id: 'commandBox', type: Event.KeyDown, handler: this.onCommandTextKeyDown.bind(this) },
         ];
 
-        const setEvent = (e, t, h) => {
-            if (isNone(e)) return;
-            switch (t) {
-                case Event.Click:
-                    e.onclick = h;
-                    if (log) console.log(e.id, 'クリック');
-                    break;
-                case Event.DoubleClick:
-                    e.ondblclick = h;
-                    if (log) console.log(e.id, 'ダブルクリック');
-                    break;
-                case Event.KeyDown:
-                    e.onkeydown = h;
-                    if (log) console.log(e.id, 'キーダウン');
-                    break;
-            }
-        };
-
         for (let item of events) {
-            setEvent(Html.getById(item?.id), item?.type, item?.handler);
-            for (let element of Html.getByClass(item?.class)) setEvent(element, item?.type, item?.handler);
+            for (let element of [Html.getById(item?.id)].concat(Html.getByClass(item?.class))) {
+                if (isNone(element)) continue;
+                switch (item?.type) {
+                    case Event.Click:
+                        element.onclick = item?.handler;
+                        if (log) console.log(element.id, 'クリック');
+                        break;
+                    case Event.DoubleClick:
+                        element.ondblclick = item?.handler;
+                        if (log) console.log(element.id, 'ダブルクリック');
+                        break;
+                    case Event.KeyDown:
+                        element.onkeydown = item?.handler;
+                        if (log) console.log(element.id, 'キーダウン');
+                        break;
+                }
+            }
         }
     }
 
@@ -364,11 +345,23 @@ class YnuTube extends Application {
     createSpeedItems(log = false) {
 
         const names = this.getCommandItems(this.Field.Speed);
-        for (let value = DogCommon.Speed.Slow; value <= DogCommon.Speed.Fast; value++) {
-            let listText = `速度${value}`;
-            const imgSrc = this.makeImageUrl(`speed${value}`);
+        for (let i = 1; i <= Dog.Speed.Range; i++) {
+            let listText = `速度${i}`;
+            const imgSrc = this.makeImageUrl(`speed${i}`);
+            let value = i;
+            switch (i) {
+                case 1:
+                    value = Dog.Speed.Slow;
+                    break;
+                case Math.floor(Dog.Speed.Range / 2):
+                    value = Dog.Speed.Normal;
+                    break;
+                case Dog.Speed.Range:
+                    value = Dog.Speed.Fast;
+                    break;
+            }
             const description = this.getTextByValue(names, value);
-            if (!isNone(description)) listText += `(${description})`;
+            if (!Text.isBlank(description)) listText += `(${description})`;
             this.widgetItems.push({ field: this.Field.Speed, value: value, text: listText, src: imgSrc, command: null, useOption: false, useList: true, useRandom: true });
         }
         console.log('速度項目作成追加', !log ? '' : this.toCsvText(this.getItems(this.Field.Speed)));
@@ -376,20 +369,12 @@ class YnuTube extends Application {
 
     createKindItems(log = false) {
 
-        for (let value = this.DogImageNo.Min; value <= this.DogImageNo.Max; value++) {
-            const imageId = `dog${value}`;
-            const text = this.kindNames.find(x => equals(x.id, imageId))?.text ?? `犬${value}`;
-            this.widgetItems.push({ field: this.Field.Kind, value: value, text: text, src: this.makeImageUrl(imageId), imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true, default: (value == this.DogImageNo.Min), useCheck: (value == this.DogImageNo.Max) });
-
-        }
-
-        let value = this.DogImageNo.Max;
-        for (let imageId of this.extraKinds) {
-            if (this.getItems(this.Field.Kind, this.Field.ExtraKind).map(x => x.imageId).includes(imageId)) continue;
-            value++;
-            const text = this.kindNames.find(x => equals(x.id, imageId))?.text ?? `特殊犬${value - this.DogImageNo.Max + 1}`;
-            this.widgetItems.push({ field: this.Field.ExtraKind, value: value, text: text, src: this.makeImageUrl(`@dog${imageId}`), imageId: imageId, command: imageId, useOption: true, useList: true, useRandom: true });
-        }
+        this.kinds.forEach((kind, index) => {
+            if (this.getItems(this.Field.Kind, this.Field.ExtraKind).map(x => x.imageId).includes(kind.id)) return;
+            const text = kind.text || `犬${kind.id}`;
+            const field = kind.extra ? this.Field.ExtraKind : this.Field.Kind;
+            this.widgetItems.push({ field: field, value: index + 1, text: text, src: this.makeImageUrl(kind.id), imageId: kind.id, command: kind.id, useOption: true, useList: true, useRandom: true, default: (index == 0), useCheck: (index == 1) });
+        });
 
         console.log('種類項目作成追加', !log ? '' : this.toCsvText(this.getItems(this.Field.Kind, this.Field.ExtraKind)));
     }
@@ -543,10 +528,10 @@ class YnuTube extends Application {
                     this.doDebugCommand();
                     return;
                 case this.Command.Mode:
-                    this.changeMode(isPlayMode(currentMode));
+                    this.changeMode(this.isPlayMode(this.currentMode));
                     return;
                 case this.Command.Reset:
-                    this.resetAll(currentMode);
+                    this.resetAll(this.currentMode);
                     return;
                 case this.Command.Click:
                     this.setClickable(true);
@@ -666,7 +651,7 @@ class YnuTube extends Application {
         }).then(() => {
             // 読み込みが完了した段階ですでに使用中のスプライトの画像を更新する
             this.batImageTile = new ImageTile(img);
-            for (let bat of this.mainScreen.sprites.filter((x) => x instanceof Bat)) {
+            for (let bat of this.mainScreen.sprites.filter((x) => x instanceof BatSprite)) {
                 bat.refreshTile(this.batImageTile);
                 console.log('蝙蝠画像更新');
             }
@@ -722,7 +707,7 @@ class YnuTube extends Application {
             const tile = new ImageTile(this.getImage(id), 0, 0, 0, 0, true, true);
             this.dogImageTiles.set(tileNo, tile);
             // 読み込みが完了した段階ですでに使用中のスプライトの画像を更新する
-            for (let dog of this.mainScreen.sprites.filter((x) => x instanceof Dog)) {
+            for (let dog of this.mainScreen.sprites.filter((x) => x instanceof DogSprite)) {
                 if (dog.kind == tileNo) {
                     dog.refreshTile();
                     console.log('犬画像読込', `[${tileNo}]`, id);
@@ -740,7 +725,7 @@ class YnuTube extends Application {
         this.loadDogTile(kind);
 
         // const dog = new Dog(this.mainScreen, this.dogImageTiles, kind, 0, 0, 0, 0, 0, getRandom(0, DOG_PATTERN_COUNT - 1));
-        const dog = new Dog(this.mainScreen, this.dogImageTiles, kind, 0, 0, 0, 0, 0, Random.get(0, DogCommon.PatternCount - 1));
+        const dog = new DogSprite(this.mainScreen, this.dogImageTiles, kind, 0, 0, 0, 0, 0, Random.get(0, Dog.PatternCount - 1));
 
         dog.directionTranslate = (d) => this.getTextByValue(this.getItems(this.Field.Direction), d);
         dog.sizeTranslate = (s) => this.getTextByValue(this.getItems(this.Field.Size), s);
@@ -754,7 +739,7 @@ class YnuTube extends Application {
         dog.size = this.getFieldValue(this.Field.Size, size);
         dog.speed = this.getFieldValue(this.Field.Speed, speed);
 
-        x = Math.round(x ?? (equals(dog.direction, DogCommon.Direction.Left, false, true) ? this.mainScreen.right + dog.halfWidth - 1 : -dog.halfWidth + 1));
+        x = Math.round(x ?? (equals(dog.direction, Dog.Direction.Left, false, true) ? this.mainScreen.right + dog.halfWidth - 1 : -dog.halfWidth + 1));
         // y = Math.round(y ?? (getRandom(0, this.mainScreen.bottom - Math.floor(dog.height) - 1) + dog.halfHeight) + dog.halfHeight);
         y = Math.round(y ?? (Random.get(0, this.mainScreen.bottom - Math.floor(dog.height) - 1) + dog.halfHeight) + dog.halfHeight);
 
@@ -795,9 +780,9 @@ class YnuTube extends Application {
 
     getFieldValue(fieldId, value) {
 
-        const defaultValue = (isNone(value) || value == DogCommon.RandomValue) ? this.getDefaultValue(fieldId) : value;
+        const defaultValue = (isNone(value) || value == Dog.RandomValue) ? this.getDefaultValue(fieldId) : value;
         const component = this.getComponent(fieldId);
-        if (component == null && value != DogCommon.RandomValue) return defaultValue;
+        if (component == null && value != Dog.RandomValue) return defaultValue;
 
         let items;
         switch (this.widgets.find((c) => equals(c.fieldId, fieldId))?.type) {
@@ -815,7 +800,7 @@ class YnuTube extends Application {
         }
 
         value = value ?? component?.number ?? items?.find((x) => equals(x.command, this.translateCommand(component?.text), true, false))?.value ?? defaultValue;
-        if (equals(component?.text, this.Command.Random) || value == DogCommon.RandomValue) {
+        if (equals(component?.text, this.Command.Random) || value == Dog.RandomValue) {
             items = items.filter((x) => x.useRandom);
             // value = getRandomSelect(...this.getValues(items));
             value = Random.select(...this.getValues(items));
@@ -928,7 +913,7 @@ class YnuTube extends Application {
         const description = `${this.getTextById(this.fields, fieldId)}${this.isEditMode(mode) ? 'を決めるウィジェット' : Text.Empty}`;
         const label = showLabel ? new FixedLabel(`${fieldId}Label`, description, null, CLASS_WIDGET_DESCRIPTION) : null;
 
-        return Html.createDivElement(`${fieldId}Widget`, CLASS_WIDGET, label?.htmlElement, component?.htmlElement);
+        return Html.createDivElement(`${fieldId}Widget`, CLASS_WIDGET, label?.element, component?.element);
 
     }
 
@@ -1131,12 +1116,12 @@ class YnuTube extends Application {
     buildWidgetTypesInfo(mode) {
 
         const CLASS_WIDGET_TYPE_TAG = 'widget-type-tag';
-        Html.clearChildElements(this.widgetsInfo);
+        Html.clearChildElements(this.widgetsTypeArea);
         if (this.isEditMode(mode)) {
 
             const items = this.widgetTypes.filter(x => x.enabled);
 
-            this.widgetsInfo.appendChild(this.getTitleElement('利用できるウィジェット種別'));
+            this.widgetsTypeArea.appendChild(this.getTitleElement('利用できるウィジェット種別'));
 
             const desc = [];
             if (items.length == 0) {
@@ -1150,7 +1135,7 @@ class YnuTube extends Application {
                 desc.push('コマンドで種別を増やせます。');
             }
 
-            if (desc.length > 0) this.widgetsInfo.appendChild(this.getDescriptionElement(...desc));
+            if (desc.length > 0) this.widgetsTypeArea.appendChild(this.getDescriptionElement(...desc));
 
             const element = Html.createElement(Html.Tag.Ul);
             for (let item of items) {
@@ -1162,10 +1147,10 @@ class YnuTube extends Application {
 
             widgetsInfo.appendChild(element);
 
-            Html.setVisible(this.widgetsInfo, true);
+            Html.setVisible(this.widgetsTypeArea, true);
 
         } else {
-            Html.setVisible(this.widgetsInfo, false);
+            Html.setVisible(this.widgetsTypeArea, false);
         }
 
     }
@@ -1216,7 +1201,7 @@ class YnuTube extends Application {
 
             // テキストボックスの場合はEnterキーで発動できるように
             if (this.isPlayMode(mode) && equals(widget.type, this.WidgetType.TextBox) && component instanceof TextBox) {
-                component.textBox.onkeydown = this.onTextBoxKeyDown.bind(this);
+                component.coreNode.onkeydown = this.onTextBoxKeyDown.bind(this);
             }
 
             this.addComponent(component);
@@ -1240,12 +1225,12 @@ class YnuTube extends Application {
                 this.appearDog(x, y + Random.get(-8, 8));
                 break;
             case 2:
-                this.updateFieldValue(this.appearDog(x, y, DogCommon.RandomValue, DogCommon.RandomValue, DogCommon.RandomValue, DogCommon.RandomValue));
+                this.updateFieldValue(this.appearDog(x, y, Dog.RandomValue, Dog.RandomValue, Dog.RandomValue, Dog.RandomValue));
                 break;
 
             case 1:
                 const hited = target.getPointedSprite(x, y, true);
-                if (hited instanceof Dog) {
+                if (hited instanceof DogSprite) {
                     target.removeSprite(hited);
                     this.visibleDogCount--;
                     this.updateDogCount();
@@ -1320,7 +1305,7 @@ class YnuTube extends Application {
             params.push({ param: this.ParamCode.background, value: this.backgroundId ?? Text.Empty });
         }
 
-        params.push({ param: this.ParamCode.flags, value: flags });
+        params.push({ param: this.ParamCode.Flags, value: flags });
         params.push({ param: this.ParamCode.Widgets, value: this.getWidgetsRestoreCode() });
 
         let hexCode = this.getWidgetTypesCode();
@@ -1401,14 +1386,14 @@ class YnuTube extends Application {
     prepareHtmlElements() {
         console.log('常用HTMLエレメント事前準備');
 
-        this.layoutArea = Html.getById(this.HtmlId.Layout);
+        this.layoutArea = Html.getById(this.HtmlId.LayoutArea);
         this.modeText = Html.getById(this.HtmlId.ModeText);
         this.modeDescription = Html.getById(this.HtmlId.ModeDescription);
         this.updateLinkAnchor = Html.getById(this.HtmlId.UpdateLink);
         this.selectBgArea = Html.getById(this.HtmlId.SelectBgArea);
-        this.contentArea = Html.getById(this.HtmlId.Content);
+        this.contentArea = Html.getById(this.HtmlId.ContentArea);
         this.widgetArea = Html.getById(this.HtmlId.WidgetArea);
-        this.widgetsInfo = Html.getById(this.HtmlId.WidgetsInfo)
+        this.widgetsTypeArea = Html.getById(this.HtmlId.WidgetTypeArea)
         this.buttonArea = Html.getById(this.HtmlId.ButtonArea);
         this.debugArea = Html.getById(this.HtmlId.DebugArea);
         this.commandBox = Html.getById(this.HtmlId.CommandBox);
@@ -1441,7 +1426,7 @@ class YnuTube extends Application {
 
         if (isNone(this.batImageTile)) this.loadBatTile('bat');
         // const bat = new Bat(this.batImageTile, getRandom(this.mainScreen.width / 8, this.mainScreen.width / 8 * 7), getRandom(this.mainScreen.height / 8, this.mainScreen.height / 8 * 7));
-        const bat = new Bat(this.batImageTile, Random.get(this.mainScreen.width / 8, this.mainScreen.width / 8 * 7), Random.get(this.mainScreen.height / 8, this.mainScreen.height / 8 * 7));
+        const bat = new BatSprite(this.batImageTile, Random.get(this.mainScreen.width / 8, this.mainScreen.width / 8 * 7), Random.get(this.mainScreen.height / 8, this.mainScreen.height / 8 * 7));
         this.mainScreen.addSprite(bat, 0);
     }
 
@@ -1469,10 +1454,10 @@ class YnuTube extends Application {
             command = this.translateCommand(command);
             switch (command) {
                 case this.Command.Random:
-                    direction ??= DogCommon.RandomValue;
-                    speed ??= DogCommon.RandomValue;
-                    size ??= DogCommon.RandomValue;
-                    kind ??= DogCommon.RandomValue;
+                    direction ??= Dog.RandomValue;
+                    speed ??= Dog.RandomValue;
+                    size ??= Dog.RandomValue;
+                    kind ??= Dog.RandomValue;
                     random = true;
                     appear = true;
                     break;
@@ -1506,7 +1491,8 @@ class YnuTube extends Application {
                     break;
                 default:
 
-                    if (this.extraKinds.includes(command)) this.appendExtraKinds();
+                    // if (this.extraKinds.includes(command)) this.appendExtraKinds();
+                    if (this.getItems(this.Field.ExtraKind).map(x => x.command).includes(command)) this.appendExtraKinds();
                     const kindId = this.getItems(this.Field.Kind).find(x => equals(x.command, command, false, false))?.value;
                     if (!isNone(kindId) && isNone(kind)) {
                         kind = kindId;
@@ -1526,7 +1512,7 @@ class YnuTube extends Application {
 
         console.log('フィールド表示項目更新', dog.direction, dog.size, dog.speed, dog.kind);
 
-        if (!(dog instanceof Dog)) return;
+        if (!(dog instanceof DogSprite)) return;
 
         this.setFieldValue(this.Field.Direction, dog.direction);
         this.setFieldValue(this.Field.Size, dog.size);
@@ -1567,15 +1553,15 @@ class YnuTube extends Application {
         this.clearButtonArea();
         if (this.isEditMode(mode)) {
             for (let component of this.buttonTexts) {
-                this.buttonArea.appendChild(component.htmlElement);
+                this.buttonArea.appendChild(component.element);
                 const removeButton = new Button(this.HtmlId.RemoveButton, '-', this.removeButton.bind(this, component.id));
-                removeButton.button.classList.add(CLASS_REMOVE_BUTTON);
-                this.buttonArea.appendChild(removeButton.htmlElement);
+                removeButton.coreNode.classList.add(CLASS_REMOVE_BUTTON);
+                this.buttonArea.appendChild(removeButton.element);
             }
 
             const appendButton = new Button(this.HtmlId.AppendButton, '+', this.appendButton.bind(this, null));
-            appendButton.button.classList.add(CLASS_APPEND_BUTTON);
-            buttonArea.appendChild(appendButton.htmlElement);
+            appendButton.coreNode.classList.add(CLASS_APPEND_BUTTON);
+            buttonArea.appendChild(appendButton.element);
 
         } else {
             let previousComponent = null;
@@ -1609,10 +1595,10 @@ class YnuTube extends Application {
                 const button = new Button(`${command}Button`, caption, onClick, null, ...nodes);
 
                 if (previousConcatLeft && buttonCommand?.concatRight) {
-                    previousComponent.button.classList.add('concat-button-left');
-                    button.button.classList.add('concat-button-right');
+                    previousComponent.coreNode.classList.add('concat-button-left');
+                    button.coreNode.classList.add('concat-button-right');
                 }
-                buttonArea.appendChild(button?.htmlElement);
+                buttonArea.appendChild(button?.element);
                 if (button != null) {
                     previousComponent = button;
                     previousConcatLeft = buttonCommand?.concatLeft ?? null;
@@ -1707,7 +1693,7 @@ class YnuTube extends Application {
     run() {
         super.run().then(() => {
 
-            const STYLE_VALUE_100PERCENT = '100%';
+            // const STYLE_VALUE_100PERCENT = '100%';
 
             overrideConsoleLog(Html.getById(this.HtmlId.LogArea));
             console.log('アプリケーション開始');
@@ -1741,11 +1727,12 @@ class YnuTube extends Application {
 
             this.buildSelectBgArea();
 
-            const screenCanvas = Html.getById(this.HtmlId.Screen);
+            const screenCanvas = Html.getById(this.HtmlId.ScreenCanvas);
             if (!(screenCanvas instanceof HTMLCanvasElement)) return;
 
-            screenCanvas.style.width = STYLE_VALUE_100PERCENT;
-            screenCanvas.style.height = STYLE_VALUE_100PERCENT;
+            // screenCanvas.style.width = STYLE_VALUE_100PERCENT;
+            // screenCanvas.style.height = STYLE_VALUE_100PERCENT;
+            Html.setStyleSize(screenCanvas);
 
             this.mainScreen = new ActiveCanvas(screenCanvas, 0, 0, null, maxFps, skipFrame, isDebug);
             this.mainScreen.drawOrders.push((s) => s.bottom);
@@ -1773,7 +1760,7 @@ class YnuTube extends Application {
                     this.backgroundImageTile.draw(ctx, 0, 0, target.width, target.height);
                 }
 
-                target.sprites.filter(x => x instanceof Dog).forEach(sprite => {
+                target.sprites.filter(x => x instanceof DogSprite).forEach(sprite => {
                     this.dogShadowTile.draw(ctx, sprite, 0, 0);
                 });
 

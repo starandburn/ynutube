@@ -1,6 +1,6 @@
 'use strict';
 
-class Bat extends TransitionSprite {
+class BatSprite extends TransitionSprite {
 
     BAT_MIN_SCALE = 0.1;
     BAT_MAX_SCALE = 1.8;
