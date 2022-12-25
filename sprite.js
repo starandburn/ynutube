@@ -182,48 +182,48 @@ class ImageTile extends DrawingTile {
     left;
     top;
     smoothing;
-    _image;
-    _trimed;
+    #image;
+    #trimed;
 
     get width() { 
-        return (this._width || this._image?.width) ?? 0;
+        return (this._width || this.#image?.width) ?? 0;
     }
     set width(value) {
         this._width = value ?? null;
     }
     get height() {
-        return (this._height || this._image?.height) ?? 0;
+        return (this._height || this.#image?.height) ?? 0;
     }
     set height(value) {
         this._height = value ?? null;
     }
-    get image() { return this._image; }
+    get image() { return this.#image; }
 
     constructor(image, left, top, width, height, smoothing = true, triming = false) {
         super(width, height);
-        this._image = image || null;
+        this.#image = image || null;
         this.left = left || 0;
         this.top = top || 0;
         this.smoothing = smoothing;
-        this._trimed = false;
+        this.#trimed = false;
 
         if (triming) this.trim();
     }
 
     clone(image) {
-        return new ImageTile(image || this._image, this.left, this.top, this._width, this._height, this.smoothing);
+        return new ImageTile(image || this.#image, this.left, this.top, this._width, this._height, this.smoothing);
     }
 
     onDraw = (ctx, srcLeft, srcTop, srcWidth, srcHeight, destLeft, destTop, destWidth, destHeight) => {
 
-        if (!(this._image instanceof Image)) return;
+        if (!(this.#image instanceof Image)) return;
 
 //        ctx.mozImageSmoothingEnabled = this.smoothing;
         ctx.webkitImageSmoothingEnabled = this.smoothing;
         ctx.msImageSmoothingEnabled = this.smoothing;
         ctx.imageSmoothingEnabled = this.smoothing;
 
-        ctx.drawImage(this._image,
+        ctx.drawImage(this.#image,
             this.left + srcLeft,
             this.top + srcTop,
             srcWidth,
@@ -237,7 +237,7 @@ class ImageTile extends DrawingTile {
 
     trim() {
 
-        if (this._trimed) return;
+        if (this.#trimed) return;
 
         let newLeft = this.left;
         let newTop = this.top;
@@ -254,7 +254,7 @@ class ImageTile extends DrawingTile {
 
             const ctx = cvs.getContext('2d');
             ctx.clearRect(0, 0, width, height);
-            ctx.drawImage(this._image, 0, 0, width, height);
+            ctx.drawImage(this.#image, 0, 0, width, height);
             const imageData = ctx.getImageData(0, 0, width, height).data;
             const get = (x, y) => {
                 return imageData[(y * width + x) * 4 + 3];
@@ -318,7 +318,7 @@ class ImageTile extends DrawingTile {
             this.width =  newRight - newLeft + 1;
             this.height = newBottom - newTop + 1;
 
-            this._trimed = true;
+            this.#trimed = true;
 
         });
 

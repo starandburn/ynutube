@@ -3,15 +3,15 @@
 // 描画処理を行うキャンバスクラス（HTML5のCanvas要素のラッパー）
 class Canvas {
 
-    backgroundColor;
-    primaryScreen;
-    workBuffer
-    aspectRatio;
-    mouseX;
-    mouseY;
-    useDoubleBuffer;
+    #backgroundColor;
+    #primaryScreen;
+    #workBuffer
+    #aspectRatio;
+    #mouseX;
+    #mouseY;
+    #hasDoubleBuffer;
 
-    constructor(element, width, height, backgroundColor, useDoubleBuffer = false)
+    constructor(element, width, height, backgroundColor, hasDoubleBuffer = false)
     {
         element = (element instanceof HTMLElement) ? element : null;
         width = Math.floor(Math.max(1, (width ?? 0) <= 0 ? element?.clientWidth ?? 0 : width));
@@ -20,37 +20,37 @@ class Canvas {
 
         if (element instanceof HTMLCanvasElement) {
             // canvas要素が直接指定された場合、それを流用する
-            this.primaryScreen = element;
+            this.#primaryScreen = element;
 
         } else {
             // canvas要素以外の場合、新規でcanvas要素を生成する
-            this.primaryScreen = this.createCanvasElement();
+            this.#primaryScreen = this.#createCanvasElement();
             this.appendTo(element);
         }
 
-        this.primaryScreen.width = width;
-        this.primaryScreen.height = height;
-        this.aspectRatio = (width != 0) ? (height / width) : 0;
+        this.#primaryScreen.width = width;
+        this.#primaryScreen.height = height;
+        this.#aspectRatio = (width != 0) ? (height / width) : 0;
 
-        this.backgroundColor = backgroundColor;
+        this.#backgroundColor = backgroundColor;
         if (element != null) this.setEvents();
 
-        this.useDoubleBuffer = useDoubleBuffer;
-        if (useDoubleBuffer) {
-            this.workBuffer = this.createCanvasElement();
+        this.#hasDoubleBuffer = hasDoubleBuffer;
+        if (hasDoubleBuffer) {
+            this.#workBuffer = this.#createCanvasElement();
         } else {
-            this.workBuffer = this.primaryScreen;
+            this.#workBuffer = this.#primaryScreen;
         }
 
-        this.mouseX = 0;
-        this.mouseY = 0;
+        this.#mouseX = 0;
+        this.#mouseY = 0;
 
         this.clear();
         this.endRender();
 
     }
 
-    createCanvasElement() {
+    #createCanvasElement() {
         return document.createElement('canvas')
     }
 
@@ -67,7 +67,7 @@ class Canvas {
     onMouseUp = (x, y, b, tgt) => {};
 
     // イベントハンドラテーブル
-    eventHandlers = [
+    #eventHandlers = [
         'click', (e, x, y, b) => { this.onClick(x, y, b, this); },
         'contextmenu', (e, x, y, b) => { this.onClick(x, y, b, this); e.preventDefault(); },
         'dblclick', (e, x, y, b) => { this.onDoubleClick(x, y, b, this); },
@@ -84,13 +84,13 @@ class Canvas {
         const button = e.button;
         const type = e.type;
 
-        this.mouseX = x;
-        this.mouseY = y;
+        this.#mouseX = x;
+        this.#mouseY = y;
 
-        for (let i = 0; i < this.eventHandlers.length; i += 2)
+        for (let i = 0; i < this.#eventHandlers.length; i += 2)
         {
-            if (this.eventHandlers[i] == type) {
-                this.eventHandlers[i + 1](e, x, y, button);
+            if (this.#eventHandlers[i] == type) {
+                this.#eventHandlers[i + 1](e, x, y, button);
                 return;
             }
         }
@@ -98,54 +98,58 @@ class Canvas {
 
     setEvents()
     {
-        for (let i = 0; i < this.eventHandlers.length; i += 2)
+        for (let i = 0; i < this.#eventHandlers.length; i += 2)
         {
-            const type = this.eventHandlers[i];
-            this.primaryScreen.addEventListener(type, this.mouseEventHandler.bind(this), false);
+            const type = this.#eventHandlers[i];
+            this.#primaryScreen.addEventListener(type, this.mouseEventHandler.bind(this), false);
         }
     }
 
     // 指定要素の子要素としてキャンバスを追加する
     appendTo(element) {
         if (element instanceof HTMLElement) {
-            element.appendChild(this.primaryScreen);
+            element.appendChild(this.#primaryScreen);
         }
     }
 
-    get bufferWidth() { return this.workBuffer.width; }
-    get bufferHeight() { return this.workBuffer.height; }
+    get bufferWidth() { return this.#workBuffer.width; }
+    get bufferHeight() { return this.#workBuffer.height; }
 
-    get clientWidth() { return this.primaryScreen.clientWidth; }
-    get clientHeight() { return this.primaryScreen.clientHeight; }
+    get clientWidth() { return this.#primaryScreen.clientWidth; }
+    get clientHeight() { return this.#primaryScreen.clientHeight; }
 
-    get offsetWidth() { return this.primaryScreen.offsetWidth; }
-    get offsetHeight() { return this.primaryScreen.offsetHeight; }
+    get offsetWidth() { return this.#primaryScreen.offsetWidth; }
+    get offsetHeight() { return this.#primaryScreen.offsetHeight; }
 
-    get width() { return this.primaryScreen.width; }
-    get height() { return this.primaryScreen.height; }
+    get width() { return this.#primaryScreen.width; }
+    get height() { return this.#primaryScreen.height; }
 
     get right() { return this.width - 1; }
     get bottom() { return this.height- 1; }
 
     resetCursor() { this.cursor = 'default'; }
-    get cursor() { return this.primaryScreen.style.cursor; }
-    set cursor(value) { return this.primaryScreen.style.cursor = value; }
+    get cursor() { return this.#primaryScreen.style.cursor; }
+    set cursor(value) { return this.#primaryScreen.style.cursor = value; }
 
     get mousePosition() {
-        return [this.mouseX, this.mouseY];
+        return [this.#mouseX, this.#mouseY];
+    }
+
+    get hasDoubleBuffer() {
+        return this.#hasDoubleBuffer;
     }
 
     updateBackbuffer() {
-        if (!this.useDoubleBuffer) return; 
-        this.workBuffer.width = this.width;
-        this.workBuffer.height = this.height;
+        if (!this.#hasDoubleBuffer) return; 
+        this.#workBuffer.width = this.width;
+        this.#workBuffer.height = this.height;
     }
 
 
     beginRender(isDebugMode = false, erase = true) {
         if (this.clientWidth != this.Width || this.clientHeight != this.Height) {
-            this.primaryScreen.width = this.clientWidth;
-            this.primaryScreen.height = this.primaryScreen.width * this.aspectRatio;     
+            this.#primaryScreen.width = this.clientWidth;
+            this.#primaryScreen.height = this.#primaryScreen.width * this.#aspectRatio;     
         }
         if (erase) this.clear(isDebugMode);
         return this.getContext();
@@ -153,13 +157,13 @@ class Canvas {
 
     endRender(erase = true) {
 
-        if (!this.useDoubleBuffer) return;
+        if (!this.#hasDoubleBuffer) return;
 
-        const ctx = this.getContext(this.primaryScreen);
+        const ctx = this.getContext(this.#primaryScreen);
         if (erase) ctx.clearRect(0, 0, this.width, this.height);
 
-        if (this.workBuffer.width == 0 || this.workBuffer.height == 0) return;
-        ctx.drawImage(this.workBuffer, 0, 0);
+        if (this.#workBuffer.width == 0 || this.#workBuffer.height == 0) return;
+        ctx.drawImage(this.#workBuffer, 0, 0);
     }
 
     getTemporary() {
@@ -171,7 +175,7 @@ class Canvas {
     getContext(target = null) {
         if (target == null) {
             this.updateBackbuffer();
-            target = this.workBuffer;
+            target = this.#workBuffer;
         }        
         return target.getContext('2d');
     }
@@ -179,7 +183,7 @@ class Canvas {
     clear(isDebugMode = false){
         const ctx = this.getContext();
         ctx.save();
-        if (this.backgroundColor == null || this.backgroundColor == undefined) {
+        if (this.#backgroundColor == null || this.#backgroundColor == undefined) {
             // if (!isDebugMode) {
             //     ctx.clearRect(0, 0, this.width, this.height);
             // } else {
@@ -197,7 +201,7 @@ class Canvas {
                 ctx.closePath();
             // }
         } else {
-            ctx.fillStyle = this.backgroundColor;
+            ctx.fillStyle = this.#backgroundColor;
             ctx.fillRect(0, 0, this.width, this.height);
         }
         ctx.restore();

@@ -2,62 +2,69 @@
 
 class Component {
 
-    _id = null;
-    _topElement = null;
+    #id = null;
+    #rootElement = null;
 
-    get id() { return this._id; }
-    get htmlElement() { return this._topElement; }
+    get id() { return this.#id; }
+    get element() { return this.#rootElement; }
+    get coreNode() { return this.element; }
 
-    addClass(styleClass) {
-        if (styleClass == null || styleClass == undefined) return;
-        this._topElement.classList.add(styleClass);
+    _isNone(obj) { return (obj == null || obj == undefined || obj == NaN); }
+    _isElement(obj) { return (obj instanceof HTMLElement); }
+
+    addClass(className) {
+        if (this._isNone(className)) return;
+        this.#rootElement?.classList.add(className);
     }
-    removeClass(styleClass) {
-        if (styleClass == null || styleClass == undefined) return;
-        this._topElement.classList.remove(styleClass);
-    }
-
-    constructor(id, styleClass) {
-        this._id = id;
-        this._topElement = this._createDiv(styleClass);
-        this._topElement.id = `${id}Component`;
+    removeClass(className) {
+        if (this._isNone(className)) return;
+        this.#rootElement?.classList.remove(className);
     }
 
-    _appendChild(element) {
-        if (element == null || element == undefined) return;
-        this._topElement?.appendChild(element);
+    constructor(id, className) {
+        this.#id = id;
+        this.#rootElement = this._createDiv(className);
+        if (!this._isElement(this.#rootElement)) return;
+        this.#rootElement.id = `${id}Component`;
     }
 
-    _createElement(htmlTag, styleClass) {
-        const element = document.createElement(htmlTag) ?? null;
-        if (styleClass != null && styleClass != undefined) element?.classList.add(styleClass);
+    _appendChild(node) {
+        if (this._isNone(node)) return;
+        this.#rootElement?.appendChild(node);
+    }
+
+    _createElement(tagName, className) {
+        const element = document.createElement(tagName) || null;
+        if (!this._isNone(className)) element?.classList.add(className);
         return element;
     }
+
     _createTextNode(text) {
         return document.createTextNode(text ?? '');
     }
-    _createDiv(styleClass) {
-        return this._createElement('div', styleClass);
+    _createDiv(className) {
+        return this._createElement('div', className);
     }
     _createParagraph(text) {
         const element = this._createElement('p');
+        if (!this._isElement(element)) return;
         element.textContent = text;
         return element;
     }
     _createLabel(forName) {
         const label = this._createElement('label');
-        if (forName != null || forname != undefined) {
-            label.setAttribute('for', forName);
-        }
+        if (!this._isNone(forName)) label?.setAttribute('for', forName);
         return label;
     }
     _createInput(type) {
         const input = document.createElement('input');
+        if (this._isNone(input)) return;
         input.type = type;
         return input;
     }
     _createOption(value, text, selected = false) {
         const option = this._createElement('option');
+        if (this._isNone(option)) return null;
         option.value = value;
         option.selected = selected;
         option.appendChild(this._createTextNode(text));
@@ -65,7 +72,7 @@ class Component {
     }
 
     appendTo(parent) {
-        parent?.appendChild(this._topElement);
+        parent?.appendChild(this.#rootElement);
     }
 
     get value() { return null; }
@@ -82,181 +89,189 @@ class Component {
         this.value = value;
     }
 
-    _update(){
+    _update() {
         if (this.onUpdateValue == null) return;
-        this.onUpdateValue(); 
+        this.onUpdateValue();
     }
 
-    onUpdateValue = () => {};
+    onUpdateValue = () => { };
 
 }
 
 class Button extends Component {
 
-    button = null;
-    _textNode = null;
-    _text = null;
+    #button = null;
+    #textNode = null;
+    #text = null;
 
-    constructor(id, text, onClick, styleClass, before, after) {
+    #updateTextNode() {
+        this.#textNode.textContent = this.#text?.toString().trim() ?? '';
+    }
 
-        super(id, styleClass);
-        this.button = this._createElement('button', styleClass);
-        if (onClick != null && onClick != undefined) {
-            // this.button.setAttribute('onClick', onClick);
-            this.button.onclick = onClick;
+    constructor(id, text, onclick, className, before, after) {
+
+        super(id, className);
+        this.#button = this._createElement('button', className);
+        if (!this._isNone(onclick)) {
+            this.#button.onclick = onclick;
         }
-        this._text = text;
-        this._textNode = this._createTextNode();
-        this._textNode.textContent = this._text?.toString().trim() ?? '';
+        this.#text = text;
+        this.#textNode = this._createTextNode();
+        this.#updateTextNode();
 
         let isBefore = true;
         for (let option of [before, after]) {
-            if (!isBefore) this.button.appendChild(this._textNode);
+            if (!isBefore) this.#button.appendChild(this.#textNode);
             isBefore = false;
             if (isNone(option)) continue;
             if (option instanceof HTMLElement) {
-                this.button.appendChild(option);
+                this.#button.appendChild(option);
             } else {
-                this.button.appendChild(this._createTextNode(option?.toString()));
+                this.#button.appendChild(this._createTextNode(option?.toString()));
             }
         }
 
-        this._appendChild(this.button);
+        this._appendChild(this.#button);
     }
-    get text() {
-        return this._text;
-    }
+
+    get coreNode() { return this.#button; }
+    get text() { return this.#text; }
     set text(value) {
-        this._text = value;
-        this._textNode.textContent = this._text?.toString().trim() ?? '';
+        this.#text = value;
+        this.#updateTextNode();
     }
 }
 
 class FixedLabel extends Component {
 
-    _textNode = null;
-    _text = null;
-    _value = null;
-    _texts = null;
+    #textNode = null;
+    #text = null;
+    #value = null;
+    #textMap = null;
 
-    constructor(id, value, texts, styleClass) {
-        super(id, styleClass);
+    constructor(id, value, textMap, className) {
+        super(id, className);
 
-        this._textNode = this._createTextNode();
-        this._appendChild(this._textNode);
+        this.#textNode = this._createTextNode();
+        this._appendChild(this.#textNode);
 
-        if (texts instanceof Array) {
-            this._texts = texts;
+        if (textMap instanceof Array) {
+            this.#textMap = textMap;
         } else {
-            this._texts = null;
-            this.text = texts;
+            this.#textMap = null;
+            this.text = textMap;
         }
 
         this.value = value;
     }
 
     get text() {
-        return this._text;
+        return this.#text;
     }
     set text(value) {
-        this._text = value;
-        this._textNode.textContent = this._text?.toString().trim() ?? '';
+        this.#text = value;
+        this.#textNode.textContent = this.#text?.toString().trim() ?? '';
     }
 
     get value() {
-        return this._value;
+        return this.#value;
     }
     set value(value) {
-        this._value = value;
-        if (this._texts instanceof Array) {
-            // this.text = this._texts?.find((t) => t?.id == this?.value)?.text ?? this.value;
-            this.text = this._texts?.find((t) => t?.value == this?.value)?.text ?? this.value;
+        this.#value = value;
+        if (this.#textMap instanceof Array) {
+            this.text = this.#textMap?.find((t) => t?.value == this?.value)?.text ?? this.value;
         } else {
             this.text = this.value;
         }
     }
 }
 
+
 class TextBox extends Component {
 
-    textBox = null;
-    _items = null;
-    _placeholder = null;
+    #textBox = null;
+    #items = null;
+    #placeholder = null;
 
-    constructor(name, value, items, styleClass, placeholder) {
-        super(name, styleClass)
-        this.textBox = this._createInput('text');
-        this.textBox.value = value ?? '';
-        this.textBox.addEventListener('change', this._update.bind(this));
+    constructor(id, value, commandMap, className, placeholder) {
+        super(id, className)
+        this.#textBox = this._createInput('text');
+        this.#textBox.value = value ?? '';
+        this.#textBox.addEventListener('change', this._update.bind(this));
 
-        this._items = items;
+        this.#items = commandMap;
         this.placeholder = placeholder;
-        this._appendChild(this.textBox);
+        this._appendChild(this.#textBox);
     }
 
     get placeholder() {
-        return this._placeholder ?? '';
+        return this.#placeholder ?? '';
     }
     set placeholder(value) {
-        this._placeholder = value;
-        if (this.textBox instanceof HTMLInputElement) {
-            this.textBox.setAttribute('placeholder', this._placeholder ?? '');
+        this.#placeholder = value;
+        if (this.#textBox instanceof HTMLInputElement) {
+            this.#textBox.setAttribute('placeholder', this.#placeholder ?? '');
         }
     }
 
+    get coreNode() { return this.#textBox };
+
     get value() {
-        return this.textBox?.value;
+        return this.#textBox?.value;
     }
 
     set value(value) {
-        if (this.textBox instanceof HTMLInputElement) {
+        if (this.#textBox instanceof HTMLInputElement) {
             // let text = this._items?.find((x) => x?.id == value)?.command ?? null;
-            let text = this._items?.find((x) => x?.value == value)?.command ?? null;
-            this.textBox.value = text ?? value;
+            let text = this.#items?.find((x) => x?.value == value)?.command ?? null;
+            this.#textBox.value = text ?? value;
         }
     }
 
 }
 
+
 class RadioButtons extends Component {
 
-    _radioButtons = [];
+    #radioButtons = [];
 
-    constructor(name, options, defaultValue, styleClass) {
-        super(name, styleClass)
+    constructor(id, options, defaultValue, className) {
+        super(id, className)
 
-        this._radioButtons = [];
+        this.#radioButtons = [];
 
         for (let opt of options) {
-            const id = `${name}_${opt.value}`
+            const childId = `${id}_${opt.value}`
             const paragraph = this._createParagraph();
 
             const radioButton = this._createInput('radio');
-            radioButton.name = name;
-            radioButton.id = id;
+            radioButton.name = id;
+            radioButton.id = childId;
             radioButton.value = opt.value;
             radioButton.checked = (opt.value == defaultValue);
-            radioButton.addEventListener('change', this._update.bind(this));
+            // radioButton.addEventListener('change', this._update.bind(this));
+            radioButton.onchange = this._update.bind(this);
 
-            this._radioButtons.push(radioButton);
+            this.#radioButtons.push(radioButton);
             paragraph.appendChild(radioButton);
 
-            const label = this._createLabel(id);
+            const label = this._createLabel(childId);
             label.appendChild(this._createTextNode(opt.text));
             paragraph.appendChild(label);
             this._appendChild(paragraph);
         }
+
     }
 
     get value() {
-        for (let radioBUtton of this._radioButtons) {
-            if (radioBUtton.checked) return radioBUtton.value;
+        for (let radioButton of this.#radioButtons) {
+            if (radioButton.checked) return radioButton.value;
         }
         return null;
     }
 
     set value(value) {
-        for (let radioButton of this._radioButtons) {
+        for (let radioButton of this.#radioButtons) {
             radioButton.checked = (radioButton.value == value);
         }
     }
@@ -266,76 +281,82 @@ class RadioButtons extends Component {
 
 class CheckBox extends Component {
 
-    _checkBox = null;
-    _defaultValue = null;
-    _checkedValue = null;
+    #checkBox = null;
+    #defaultValue = null;
+    #checkedValue = null;
 
-    constructor(name, text, defaultValue, checkedValue, styleClass) {
-        super(name, styleClass);
+    constructor(id, text, defaultValue, checkedValue, className) {
+        super(id, className);
 
-        this._defaultValue = defaultValue;
-        this._checkedValue = checkedValue;
+        this.#defaultValue = defaultValue;
+        this.#checkedValue = checkedValue;
 
-        this._checkBox = this._createInput('checkbox');
+        this.#checkBox = this._createInput('checkbox');
 
-        this._checkBox.name = name;
-        this._checkBox.id = name;
-        this._checkBox.value = checkedValue;
-        this._checkBox.checked = (defaultValue == checkedValue);
+        this.#checkBox.name = id;
+        this.#checkBox.id = id;
+        this.#checkBox.value = checkedValue;
+        this.#checkBox.checked = (defaultValue == checkedValue);
 
-        this._checkBox.addEventListener('change', this._update.bind(this));
+        // this.#checkBox.addEventListener('change', this._update.bind(this));
+        this.#checkBox.onchange = this._update.bind(this);
 
         const paragraph = this._createParagraph();
-        paragraph.appendChild(this._checkBox);
+        paragraph.appendChild(this.#checkBox);
 
-        const label = this._createLabel(name);
+        const label = this._createLabel(id);
         label.appendChild(this._createTextNode(text));
         paragraph.appendChild(label);
 
         this._appendChild(paragraph);
+
     }
 
+    get coreNode() { return this.#checkBox; }
+
     get value() {
-        return (this._checkBox.checked) ? this._checkedValue : this._defaultValue;
+        return (this.#checkBox.checked) ? this.#checkedValue : this.#defaultValue;
     }
 
     set value(value) {
-        this._checkBox.checked = (this._checkedValue == value);
+        this.#checkBox.checked = (this.#checkedValue == value);
     }
 
 }
 
 class DropDown extends Component {
 
-    _selectBox = null;
-    _options = [];
+    #selectBox = null;
+    #options = [];
 
-    constructor(name, listItems, defaultValue, styleClass) {
-        super(name, styleClass)
+    constructor(id, listItems, defaultValue, className) {
+        super(id, className)
 
-        this._selectBox = this._createElement('select');
-        this._selectBox.addEventListener('change', this._update.bind(this));
+        this.#selectBox = this._createElement('select');
+        this.#selectBox.addEventListener('change', this._update.bind(this));
 
-        this._appendChild(this._selectBox);
+        this._appendChild(this.#selectBox);
 
         for (let item of listItems) {
             const option = this._createOption(item.value, item.text, (item.value == defaultValue));
-            this._options.push(option);
-            this._selectBox.appendChild(option);
+            this.#options.push(option);
+            this.#selectBox.appendChild(option);
         }
 
     }
 
+    get coreNode() { return this.#selectBox; }
+
     get value() {
 
-        for (let option of this._options) {
+        for (let option of this.#options) {
             if (option.selected) return option.value;
         }
         return null;
     }
 
     set value(value) {
-        for (let option of this._options) {
+        for (let option of this.#options) {
             option.selected = (option.value == value);
         }
     }
@@ -345,33 +366,34 @@ class DropDown extends Component {
 
 class ListBox extends DropDown {
 
-    _onDoubleClick = () => { };
+    #ondblclick = () => { };
 
-    constructor(name, listItems, defaultValue, styleClass, size, onDoubleClick) {
-        super(name, listItems, defaultValue, styleClass)
-        this._selectBox.size = size || listItems.length;
-        this._onDoubleClick = onDoubleClick;
+    constructor(id, listItems, defaultValue, className, size, ondblclick) {
+        super(id, listItems, defaultValue, className)
+        super.coreNode.size = size || listItems.length;
+        this.#ondblclick = ondblclick;
 
-        if (isNone(onDoubleClick)) return;
-        this._selectBox.addEventListener('dblclick', this._onDoubleClick?.bind(this));
+        if (isNone(ondblclick)) return;
+        // super.coreNode.addEventListener('dblclick', this.#ondblclick?.bind(this));
+        super.coreNode.ondblclick = this.#ondblclick?.bind(this);
     }
 
 }
 
 class Slider extends Component {
 
-    _range = null;
-    _values = null;
+    #range = null;
+    #values = null;
 
-    constructor(name, values, defaultValue, styleClass) {
-        super(name, styleClass)
+    constructor(id, values, defaultValue, className) {
+        super(id, className)
 
-        this._values = values.slice();
+        this.#values = values.slice();
 
-        this._range = this._createInput('range');
-        this._range.min = 0;
-        this._range.max = (values?.length ?? 1) - 1;
-        this._range.step = 1;
+        this.#range = this._createInput('range');
+        this.#range.min = 0;
+        this.#range.max = (values?.length ?? 1) - 1;
+        this.#range.step = 1;
 
         this._currentText = this._createTextNode();
         const paragraph = this._createParagraph();
@@ -379,31 +401,34 @@ class Slider extends Component {
 
         this.value = defaultValue;
 
-        this._appendChild(this._range);
+        this._appendChild(this.#range);
         this._appendChild(paragraph);
 
-        this._range.addEventListener('input', this._update.bind(this));
+        // this.#range.addEventListener('input', this._update.bind(this));
+        this.#range.oninput = this._update.bind(this);
 
     }
 
+    get coreNode() { return this.#range; }
+
     get value() {
-        const index = this._range.value;
+        const index = this.#range.value;
         // return this._values[index].id;
-        return this._values[index].value;
+        return this.#values[index].value;
     }
 
     set value(value) {
-        for (let i = 0; i < this._values.length; i++) {
+        for (let i = 0; i < this.#values.length; i++) {
             // if (this._values[i].id == value) {
-            if (this._values[i].value == value) {
-                this._range.value = i;
+            if (this.#values[i].value == value) {
+                this.#range.value = i;
                 this._update();
                 return;
             }
         }
     }
     _update() {
-        this._currentText.textContent = this._values[this._range.value]?.text;
+        this._currentText.textContent = this.#values[this.#range.value]?.text;
         this.onUpdateValue();
     }
 }
@@ -411,19 +436,19 @@ class Slider extends Component {
 
 class ImageList extends Component {
 
-    _listItems = [];
-    _list = null;
-    _images = [];
-    _value = null;
-    _onDoubleClick = () => { };
+    #listItems = [];
+    #list = null;
+    #images = [];
+    #value = null;
+    #ondblclick = () => { };
 
-    constructor(name, listItems, defaultValue, styleClass, onDoubleClick) {
+    constructor(id, listItems, defaultValue, className, ondblclick) {
 
-        super(name, styleClass)
+        super(id, className)
 
-        this._list = this._createElement('ul');
-        this._appendChild(this._list);
-        this._onDoubleClick = onDoubleClick;
+        this.#list = this._createElement('ul');
+        this._appendChild(this.#list);
+        this.#ondblclick = ondblclick;
 
         for (let item of listItems) {
             const liElement = this._createElement('li');
@@ -434,20 +459,24 @@ class ImageList extends Component {
             image.id = item?.value;
             image.alt = item?.text;
 
-            image.addEventListener('click', this._onClick.bind(this));
-            image.addEventListener('dblclick', this._onDoubleClick?.bind(this));
-            this._images.push(image);
+            // image.addEventListener('click', this._onClick.bind(this));
+            image.onclick = this.#onclick.bind(this);
+
+            // image.addEventListener('dblclick', this.#ondblclick?.bind(this));
+            image.ondblclick = this.#ondblclick?.bind(this);
+
+            this.#images.push(image);
 
             liElement.appendChild(image);
-            this._listItems.push(liElement);
-            this._list.appendChild(liElement);
+            this.#listItems.push(liElement);
+            this.#list.appendChild(liElement);
 
         }
         this._update(defaultValue);
 
     }
 
-    _onClick(e) {
+    #onclick(e) {
         const image = (e?.target) ?? null;
         if (image instanceof HTMLImageElement) {
             this._update(image.id);
@@ -458,25 +487,25 @@ class ImageList extends Component {
 
         const CLASS_SELECTED = 'selected'
 
-        for (let image of this._images) {
+        for (let image of this.#images) {
             if (image.id == value) {
                 image.classList.add(CLASS_SELECTED);
             } else {
                 image.classList.remove(CLASS_SELECTED);
             }
         }
-        this._value = value;
+        this.#value = value;
 
         this.onUpdateValue();
     }
 
     get value() {
-        return this._value;
+        return this.#value;
     }
 
     set value(value) {
-        this._value = value;
-        this._update(this._value);
+        this.#value = value;
+        this._update(this.#value);
     }
 
 }
