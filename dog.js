@@ -13,7 +13,7 @@ const Dog = Object.freeze({
         Small: 1,
         Big: 2,
         SuperSmall: 3,
-        SupperBig: 4,
+        SuperBig: 4,
     },
     Speed: {
         Range: 10,
